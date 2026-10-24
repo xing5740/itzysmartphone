@@ -1,4 +1,6 @@
 const paths = {
+  safari:'<circle cx="12" cy="12" r="10.5" fill="#139aef" stroke="none"/><circle cx="12" cy="12" r="8.6" stroke="#fff" stroke-width=".45" stroke-dasharray=".4 1.1"/><path d="m16.9 5.4-3.4 8.1-3-3z" fill="#fa5361" stroke="none"/><path d="m7.1 18.6 3.4-8.1 3 3z" fill="#fff" stroke="none"/>',
+  settings:'<path d="m9 3-1 3-3 1-2 4 2 2v4l4 3 3-1 3 1 4-3v-4l2-2-2-4-3-1-1-3z"/><circle cx="12" cy="12" r="4"/>',
   back:'<path d="m14 5-7 7 7 7"/>', close:'<path d="m6 6 12 12M6 18 18 6"/>', plus:'<path d="M12 5v14M5 12h14"/>',
   home:'<path d="m3 10 9-7 9 7v10h-6v-7H9v7H3z"/>', heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0l-1 1-1-1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/>',
   chat:'<path d="M21 11.5a9 8.5 0 0 1-9 8.5 10 10 0 0 1-4-.8L3 21l1.4-4.2A8.2 8.2 0 0 1 3 11.5 9 8.5 0 0 1 12 3a9 8.5 0 0 1 9 8.5z"/>',

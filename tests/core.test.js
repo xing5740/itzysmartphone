@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
-import {createState,publish,runDueJobs,queueKeywordReplies,addMessage,unreadCount,validateSave} from '../js/core.js';
+import {createState,publish,runDueJobs,queueKeywordReplies,addMessage,unreadCount,validateSave,createPhotoDetails,photoLibrary,completeOnboarding,personalize} from '../js/core.js';
 const context={window:{}};
 vm.runInNewContext(readFileSync(new URL('../js/config.js',import.meta.url),'utf8'),context);
 const config=context.window.PHONE_CONFIG;
@@ -55,4 +55,32 @@ test('outgoing text and shared posts do not count as unread',()=>{
 });
 test('invalid imports are rejected while valid saves preserve comments and pictures',()=>{
   assert.throws(()=>validateSave({},config));assert.throws(()=>publish(createState(config),config,{images:[]}));const s=createState(config,start);const p=publish(s,config,{images:[photo('lia')],caption:'hello'},start);p.comments.push({id:'test',author:'me',text:'好看',time:start});const restored=validateSave(JSON.parse(JSON.stringify(s)),config);assert.equal(restored.posts[0].comments[0].text,'好看');delete restored.chats.kakao.lia;assert.throws(()=>validateSave(restored,config));
+});
+
+test('each photo gets a unique date from 1–7 and the library is chronological',()=>{
+  const state=createState(config,start);state.photoDetails=createPhotoDetails(config,()=>.4);
+  const library=photoLibrary(state,config),days=Array.from(library,p=>p.daysAgo);
+  assert.equal(days.length,5);assert.equal(new Set(days).size,5);assert.ok(days.every(n=>n>=1&&n<=7));assert.deepEqual(days,[...days].sort((a,b)=>a-b));
+  state.photoDetails[library[0].id].description='照片說明';
+  const restored=validateSave(JSON.parse(JSON.stringify(state)),config);
+  assert.deepEqual(photoLibrary(restored,config),photoLibrary(state,config));
+});
+
+test('onboarding validates identity, pauses incoming jobs and personalizes dialogue',()=>{
+  const c={...config,incomingMessages:[{id:'hello',channel:'kakao',member:'yeji',text:'{{nickname}}，嗨',delay:1000}]};
+  const state=createState(c,start);assert.equal(state.onboardingComplete,false);
+  assert.throws(()=>completeOnboarding(state,'bad name','小雨',start+5000));assert.throws(()=>completeOnboarding(state,'rain.zip',' ',start+5000));assert.equal(state.onboardingComplete,false);
+  completeOnboarding(state,' @rain.zip ',' 小雨 ',start+5000);assert.equal(state.profile.username,'rain.zip');assert.equal(state.profile.nickname,'小雨');assert.equal(state.jobs[0].dueAt,start+6000);
+  const notice=runDueJobs(state,c,start+6000)[0];assert.equal(personalize(state,notice.text),'小雨，嗨');
+});
+
+test('legacy saves keep existing chats and posts while adding setup and photo details',()=>{
+  const state=createState(config,start);publish(state,config,{images:[photo('lia')],caption:'舊貼文'},start);
+  const originalMessage=state.chats.kakao.lia[0].text;delete state.photoDetails;delete state.onboardingComplete;delete state.profile.nickname;
+  const restored=validateSave(JSON.parse(JSON.stringify(state)),config);
+  assert.equal(restored.onboardingComplete,false);assert.equal(restored.profile.nickname,state.profile.name);assert.equal(restored.posts[0].caption,'舊貼文');assert.equal(restored.chats.kakao.lia[0].text,originalMessage);assert.equal(Object.keys(restored.photoDetails).length,5);
+});
+
+test('invalid photo dates in imported saves are rejected',()=>{
+  const state=createState(config,start);state.photoDetails.yeji.daysAgo=99;assert.throws(()=>validateSave(state,config),/照片資訊/);
 });

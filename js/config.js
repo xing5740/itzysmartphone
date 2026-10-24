@@ -3,7 +3,9 @@
  * keywordRules 預留空白，不會自行產生 AI 回覆。設定範例見 README。
  */
 window.PHONE_CONFIG = {
-  player: { name: "김서연", username: "seoyeon.zip", bio: "서울의 작은 일상 ☁️\n和喜歡的人，收集一些日常。", avatar: "assets/avatar-me.svg" },
+  player: { name: "김서연", nickname: "", username: "seoyeon.zip", bio: "", avatar: "assets/avatar-me.svg" },
+  // 每張照片的預設說明；玩家也能在「照片」裡自行修改，並儲存在存檔。
+  photoDescriptions: { yeji:"",lia:"",ryujin:"",chaeryeong:"",yuna:"" },
   wallpapers: { lock: "photo/lockscreen.jpg", home: "photo/homescreen.jpg" },
   members: [
     { id: "yeji", name: "Yeji", displayName: "YEJI", korean: "예지", username: "yezyizhere", color: "#d9c3b5", emoji: "🐈", observer: "ryujin" },
@@ -28,8 +30,8 @@ window.PHONE_CONFIG = {
   // 以下為可自由替換的開場示範，不是成員的真實訊息。
   initialMessages: {
     kakao: {
-      yeji: ["今天也要記得吃飯 🤍"], lia: ["下次一起去上次說的那間咖啡廳？"],
-      ryujin: ["你在幹嘛？"], chaeryeong: ["回家了嗎？外面有點涼。"], yuna: ["看到好看的天空就想到你 ☁️"]
+      yeji: ["{{nickname}}，今天也要記得吃飯 🤍"], lia: ["下次一起去上次說的那間咖啡廳？"],
+      ryujin: ["{{nickname}}，你在幹嘛？"], chaeryeong: ["回家了嗎？外面有點涼。"], yuna: ["看到好看的天空就想到你，{{nickname}} ☁️"]
     },
     instagram: { yeji: [], lia: [], ryujin: [], chaeryeong: [], yuna: [] }
   },
@@ -41,18 +43,18 @@ window.PHONE_CONFIG = {
   photoEvents: {
     dmDelay: 1200, postDelay: 3500, observerDelay: 2200,
     scripts: {
-      yeji: { question:"怎麼突然把這張放上來了？那天的照片你還留著喔 🤍", caption:"那就放一張，同一天的。☁️", observer:"等一下，你跟 Yeji 發的照片……是同一天拍的吧？" },
-      lia: { question:"你上傳了那天的照片？為什麼突然想到這張 ☺️", caption:"a little memory with you 🤍", observer:"你跟 Lia 姐姐的貼文怎麼有點像？你們一起出去的？" },
-      ryujin: { question:"這張你居然還留著。怎麼突然發了？", caption:"same day, different view.", observer:"我是不是發現了什麼？你跟 Ryujin 的照片好像對得起來耶。" },
-      chaeryeong: { question:"是我們那天拍的……你怎麼選了這張？", caption:"想把那天再留久一點。🌿", observer:"你跟 Chaeryeong 是不是有事情沒跟我說？我看到照片了喔。" },
-      yuna: { question:"欸！這張！你怎麼突然發上來了 🥺", caption:"my favorite kind of day 🎀", observer:"你跟 Yuna 今天的貼文……怎麼看起來是在一起？" }
+      yeji: { question:"{{nickname}}，怎麼突然把這張放上來了？那天的照片你還留著喔 🤍", caption:"那就放一張，同一天的。☁️", observer:"等一下，你跟 Yeji 發的照片……是同一天拍的吧？" },
+      lia: { question:"{{nickname}}，你上傳了那天的照片？為什麼突然想到這張 ☺️", caption:"a little memory with you 🤍", observer:"你跟 Lia 姐姐的貼文怎麼有點像？你們一起出去的？" },
+      ryujin: { question:"{{nickname}}，這張你居然還留著。怎麼突然發了？", caption:"same day, different view.", observer:"我是不是發現了什麼？你跟 Ryujin 的照片好像對得起來耶。" },
+      chaeryeong: { question:"{{nickname}}，是我們那天拍的……你怎麼選了這張？", caption:"想把那天再留久一點。🌿", observer:"你跟 Chaeryeong 是不是有事情沒跟我說？我看到照片了喔。" },
+      yuna: { question:"{{nickname}}！這張！你怎麼突然發上來了 🥺", caption:"my favorite kind of day 🎀", observer:"你跟 Yuna 今天的貼文……怎麼看起來是在一起？" }
     }
   },
   seedStories: true,
   sms: [
     { id:"delivery", name:"CJ 大韓通運", time:"10:12", messages:["[配送通知] 您的包裹已送達，放置於家門口。訂單尾碼 0423。", "如有配送問題，請透過購物平台聯絡客服。"] },
-    { id:"bank", name:"新韓銀行", time:"昨天", messages:["[刷卡通知] 10/23 14:28，咖啡廳消費 5,500 韓元。", "本訊息為遊戲示範，不含真實帳務資料。"] },
+    { id:"bank", name:"新韓銀行", time:"昨天", messages:["[刷卡通知] 10/23 14:28，咖啡廳消費 5,500 韓元。", "若非本人交易，請透過銀行 App 查詢。"] },
     { id:"carrier", name:"SK Telecom", time:"星期四", messages:["[用量提醒] 本月行動數據已使用 80%。連上 Wi-Fi 後可繼續使用網路服務。"] },
-    { id:"verification", name:"驗證碼", time:"星期三", messages:["[登入驗證] 您的驗證碼是 482619。請勿將驗證碼提供給任何人。（遊戲範例）"] }
+    { id:"verification", name:"驗證碼", time:"星期三", messages:["[登入驗證] 您的驗證碼是 482619。請勿將驗證碼提供給任何人。"] }
   ]
 };

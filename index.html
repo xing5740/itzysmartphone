@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#e8e8ed">
+    <meta name="description" content="你的手機，與 ITZY 五位好友的日常。台灣中文互動手機模擬遊戲。">
+    <title>itzy phone</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/config.js"></script>
+    <script type="module" src="js/app.js"></script>
+  </head>
+  <body>
+    <main class="stage">
+      <section class="device-area" aria-label="iPhone 模擬器">
+        <div class="device" id="device">
+          <div class="screen" id="screen">
+            <div class="status-bar" id="status-bar"><span id="status-time">9:41</span><div class="status-right"><span id="signal"></span><span id="wifi"></span><span class="battery"><i></i></span></div></div>
+            <div id="app" class="app-root"><div class="boot" role="status">載入中…</div></div>
+            <button id="home-button" class="home-indicator" aria-label="回到主畫面"><span></span></button>
+            <div id="overlay" class="overlay-root"></div>
+            <div id="toast" role="status" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <input type="file" id="image-upload" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden>
+  </body>
+</html>

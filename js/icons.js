@@ -1,0 +1,28 @@
+const paths = {
+  back:'<path d="m14 5-7 7 7 7"/>', close:'<path d="m6 6 12 12M6 18 18 6"/>', plus:'<path d="M12 5v14M5 12h14"/>',
+  home:'<path d="m3 10 9-7 9 7v10h-6v-7H9v7H3z"/>', heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0l-1 1-1-1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z"/>',
+  chat:'<path d="M21 11.5a9 8.5 0 0 1-9 8.5 10 10 0 0 1-4-.8L3 21l1.4-4.2A8.2 8.2 0 0 1 3 11.5 9 8.5 0 0 1 12 3a9 8.5 0 0 1 9 8.5z"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4zM11 13 22 2"/>', bookmark:'<path d="M6 3h12v18l-6-4-6 4z"/>',
+  grid:'<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M17 5a3.5 3.5 0 0 1 0 7M19 15a6 6 0 0 1 3 5"/>',
+  search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>', more:'<circle cx="4" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="20" cy="12" r="1"/>',
+  phone:'<path d="M5 3h4l2 5-3 2a14 14 0 0 0 6 6l2-3 5 2v4a2 2 0 0 1-2 2A18 18 0 0 1 3 5a2 2 0 0 1 2-2z"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>', info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7v.1"/>',
+  camera:'<path d="M3 7h4l2-3h6l2 3h4v14H3z"/><circle cx="12" cy="13" r="4"/>',
+  instagram:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none"/>',
+  cloud:'<path d="M6 18h12a4 4 0 0 0 .8-7.9A7 7 0 0 0 5 10a4 4 0 0 0 1 8z"/>',
+  lock:'<rect x="6" y="10" width="12" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
+  unlock:'<rect x="6" y="10" width="12" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0"/>',
+  chevron:'<path d="m9 5 7 7-7 7"/>', check:'<path d="m5 12 4 4L19 6"/>', arrowUp:'<path d="M12 20V4m-6 6 6-6 6 6"/>',
+  share:'<path d="M8 8H4v13h16V8h-4M12 16V2m-5 5 5-5 5 5"/>',
+  image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="2"/><path d="m21 16-6-6L3 21"/>',
+  layers:'<rect x="3" y="7" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/>',
+  wifi:'<path d="M3 8a15 15 0 0 1 18 0M6 12a10 10 0 0 1 12 0M9 16a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/>',
+  signal:'<path d="M4 20v-4m5 4v-8m5 8V8m5 12V4"/>',
+  smile:'<circle cx="12" cy="12" r="9"/><path d="M8 14a4 4 0 0 0 8 0M8 9h.01M16 9h.01"/>',
+  star:'<path d="m12 2 3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/>',
+  download:'<path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/>',
+  trash:'<path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/>'
+};
+export function icon(name, className="", filled=false) {return `<svg class="icon ${className}" viewBox="0 0 24 24" fill="${filled?'currentColor':'none'}" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths[name]||paths.chat}</svg>`;}

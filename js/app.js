@@ -1,5 +1,5 @@
-import {uid,createState,addMessage,queueKeywordReplies,publish,runDueJobs,unreadCount,validateSave,photoLibrary,personalize,completeOnboarding} from './core.js';
-import {openStorage,saveState} from './storage.js';
+import {uid,splitChatText,createState,addMessage,queueKeywordReplies,queueEmojiReplies,publish,runDueJobs,unreadCount,validateSave,photoLibrary,personalize,completeOnboarding,startDialogue,dialogueChoices,chooseDialogue,addComment,toggleCommentLike,advancePostLikes,scheduleRandomDialogue} from './core.js';
+import {openStorage,saveState,resetStorage} from './storage.js';
 import {icon} from './icons.js';
 
 const C=window.PHONE_CONFIG;
@@ -7,17 +7,19 @@ const $=selector=>document.querySelector(selector);
 const root=$('#app'), overlay=$('#overlay'), screen=$('#screen');
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const member=id=>C.members.find(m=>m.id===id);
-const personName=id=>id==='me'?state.profile.name:member(id)?.name||id;
-const username=id=>id==='me'?state.profile.username:member(id)?.username||id;
-const shortTime=time=>new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',hour12:false}).format(time);
-const longDate=time=>new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Seoul',month:'long',day:'numeric',weekday:'long'}).format(time);
+const personName=id=>id==='me'?state.profile.name:member(id)?.name||state.fans?.[id]?.username||id;
+const username=id=>id==='me'?state.profile.username:member(id)?.username||state.fans?.[id]?.username||id;
+const shortTime=time=>new Intl.DateTimeFormat('zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false}).format(time);
+const longDate=time=>new Intl.DateTimeFormat('zh-TW',{month:'long',day:'numeric',weekday:'long'}).format(time);
 const age=time=>{const mins=Math.max(0,Math.floor((Date.now()-time)/60000));return mins<1?'剛剛':mins<60?`${mins} 分鐘前`:mins<1440?`${Math.floor(mins/60)} 小時前`:`${Math.floor(mins/1440)} 天前`;};
 const safeSrc=src=>typeof src==='string' && (/^(assets|photo|ins)\/[a-zA-Z0-9_/.\-]+$/.test(src)&&!src.includes('..') || /^data:image\/(jpeg|png|webp|gif);base64,/.test(src))?src:'assets/moment-yeji.svg';
 function image(src,fallback,alt,classes='',alternates=[]) {return `<img src="${esc(safeSrc(src))}" alt="${esc(alt)}" class="${classes}" data-fallback="${esc(fallback)}" data-alternates="${esc(JSON.stringify(alternates))}" draggable="false">`;}
-function avatar(id,classes='',phone=false) {
-  const src=id==='me'?state.profile.avatar:(phone?C.assets.phoneAvatar(id):C.assets.instagramAvatar(id));
+function avatar(id,classes='',phone=false,label=personName(id),channel='instagram') {
+  const fan=state.fans?.[id];
+  if(fan)return `<span class="avatar fan-avatar ${classes}" role="img" aria-label="${esc(fan.username)}" style="background:${esc(fan.color)}">${esc(fan.username[0].toUpperCase())}</span>`;
+  const src=id==='me'?state.profile.avatar:(phone?C.assets.phoneAvatar(id):channel==='kakao'?C.assets.kakaoAvatar(id):C.assets.instagramAvatar(id));
   const alternatives=phone?[`${src}.jpeg`,`${src}.jpg`,`${src}.png`]:[];
-  return image(src||'photo/ins/profile/me.jpeg',`assets/avatar-${id==='me'?'me':id}.svg`,personName(id),`avatar ${classes}`,alternatives);
+  return image(src||'photo/ins/profile/me.jpeg',`assets/avatar-${id==='me'?'me':id}.svg`,label,`avatar ${classes}`,alternatives);
 }
 function photoImage(photo,classes='') {return image(photo.src,`assets/moment-${photo.member||'yeji'}.svg`,photo.member?`與 ${personName(photo.member)} 的${photo.side==='her'?'對應':'回憶'}照片`:'選擇的照片',classes);}
 let photos=[];
@@ -27,7 +29,7 @@ let route={app:'lock'};
 let modal=null, storyTimer, toastTimer, clockTimer, pointerStart=null;
 let toastAction=null, previousRoute={app:'home'};
 const drafts={};
-let storageWarningShown=false, saveBroken=false, inFlightUpload=false;
+let storageWarningShown=false, saveBroken=false, inFlightUpload=false, resetting=false;
 
 document.addEventListener('error',event=>{
   const img=event.target;
@@ -50,9 +52,10 @@ function restoreFocus(focus) {
 function captureDraft() {
   const input=$('#chat-input');if(input && route.member)drafts[`${route.app}:${route.member}`]=input.value;
   const caption=$('#compose-caption');if(caption && modal?.kind==='compose')modal.caption=caption.value;
+  const comment=$('#comment-input');if(comment&&modal?.kind==='comments')modal.draft=comment.value;
 }
 async function persist() {
-  if(saveBroken)return;
+  if(saveBroken||resetting)return;
   try {await saveState(state);}
   catch {if(!storageWarningShown){storageWarningShown=true;toast('瀏覽器無法儲存進度，請確認儲存空間與網站資料權限。');}}
 }
@@ -61,13 +64,16 @@ function go(next) {
   captureDraft();
   if (modal) closeModal(false);
   route=state.onboardingComplete?{...next}:{app:'setup'};
-  if(route.page==='chat') markRead(route.app==='kakao'?'kakao':'instagram',route.member);
+  if(route.app==='instagram'&&advancePostLikes(state,C))persist();
+  if(route.page==='chat'&&['kakao','instagram'].includes(route.app)){
+    startDialogue(state,C,route.app,route.member);markRead(route.app,route.member);
+  }
   refresh(true);
 }
 function markRead(channel,id){if(!state.chats[channel]?.[id])return;state.chats[channel][id].forEach(x=>x.read=true);persist();}
 function unlock(){go({app:'home'});}
 function refresh(navigating=false) {
-  captureDraft();
+  if(!navigating)captureDraft();
   photos=photoLibrary(state,C);
   const focus=snapshotFocus(root), oldScroll=root.querySelector('.scroll'), scrollTop=oldScroll?.scrollTop||0;
   screen.className=`screen app-${route.app}${route.page==='chat'?' is-chat':''}${modal?.kind==='story'?' has-story':''}`;
@@ -92,13 +98,15 @@ function refresh(navigating=false) {
 }
 function wallpaper(kind) {return `<div class="wallpaper" style="background-image:url('${esc(C.wallpapers[kind])}'),url('assets/${kind}screen.svg')"></div>`;}
 function renderSetup() {
-  return `<section class="setup-screen"><div class="setup-heading">${icon('user')}<h1>設定你的手機</h1></div><form id="setup-form"><label class="field-label" for="setup-username">Instagram ID</label><div class="username-field"><span>@</span><input id="setup-username" value="${esc(state.profile.username)}" maxlength="31" autocomplete="username" autocapitalize="none" spellcheck="false" required aria-describedby="setup-error"></div><label class="field-label" for="setup-nickname">成員對你的稱呼</label><input class="text-field" id="setup-nickname" value="${esc(state.profile.nickname)}" placeholder="輸入稱呼" maxlength="40" autocomplete="nickname" required><p class="form-error" id="setup-error" role="alert"></p><button class="primary-button">開始</button></form></section>`;
+  return `<section class="setup-screen"><div class="setup-heading">${icon('user')}<h1>設定你的手機</h1></div><form id="setup-form"><label class="field-label" for="setup-username">Instagram ID</label><div class="username-field"><span>@</span><input id="setup-username" value="${esc(state.profile.username)}" maxlength="31" autocomplete="username" autocapitalize="none" spellcheck="false" required aria-describedby="setup-error"></div><label class="field-label" for="setup-nickname">成員對你的稱呼</label><input class="text-field" id="setup-nickname" value="${esc(state.profile.nickname)}" placeholder="輸入稱呼" maxlength="40" autocomplete="nickname" required><p class="form-error" id="setup-error" role="alert"></p><button class="primary-button">開始</button></form><p class="setup-disclaimer">照片素材皆來自 ITZY 官方和成員帳號<br>部分對話與互動使用 AI 生成</p></section>`;
 }
 function renderLock() {
-  const latest=[];
-  for(const channel of ['kakao','instagram'])for(const m of C.members){const list=state.chats[channel][m.id].filter(x=>!x.read&&x.sender!=='me');if(list.length)latest.push({channel,member:m.id,message:list.at(-1)});}
-  latest.sort((a,b)=>b.message.time-a.message.time);
-  return `<section class="lock-screen" id="lock-swipe" aria-label="鎖定畫面，往上滑或按 Enter 解鎖">${wallpaper('lock')}<button class="lock-open" data-action="unlock" aria-label="點一下解鎖"></button><div class="lock-icon">${icon('unlock')}</div><div class="lock-date" id="lock-date">${longDate(Date.now())}</div><div class="lock-time" id="lock-time">${shortTime(Date.now())}</div><div class="lock-subtitle">${icon('cloud')} 首爾 · ${C.weather.temperature}° · ${C.weather.condition}</div><div class="lock-notifications">${latest.slice(0,2).map(x=>`<button class="lock-notice" data-action="open-chat" data-channel="${x.channel}" data-member="${x.member}"><span class="notice-app ${x.channel}">${icon(x.channel==='kakao'?'chat':'instagram','',x.channel==='kakao')}</span><div><strong>${personName(x.member)} <span class="notice-channel">· ${x.channel==='kakao'?'KakaoTalk':'Instagram'}</span></strong><p>${esc(dialogue(x.message.text||'傳送了一則貼文'))}</p></div></button>`).join('')}</div></section>`;
+  const notifications=['kakao','instagram'].map(channel=>({channel,count:unreadCount(state,channel)})).filter(x=>x.count>0);
+  const notices=notifications.map(({channel,count})=>{
+    const kakao=channel==='kakao',name=kakao?'KakaoTalk':'Instagram';
+    return `<button class="lock-notice" data-action="${kakao?'kakao-tab':'ig-tab'}" data-tab="${kakao?'chats':'dm'}" aria-label="${name} ${count} 則通知"><span class="notice-app ${channel}">${icon(kakao?'chat':'instagram','',kakao)}</span><div><strong>${name}</strong><p>${count} 則通知</p></div></button>`;
+  }).join('');
+  return `<section class="lock-screen" id="lock-swipe" aria-label="鎖定畫面，往上滑或按 Enter 解鎖">${wallpaper('lock')}<button class="lock-open" data-action="unlock" aria-label="點一下解鎖"></button><div class="lock-icon">${icon('unlock')}</div><div class="lock-date" id="lock-date">${longDate(Date.now())}</div><div class="lock-time" id="lock-time">${shortTime(Date.now())}</div><div class="lock-subtitle">${icon('cloud')} 首爾 · ${C.weather.temperature}° · ${C.weather.condition}</div>${notices?`<div class="lock-notifications">${notices}</div>`:''}</section>`;
 }
 function appIcon(name) {
   if(name==='kakao')return '<span class="app-icon icon-kakao"><span class="kakao-mark">TALK</span></span>';
@@ -123,30 +131,47 @@ function kakaoNav(){return `<nav class="bottom-nav" aria-label="KakaoTalk 導覽
 function renderKakao() {
   if(route.page==='chat')return renderChat('kakao',route.member);
   const friends=route.tab==='friends';
-  return `<header class="app-topbar"><h2 class="app-title">${friends?'好友':'聊天'}</h2><button class="top-button" data-action="search" data-channel="kakao" aria-label="搜尋好友">${icon('search')}</button><button class="top-button" data-action="settings" aria-label="編輯遊戲訊息">${icon('more')}</button></header><div class="scroll">${friends?`<button class="list-row self-row" data-action="settings">${avatar('me','kakao-avatar')}<div class="list-row-copy"><strong>${esc(state.profile.name)}</strong></div></button><div class="section-label"><span>好友 ${C.members.length}</span><span>⌃</span></div>`:''}${C.members.map(m=>renderChatRow('kakao',m,friends)).join('')}</div>${kakaoNav()}`;
+  return `<header class="app-topbar"><h2 class="app-title">${friends?'好友':'聊天'}</h2><button class="top-button" data-action="search" data-channel="kakao" aria-label="搜尋好友">${icon('search')}</button><button class="top-button" data-action="settings" aria-label="設定">${icon('more')}</button></header><div class="scroll">${friends?`<button class="list-row self-row" data-action="settings">${avatar('me','kakao-avatar')}<div class="list-row-copy"><strong>${esc(state.profile.name)}</strong></div></button><div class="section-label"><span>好友 ${C.members.length}</span><span>⌃</span></div>`:''}${(friends?C.members:chatMembers('kakao')).map(m=>renderChatRow('kakao',m,friends)).join('')}</div>${kakaoNav()}`;
+}
+function chatMembers(channel) {
+  // 開場訊息時間相同時，沿用成員年齡順序；有收發訊息後依最後訊息時間排列。
+  return [...C.members].sort((a,b)=>(state.chats[channel][b.id].at(-1)?.time??0)-(state.chats[channel][a.id].at(-1)?.time??0));
 }
 function renderChatRow(channel,m,friends=false) {
   const messages=state.chats[channel][m.id],latest=messages.at(-1),unread=unreadCount(state,channel,m.id);
-  return `<button class="list-row" data-action="open-chat" data-channel="${channel}" data-member="${m.id}">${avatar(m.id,channel==='kakao'?'kakao-avatar':'')}<div class="list-row-copy"><strong>${channel==='instagram'?esc(m.username):m.name}</strong><p>${friends?m.korean:esc(latest?(latest.kind==='post'?'傳送了一則貼文':latest.sender==='me'?latest.text:dialogue(latest.text)):(channel==='instagram'?`${m.displayName} · 傳送訊息`:'尚無訊息'))}</p></div>${!friends?`<div class="list-row-meta"><span>${latest?shortTime(latest.time):''}</span>${unread?`<span class="unread-pill">${unread}</span>`:''}</div>`:'<span class="friend-status">♡</span>'}</button>`;
+  return `<button class="list-row" data-action="open-chat" data-channel="${channel}" data-member="${m.id}">${avatar(m.id,channel==='kakao'?'kakao-avatar':'',false,personName(m.id),channel)}<div class="list-row-copy"><strong>${channel==='instagram'?esc(m.username):m.name}</strong><p>${friends?m.korean:esc(latest?(latest.kind==='post'?'傳送了一則貼文':latest.sender==='me'?latest.text:dialogue(latest.text)):(channel==='instagram'?`${m.displayName} · 傳送訊息`:'尚無訊息'))}</p></div>${!friends?`<div class="list-row-meta"><span>${latest?shortTime(latest.time):''}</span>${unread?`<span class="unread-pill">${unread}</span>`:''}</div>`:'<span class="friend-status">♡</span>'}</button>`;
+}
+function renderDialogueChoices(channel,id) {
+  const welcome=renderWelcomeChoice(channel,id);if(welcome)return welcome;
+  const session=state.dialogueSessions[channel]?.[id];
+  const choices=dialogueChoices(state,C,channel,id);
+  if(!choices.length||C.dialogues[id]?.nodes[session?.nodeId]?.initial)return '';
+  return `<div class="dialogue-choices" role="group" aria-label="選擇回覆">${choices.map(c=>`<button data-action="dialogue-choice" data-channel="${channel}" data-member="${id}" data-node="${esc(session.nodeId)}" data-choice="${esc(c.id)}">${esc(splitChatText(dialogue(c.text)).join(' '))}</button>`).join('')}</div>`;
+}
+function renderWelcomeChoice(channel,id) {
+  const script=C.dialogues[id],node=script?.nodes[script.start];
+  if(channel!=='kakao'||!C.dialogueChannels.includes(channel)||!node?.initial||state.welcomeDone?.[id]||state.welcomePending?.[id])return '';
+  return `<div class="dialogue-choices welcome-choices" role="group" aria-label="回覆歡迎訊息">${node.choices.map(choice=>`<button data-action="dialogue-choice" data-channel="kakao" data-member="${id}" data-node="${script.start}" data-choice="${choice.id}">${esc(splitChatText(dialogue(choice.text)).join(' '))}</button>`).join('')}</div>`;
 }
 function renderChat(channel,id) {
   const m=member(id),messages=state.chats[channel][id];
+  const quickHeart=channel==='kakao';
   const inputValue=drafts[`${channel==='kakao'?'kakao':'instagram'}:${id}`]||'';
-  return `<header class="app-topbar"><button class="top-button header-back" data-action="${channel==='kakao'?'kakao-back':'dm-back'}" aria-label="返回聊天室列表">${icon('back')}</button>${channel==='instagram'?avatar(id,'small'):''}<div class="header-name"><strong>${channel==='kakao'?m.name:esc(m.username)}</strong>${channel==='instagram'?`<small>${esc(m.displayName)}</small>`:''}</div><button class="top-button" data-action="chat-info" data-member="${id}" aria-label="聊天資訊">${icon('info')}</button></header><div class="scroll chat-log"><div class="chat-date">${longDate(messages[0]?.time||Date.now())}</div>${messages.length?messages.map(message=>renderMessage(message,channel,id)).join(''):`<div class="no-messages">${icon('chat')}<br>尚無訊息</div>`}</div><form class="chat-compose" id="chat-form"><button type="button" data-action="${channel==='instagram'?'chat-share':'chat-emoji'}" aria-label="${channel==='instagram'?'分享貼文':'加入表情符號'}">${icon(channel==='instagram'?'image':'smile')}</button><label class="sr-only" for="chat-input">傳送訊息</label><input id="chat-input" placeholder="${channel==='kakao'?'輸入訊息':'傳送訊息…'}" autocomplete="off" maxlength="2000" value="${esc(inputValue)}"><button class="send-button" aria-label="傳送">${channel==='kakao'?icon('arrowUp'):'傳送'}</button></form>`;
+  return `<header class="app-topbar"><button class="top-button header-back" data-action="${channel==='kakao'?'kakao-back':'dm-back'}" aria-label="返回聊天室列表">${icon('back')}</button>${channel==='instagram'?avatar(id,'small'):''}<div class="header-name"><strong>${channel==='kakao'?m.name:esc(m.username)}</strong>${channel==='instagram'?`<small>${esc(m.displayName)}</small>`:''}</div><button class="top-button" data-action="chat-info" data-member="${id}" aria-label="聊天資訊">${icon('info')}</button></header><div class="scroll chat-log"><div class="chat-date">${longDate(messages[0]?.time||Date.now())}</div>${messages.length?messages.map(message=>renderMessage(message,channel,id)).join(''):`<div class="no-messages">${icon('chat')}<br>尚無訊息</div>`}${(state.dialogueSessions[channel]?.[id]?.pending||(channel==='kakao'&&state.welcomePending?.[id]))?`<div class="typing-indicator" aria-label="${m.name} 正在輸入"><i></i><i></i><i></i></div>`:''}</div>${renderDialogueChoices(channel,id)}<form class="chat-compose" id="chat-form">${channel==='instagram'?`<button type="button" data-action="chat-share" aria-label="分享貼文">${icon('image')}</button>`:''}<label class="sr-only" for="chat-input">傳送訊息</label><input id="chat-input" placeholder="${channel==='kakao'?'輸入訊息':'傳送訊息…'}" autocomplete="off" maxlength="2000" value="${esc(inputValue)}">${quickHeart?`<button type="button" class="quick-emoji" data-action="chat-heart" aria-label="傳送紅色愛心">${esc(C.kakaoEmoji.value)}</button>`:''}<button class="send-button" aria-label="傳送">${channel==='kakao'?icon('arrowUp'):'傳送'}</button></form>`;
 }
 function renderMessage(message,channel,id) {
   const mine=message.sender==='me';
   let body=esc(mine?message.text:dialogue(message.text));
   if(message.kind==='post') {
     const post=state.posts.find(p=>p.id===message.postId);
-    body=post?`<button class="dm-shared-post" data-action="view-post" data-id="${post.id}">${photoImage(post.images[0])}<strong>${esc(username(post.author))}</strong><p>${esc(post.caption).slice(0,90)}</p></button>`:'這則貼文已不存在。';
+    body=post?`<button class="dm-shared-post" data-action="view-post" data-id="${post.id}">${photoImage(post.images[0])}<strong>${esc(username(post.author))}</strong><p>${esc(post.caption).slice(0,90)}</p></button>`:'這則貼文已不存在';
   }
-  return `<div class="message-row ${mine?'mine':''}">${!mine?avatar(id,`small ${channel==='kakao'?'kakao-avatar':''}`):''}<div class="message-content">${!mine&&channel==='kakao'?`<div class="message-author">${personName(id)}</div>`:''}<div class="bubble-with-time"><div class="bubble ${message.kind==='post'?'dm-shared-post':''}">${body}</div><span class="message-time">${mine&&channel==='kakao'?'<span class="read">1</span>':''}${shortTime(message.time)}</span></div></div></div>`;
+  return `<div class="message-row ${mine?'mine':''}">${!mine?avatar(id,`small ${channel==='kakao'?'kakao-avatar':''}`,false,personName(id),channel):''}<div class="message-content">${!mine&&channel==='kakao'?`<div class="message-author">${personName(id)}</div>`:''}<div class="bubble-with-time"><div class="bubble ${message.kind==='post'?'dm-shared-post':''}">${body}</div><span class="message-time">${mine&&channel==='kakao'?'<span class="read">1</span>':''}${shortTime(message.time)}</span></div></div></div>`;
 }
 function instagramNav() {return `<nav class="bottom-nav" aria-label="Instagram 導覽"><button data-action="ig-tab" data-tab="feed" class="${!route.page||route.page==='feed'?'active':''}" aria-label="Instagram 首頁">${icon('home','',!route.page||route.page==='feed')}</button><button data-action="compose" aria-label="建立貼文">${icon('plus')}</button><button data-action="ig-tab" data-tab="profile" class="${route.page==='profile'?'active':''}" aria-label="我的個人檔案">${avatar('me','tiny')}</button></nav>`;}
 function renderInstagram() {
   if(route.page==='chat')return renderChat('instagram',route.member);
-  if(route.page==='dm')return `<header class="app-topbar"><button class="top-button header-back" data-action="ig-tab" data-tab="feed" aria-label="返回 Instagram 首頁">${icon('back')}</button><h2 class="app-title" style="font-size:17px">${esc(state.profile.username)}</h2><button class="top-button" data-action="search" data-channel="instagram" aria-label="搜尋訊息">${icon('search')}</button></header><div class="section-label"><span style="color:#222;font-weight:600">訊息</span><span>好友 ${C.members.length}</span></div><div class="scroll">${C.members.map(m=>renderChatRow('instagram',m)).join('')}</div>`;
+  if(route.page==='dm')return `<header class="app-topbar"><button class="top-button header-back" data-action="ig-tab" data-tab="feed" aria-label="返回 Instagram 首頁">${icon('back')}</button><h2 class="app-title" style="font-size:17px">${esc(state.profile.username)}</h2><button class="top-button" data-action="search" data-channel="instagram" aria-label="搜尋訊息">${icon('search')}</button></header><div class="section-label"><span style="color:#222;font-weight:600">訊息</span><span>好友 ${C.members.length}</span></div><div class="scroll">${chatMembers('instagram').map(m=>renderChatRow('instagram',m)).join('')}</div>`;
   if(route.page==='profile')return renderProfile();
   if(route.page==='post') {
     const post=state.posts.find(p=>p.id===route.postId);
@@ -157,11 +182,16 @@ function renderInstagram() {
 function activeStories(id){return state.stories.filter(s=>s.author===id&&(Date.now()-s.createdAt<86400000));}
 function renderStoryTray() {
   const own=activeStories('me');
-  return `<div class="story-avatar"><button data-action="${own.length?'story':'compose-story'}" data-member="me" style="padding:0" aria-label="${own.length?'觀看你的限時動態':'發佈限時動態'}"><span class="story-ring ${!own.length?'empty':own.every(s=>s.seen)?'seen':''}">${avatar('me')}</span></button><button class="story-add" data-action="compose-story" aria-label="新增限時動態">${icon('plus')}</button><span>你的限時動態</span></div>${C.members.map(m=>{const stories=activeStories(m.id);return `<button class="story-avatar" data-action="story" data-member="${m.id}" aria-label="觀看 ${m.name} 的限時動態"><span class="story-ring ${!stories.length?'empty':stories.every(s=>s.seen)?'seen':''}">${avatar(m.id)}</span><span>${m.name}</span></button>`;}).join('')}`;
+  return `<div class="story-avatar"><div class="story-avatar-photo"><button class="story-open" data-action="${own.length?'story':'compose-story'}" data-member="me" aria-label="${own.length?'觀看你的限時動態':'發佈限時動態'}"><span class="story-ring ${!own.length?'empty':own.every(s=>s.seen)?'seen':''}">${avatar('me')}</span></button><button class="story-add" data-action="compose-story" aria-label="新增限時動態">${icon('plus')}</button></div><span>你的限時動態</span></div>${C.members.map(m=>{const stories=activeStories(m.id);return `<button class="story-avatar" data-action="story" data-member="${m.id}" aria-label="觀看 ${m.name} 的限時動態"><span class="story-ring ${!stories.length?'empty':stories.every(s=>s.seen)?'seen':''}">${avatar(m.id)}</span><span>${m.name}</span></button>`;}).join('')}`;
+}
+function renderPostLikes(post){
+  if(!post.likes)return '';
+  const likers=(post.memberLikes||[]).filter(id=>member(id));
+  return `<div class="post-likes">${likers.length?`<span class="post-member-likes">${likers.map(id=>esc(username(id))).join('、')} 說讚</span> · `:''}${post.likes.toLocaleString()} 個讚</div>`;
 }
 function renderPost(post) {
   const count=post.images.length,slide=Math.max(0,Math.min(post.slide||0,count-1));
-  return `<article class="post" data-post="${post.id}"><header class="post-header">${avatar(post.author)}<div class="post-username">${esc(username(post.author))}<small>서울, 대한민국</small></div><button class="top-button" data-action="post-options" data-id="${post.id}" aria-label="貼文選項">${icon('more')}</button></header><div class="post-image-wrap" data-swipe-post="${post.id}">${photoImage(post.images[slide],'post-image')}${count>1?`<span class="slide-count">${slide+1}/${count}</span>${slide>0?`<button class="slide-arrow prev" data-action="slide" data-id="${post.id}" data-dir="-1" aria-label="上一張">${icon('back')}</button>`:''}${slide<count-1?`<button class="slide-arrow next" data-action="slide" data-id="${post.id}" data-dir="1" aria-label="下一張">${icon('chevron')}</button>`:''}`:''}</div><div class="post-actions"><button data-action="like" data-id="${post.id}" class="${post.liked?'liked':''}" aria-label="${post.liked?'取消按讚':'按讚'}">${icon('heart','',post.liked)}</button><button data-action="comments" data-id="${post.id}" aria-label="留言">${icon('chat')}</button><button data-action="share-post" data-id="${post.id}" aria-label="傳送貼文到聊天室">${icon('send')}</button>${count>1?`<span class="slide-dots">${post.images.map((_,i)=>`<i class="${i===slide?'active':''}"></i>`).join('')}</span>`:''}<button data-action="bookmark" data-id="${post.id}" aria-label="${state.bookmarked.includes(post.id)?'取消珍藏':'珍藏貼文'}">${icon('bookmark','',state.bookmarked.includes(post.id))}</button></div><div class="post-details">${post.likes?`<div class="post-likes">${post.likes.toLocaleString()} 個讚</div>`:''}<div class="post-caption"><strong>${esc(username(post.author))}</strong>${esc(post.caption).replaceAll('\n','<br>')}</div><button class="comment-preview" data-action="comments" data-id="${post.id}">${post.comments.length?`查看全部 ${post.comments.length} 則留言`:'新增留言…'}</button><div class="post-date">${age(post.time)}</div></div></article>`;
+  return `<article class="post" data-post="${post.id}"><header class="post-header">${avatar(post.author)}<div class="post-username">${esc(username(post.author))}</div><button class="top-button" data-action="post-options" data-id="${post.id}" aria-label="貼文選項">${icon('more')}</button></header><div class="post-image-wrap" data-swipe-post="${post.id}">${photoImage(post.images[slide],'post-image')}${count>1?`<span class="slide-count">${slide+1}/${count}</span>${slide>0?`<button class="slide-arrow prev" data-action="slide" data-id="${post.id}" data-dir="-1" aria-label="上一張">${icon('back')}</button>`:''}${slide<count-1?`<button class="slide-arrow next" data-action="slide" data-id="${post.id}" data-dir="1" aria-label="下一張">${icon('chevron')}</button>`:''}`:''}</div><div class="post-actions"><button data-action="like" data-id="${post.id}" class="${post.liked?'liked':''}" aria-label="${post.liked?'取消按讚':'按讚'}">${icon('heart','',post.liked)}</button><button data-action="comments" data-id="${post.id}" aria-label="留言">${icon('chat')}</button><button data-action="share-post" data-id="${post.id}" aria-label="傳送貼文到聊天室">${icon('send')}</button>${count>1?`<span class="slide-dots">${post.images.map((_,i)=>`<i class="${i===slide?'active':''}"></i>`).join('')}</span>`:''}<button data-action="bookmark" data-id="${post.id}" aria-label="${state.bookmarked.includes(post.id)?'取消珍藏':'珍藏貼文'}">${icon('bookmark','',state.bookmarked.includes(post.id))}</button></div><div class="post-details">${renderPostLikes(post)}<div class="post-caption"><strong>${esc(username(post.author))}</strong>${esc(post.caption).replaceAll('\n','<br>')}</div><button class="comment-preview" data-action="comments" data-id="${post.id}">${post.comments.length?`查看全部 ${post.comments.length} 則留言`:'新增留言…'}</button><div class="post-date">${age(post.time)}</div></div></article>`;
 }
 function renderProfile() {
   const posts=state.posts.filter(p=>p.author==='me');
@@ -191,12 +221,28 @@ function renderPhone() {
 function renderSMS() {
   if(route.page==='chat'){
     const thread=C.sms.find(x=>x.id===route.thread);
-    return `${topbar(thread.name,'','sms-back')}<div class="scroll chat-log"><div class="chat-date">${thread.time}</div>${thread.messages.map(text=>`<div class="message-row"><div class="message-content"><div class="bubble">${esc(text)}</div></div></div>`).join('')}</div><div class="sms-readonly">系統通知簡訊 · 無法回覆</div>`;
+    return `${topbar(thread.name,'','sms-back')}<div class="scroll chat-log"><div class="chat-date">${thread.time}</div>${thread.messages.flatMap(splitChatText).map(text=>`<div class="message-row"><div class="message-content"><div class="bubble">${esc(text)}</div></div></div>`).join('')}</div><div class="sms-readonly">系統通知簡訊 · 無法回覆</div>`;
   }
-  return `<h2 class="sms-title">訊息</h2><div class="scroll">${C.sms.map(t=>`<button class="list-row sms-row" data-action="sms-thread" data-id="${t.id}"><div class="sms-icon">${icon('user')}</div><div class="list-row-copy"><strong>${esc(t.name)}</strong><p>${esc(t.messages[0])}</p></div><div class="list-row-meta"><span>${t.time}</span>${icon('chevron')}</div></button>`).join('')}</div>`;
+  return `<h2 class="sms-title">訊息</h2><div class="scroll">${C.sms.map(t=>`<button class="list-row sms-row" data-action="sms-thread" data-id="${t.id}"><div class="sms-icon">${icon('user')}</div><div class="list-row-copy"><strong>${esc(t.name)}</strong><p>${esc(splitChatText(t.messages[0])[0]||'')}</p></div><div class="list-row-meta"><span>${t.time}</span>${icon('chevron')}</div></button>`).join('')}</div>`;
 }
 
-function sheet(title,body,footer='',className='') {return `<section class="sheet ${className}" role="dialog" aria-modal="true" aria-label="${esc(title)}"><span class="sheet-handle"></span><header class="sheet-header"><button data-action="close-modal" aria-label="關閉">${icon('close')}</button><h2>${esc(title)}</h2><span style="width:20px"></span></header><div class="sheet-scroll">${body}</div>${footer}</section>`;}
+function sheet(title,body,footer='',className='',backAction='close-modal') {return `<section class="sheet ${className}" role="dialog" aria-modal="true" aria-label="${esc(title)}"><span class="sheet-handle"></span><header class="sheet-header"><button data-action="${backAction}" aria-label="${backAction==='close-modal'?'關閉':'返回'}">${icon(backAction==='close-modal'?'close':'back')}</button><h2>${esc(title)}</h2><span style="width:20px"></span></header><div class="sheet-scroll">${body}</div>${footer}</section>`;}
+function renderComment(post,c) {
+  const likers=c.likedBy||[],liked=likers.includes('me'),target=post.comments.find(x=>x.id===c.replyTo);
+  const mention=target?`@${username(target.author)}`:'';
+  return `<div class="comment-row" data-comment-id="${c.id}">${avatar(c.author,'small',false,username(c.author))}<div class="comment-content"><div class="comment-text"><strong>${esc(username(c.author))}</strong>${mention&&!c.text.startsWith(mention)?`<span class="comment-mention">${esc(mention)}</span> `:''}${esc(c.text)}</div><div class="comment-meta"><time>${age(c.time)}</time>${likers.length?`<span class="comment-like-count">${likers.length} 個讚</span>`:''}<button data-action="reply-comment" data-id="${post.id}" data-comment="${c.id}">回覆</button></div></div><button class="comment-heart ${liked?'liked':''}" data-action="like-comment" data-id="${post.id}" data-comment="${c.id}" aria-pressed="${liked}" aria-label="${liked?'取消對':'對'} ${esc(username(c.author))} 的留言按讚">${icon('heart','',liked)}</button></div>`;
+}
+function renderCommentThreads(post) {
+  return post.comments.filter(c=>!c.parentId).map(c=>{
+    const replies=post.comments.filter(r=>r.parentId===c.id),expanded=modal.expandedThreads?.includes(c.id);
+    return `<div class="comment-thread">${renderComment(post,c)}${replies.length?`<button class="thread-toggle" data-action="toggle-replies" data-comment="${c.id}" aria-expanded="${!!expanded}"><span></span>${expanded?'隱藏回覆':`查看 ${replies.length} 則回覆`}</button>${expanded?`<div class="comment-replies">${replies.map(r=>renderComment(post,r)).join('')}</div>`:''}`:''}</div>`;
+  }).join('')||'<p class="comments-empty">尚無留言</p>';
+}
+function renderCommentsModal() {
+  const post=state.posts.find(p=>p.id===modal.postId),target=post.comments.find(c=>c.id===modal.replyTo);
+  const footer=`${target?`<div class="comment-replying"><span>正在回覆 @${esc(username(target.author))}</span><button data-action="cancel-comment-reply" aria-label="取消回覆">${icon('close')}</button></div>`:''}<form class="chat-compose" id="comment-form">${avatar('me','tiny',false,username('me'))}<input id="comment-input" placeholder="${target?`回覆 @${esc(username(target.author))}…`:'新增留言…'}" maxlength="1000" autocomplete="off" aria-label="留言內容"><button style="color:#6f89b2;font-size:11px">發佈</button></form>`;
+  overlay.innerHTML=sheet('留言',`<div class="comment-row post-caption-row">${avatar(post.author,'small',false,username(post.author))}<div class="comment-content"><strong>${esc(username(post.author))}</strong>${esc(post.caption)}<small>${age(post.time)}</small></div></div><div class="comment-divider"></div>${renderCommentThreads(post)}`,footer,'comments-sheet');
+}
 function openModal(value) {
   captureDraft();clearTimeout(storyTimer);
   modal=value;renderModal();
@@ -207,15 +253,15 @@ function renderModal() {
   if (!modal){overlay.innerHTML='';return;}
   const focus=snapshotFocus(overlay),scrollTop=overlay.querySelector('.sheet-scroll')?.scrollTop||0;
   const type=modal.kind;
+  const commentDraft=type==='comments'?($('#comment-input')?.value??modal.draft??''):undefined;
   screen.classList.toggle('has-story',type==='story');
   if(type==='compose') {
     const isStory=modal.type==='story',selected=modal.images;
-    overlay.innerHTML=sheet(isStory?'新增限時動態':'新增貼文',`<span class="sheet-section-label">最近項目</span><div class="sheet-photo-grid">${photos.map(p=>{const index=selected.findIndex(x=>x.id===p.id);return `<button class="sheet-photo-choice ${index>=0?'selected':''}" data-action="select-photo" data-member="${p.member}" aria-label="${index>=0?'取消選擇':'選擇'} ${personName(p.member)} 的照片">${photoImage(p)}<span class="selection-number">${index>=0?index+1:''}</span></button>`;}).join('')}</div><button class="upload-button" data-action="upload-images" ${inFlightUpload?'disabled':''}>${icon('plus')}${inFlightUpload?'正在處理照片…':'從裝置選擇照片'}</button>${selected.length?`<div class="compose-preview">${selected.map((p,i)=>`<button data-action="remove-photo" data-index="${i}" aria-label="移除第 ${i+1} 張照片">${photoImage(p)}<span class="remove-image">×</span></button>`).join('')}</div>`:''}<p class="compose-count">已選 ${selected.length} / ${isStory?1:10} 張${isStory?' · 顯示 24 小時':''}</p>${!isStory?`<label class="field-label" for="compose-caption">說明</label><textarea class="text-field" id="compose-caption" rows="3" maxlength="2200" placeholder="撰寫說明…">${esc(modal.caption||'')}</textarea>`:''}<button class="primary-button" data-action="publish" ${!selected.length||inFlightUpload?'disabled':''}>${icon(isStory?'plus':'share')} ${isStory?'分享到限時動態':'分享貼文'}</button>`);
+    overlay.innerHTML=sheet(isStory?'新增限時動態':'新增貼文',`<span class="sheet-section-label">最近項目</span><div class="sheet-photo-grid">${photos.map(p=>{const index=selected.findIndex(x=>x.id===p.id);return `<button class="sheet-photo-choice ${index>=0?'selected':''}" data-action="select-photo" data-member="${p.member}" aria-label="${index>=0?'取消選擇':'選擇'} ${personName(p.member)} 的照片">${photoImage(p)}<span class="selection-number">${index>=0?index+1:''}</span></button>`;}).join('')}</div><button class="upload-button" data-action="upload-images" ${inFlightUpload?'disabled':''}>${icon('plus')}${inFlightUpload?'正在處理照片…':'從裝置選擇照片'}</button>${selected.length?`<div class="compose-preview">${selected.map((p,i)=>`<button data-action="remove-photo" data-index="${i}" aria-label="移除第 ${i+1} 張照片">${photoImage(p)}<span class="remove-image">×</span></button>`).join('')}</div>`:''}<p class="compose-count">已選 ${selected.length} / 1 張${isStory?' · 顯示 24 小時':''}</p>${!isStory?`<label class="field-label" for="compose-caption">說明</label><textarea class="text-field" id="compose-caption" rows="3" maxlength="2200" placeholder="撰寫說明…">${esc(modal.caption||'')}</textarea>`:''}<button class="primary-button" data-action="publish" ${!selected.length||inFlightUpload?'disabled':''}>${icon(isStory?'plus':'share')} ${isStory?'分享到限時動態':'分享貼文'}</button>`);
   } else if(type==='photo-share'){
     overlay.innerHTML=sheet('分享照片',`<div style="width:64px;height:64px;margin:0 auto 15px">${photoImage(photos.find(p=>p.member===modal.member),'post-image')}</div>${[['post','Instagram 貼文',''],['story','限時動態','']].map(([type,title,note])=>`<button class="share-choice" data-action="photo-to-compose" data-type="${type}" data-member="${modal.member}">${icon(type==='post'?'instagram':'plus')}<div><strong>${title}</strong><small>${note}</small></div>${icon('chevron')}</button>`).join('')}`);
   } else if(type==='comments') {
-    const post=state.posts.find(p=>p.id===modal.postId);
-    overlay.innerHTML=sheet('留言',`<div class="comment-row">${avatar(post.author,'small')}<div class="comment-content"><strong>${esc(username(post.author))}</strong>${esc(post.caption)}<small>${age(post.time)}</small></div></div><div style="height:1px;background:#eee;margin:5px 0 18px"></div>${post.comments.map(c=>`<div class="comment-row">${avatar(c.author,'small')}<div class="comment-content"><strong>${esc(username(c.author))}</strong>${esc(c.text)}<small>${age(c.time)}</small></div></div>`).join('')||'<p class="comments-empty">尚無留言</p>'}`,`<form class="chat-compose" id="comment-form">${avatar('me','tiny')}<input id="comment-input" placeholder="新增留言…" maxlength="1000" autocomplete="off" aria-label="留言內容"><button style="color:#6f89b2;font-size:11px">發佈</button></form>`,'comments-sheet');
+    renderCommentsModal();
   } else if(type==='share-post') {
     const post=state.posts.find(p=>p.id===modal.postId);
     overlay.innerHTML=sheet('傳送貼文',`${C.members.map(m=>`<button class="share-recipient" data-action="send-post" data-member="${m.id}" data-id="${post.id}">${avatar(m.id)}<div><strong>${m.name}</strong><small>${esc(m.username)}</small></div><span class="share-send">傳送</span></button>`).join('')}`);
@@ -225,10 +271,10 @@ function renderModal() {
     const w=C.weather;
     overlay.innerHTML=sheet('首爾天氣',`<div class="weather-detail"><h3>首爾 서울</h3>${icon('cloud')}<div class="weather-temp">${w.temperature}°</div><p>${w.condition} · 最高 ${w.high}° 最低 ${w.low}°<br>${w.note}</p></div><p class="settings-note">固定天氣快照：${w.checkedAt}<br>此為製作當天保存的預報，不會自動更新。</p><a class="link-source" href="${esc(w.source)}" target="_blank" rel="noreferrer">查看天氣資料來源 ↗</a>`);
   } else if(type==='search') {
-    overlay.innerHTML=sheet(modal.channel==='kakao'?'搜尋好友':'搜尋訊息',`<div class="search-box" style="margin:0 0 8px">${icon('search')}<input id="chat-search" placeholder="輸入好友名稱或帳號" aria-label="搜尋好友"></div><div id="chat-search-results">${C.members.map(m=>`<div data-search-name="${esc(`${m.name} ${m.username} ${m.korean}`.toLowerCase())}">${renderChatRow(modal.channel,m)}</div>`).join('')}</div>`);
+    overlay.innerHTML=sheet(modal.channel==='kakao'?'搜尋好友':'搜尋訊息',`<div class="search-box" style="margin:0 0 8px">${icon('search')}<input id="chat-search" placeholder="輸入好友名稱或帳號" aria-label="搜尋好友"></div><div id="chat-search-results">${chatMembers(modal.channel).map(m=>`<div data-search-name="${esc(`${m.name} ${m.username} ${m.korean}`.toLowerCase())}">${renderChatRow(modal.channel,m)}</div>`).join('')}</div>`);
   } else if(type==='chat-info') {
     const m=member(modal.member);
-    overlay.innerHTML=sheet('聊天資訊',`<div style="text-align:center">${avatar(m.id,'large')}<h3 style="font-size:15px">${m.name} · ${m.korean}</h3><p style="font-size:11px;color:#999">@${esc(m.username)}</p></div>`);
+    overlay.innerHTML=sheet('聊天資訊',`<div style="text-align:center">${avatar(m.id,'large',false,personName(m.id),route.app==='kakao'?'kakao':'instagram')}<h3 style="font-size:15px">${m.name} · ${m.korean}</h3><p style="font-size:11px;color:#999">@${esc(m.username)}</p></div>`);
   } else if(type==='call-info'){
     const i=C.members.findIndex(m=>m.id===modal.member),m=member(modal.member);
     overlay.innerHTML=sheet('通話詳細資訊',`<div class="contact-detail" style="padding:12px">${avatar(m.id,'large',true)}<h2>${m.name}</h2><div class="contact-field">${['今天','昨天','星期四','星期三','星期二'][i]}<span>${i%2?'撥出電話':'來電'} · ${['12 分 08 秒','5 分 32 秒','28 分 14 秒','8 分 46 秒','17 分 02 秒'][i]}</span></div><button class="secondary-button" data-action="contact" data-member="${m.id}">查看聯絡人</button></div>`);
@@ -236,7 +282,7 @@ function renderModal() {
   else if(type==='reset')overlay.innerHTML=sheet('重新開始？',`<p class="sheet-description">將清除這個瀏覽器的聊天、貼文、限動與照片事件進度，並重新設定你的手機。</p><button class="secondary-button" data-action="close-modal">取消</button><button class="primary-button danger" data-action="confirm-reset">重新開始</button>`);
   else if(type==='post-options')overlay.innerHTML=sheet('貼文選項',`<button class="share-choice" data-action="share-post" data-id="${modal.postId}">${icon('send')}<strong>傳送到聊天室</strong></button>`);
   else if(type==='pick-post')overlay.innerHTML=sheet('選擇要分享的貼文',`${state.posts.map(p=>`<button class="share-choice" data-action="send-post" data-id="${p.id}" data-member="${route.member}"><span style="width:47px;height:47px">${photoImage(p.images[0],'post-image')}</span><div><strong>${esc(username(p.author))}</strong><small>${esc(p.caption).slice(0,50)||'照片貼文'}</small></div>${icon('send')}</button>`).join('')||'<p class="sheet-description">尚無貼文</p>'}`);
-  if(type!=='story'){const scroll=overlay.querySelector('.sheet-scroll');if(scroll)scroll.scrollTop=scrollTop;restoreFocus(focus);}
+  if(type!=='story'){if(commentDraft!==undefined&&$('#comment-input'))$('#comment-input').value=commentDraft;const scroll=overlay.querySelector('.sheet-scroll');if(scroll)scroll.scrollTop=scrollTop;restoreFocus(focus);}
 }
 
 function renderSettings() {
@@ -254,10 +300,10 @@ function renderStoryModal() {
 function nextStory(){if(modal?.kind!=='story')return;const stories=activeStories(modal.member);if(modal.index+1<stories.length){modal.index++;renderStoryModal();}else closeModal();}
 function toast(text,notice=null) {
   clearTimeout(toastTimer);toastAction=notice;
-  $('#toast').innerHTML=notice?`<button class="toast" data-action="toast-open">${avatar(notice.member,'small')}<div><strong>${personName(notice.member)} · ${notice.postId?'Instagram':notice.channel==='kakao'?'KakaoTalk':'Instagram'}</strong><p>${esc(dialogue(text))}</p></div></button>`:`<div class="toast toast-simple">${esc(text)}</div>`;
+  $('#toast').innerHTML=notice?`<button class="toast" data-action="toast-open">${avatar(notice.member,'small',false,personName(notice.member),notice.channel==='kakao'?'kakao':'instagram')}<div><strong>${personName(notice.member)} · ${notice.postId?'Instagram':notice.channel==='kakao'?'KakaoTalk':'Instagram'}</strong><p>${esc(dialogue(text))}</p></div></button>`:`<div class="toast toast-simple">${esc(text)}</div>`;
   toastTimer=setTimeout(()=>{$('#toast').innerHTML='';toastAction=null;},notice?5200:3000);
 }
-function showCompose(type='post',selected=[]) {openModal({kind:'compose',type,images:selected.map(p=>({...p})),caption:selected.length===1?(state.photoDetails[selected[0].id]?.description||''):''});}
+function showCompose(type='post',selected=[]) {openModal({kind:'compose',type,images:selected.slice(0,1).map(p=>({...p})),caption:selected.length?(state.photoDetails[selected[0].id]?.description||''):''});}
 function slidePost(id,dir){const p=state.posts.find(p=>p.id===id);if(!p)return;p.slide=Math.max(0,Math.min((p.slide||0)+dir,p.images.length-1));commit();}
 function sendSharedPost(id,recipient) {
   const post=state.posts.find(p=>p.id===id);if(!post)return;
@@ -265,9 +311,35 @@ function sendSharedPost(id,recipient) {
   commit(false);go({app:'instagram',page:'chat',member:recipient});toast(`已將貼文傳送給 ${personName(recipient)}`);
 }
 function updateClock(){const now=Date.now();$('#status-time').textContent=shortTime(now);const time=$('#lock-time');if(time)time.textContent=shortTime(now);const date=$('#lock-date');if(date)date.textContent=longDate(now);}
+function updatePostEngagement(now=Date.now()) {
+  if(!state||saveBroken||resetting||!advancePostLikes(state,C,now))return;
+  persist();
+  if(route.app==='instagram'&&(!route.page||['feed','post'].includes(route.page)))refresh();
+}
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&state){updateClock();updatePostEngagement();processJobs();}
+});
 
+async function restartGame(button) {
+  if(resetting)return;
+  resetting=true;button.disabled=true;button.textContent='正在重新開始…';
+  const fresh=createState(C);
+  try {
+    await resetStorage(fresh);
+    closeModal(false);
+    for(const key of Object.keys(drafts))delete drafts[key];
+    clearTimeout(toastTimer);$('#toast').innerHTML='';toastAction=null;
+    pointerStart=null;homeGesture=null;inFlightUpload=false;
+    $('#image-upload').value='';
+    state=fresh;saveBroken=false;storageWarningShown=false;
+    previousRoute={app:'home'};route={app:'setup'};refresh(true);
+  }catch{
+    button.disabled=false;button.textContent='重新開始';
+    toast('無法儲存重置結果，請確認瀏覽器允許儲存網站資料後再試。');
+  }finally{resetting=false;}
+}
 document.addEventListener('click',event=>{
-  const button=event.target.closest('[data-action]');if(!button||button.disabled||!state)return;
+  const button=event.target.closest('[data-action]');if(!button||button.disabled||!state||resetting)return;
   if(!state.onboardingComplete)return;
   const action=button.dataset.action,d=button.dataset;
   if(action==='unlock')unlock();
@@ -279,6 +351,10 @@ document.addEventListener('click',event=>{
   else if(action==='close-modal')closeModal();
   else if(action==='weather')openModal({kind:'weather'});
   else if(action==='open-chat')go({app:d.channel==='kakao'?'kakao':'instagram',page:'chat',member:d.member});
+  else if(action==='dialogue-choice'){
+    if(route.app!==d.channel||route.member!==d.member||route.page!=='chat')return;
+    try{if(chooseDialogue(state,C,d.channel,d.member,d.node,d.choice))commit();}catch(error){toast(error.message);}
+  }
   else if(action==='kakao-tab')go({app:'kakao',tab:d.tab});
   else if(action==='kakao-back')go({app:'kakao',tab:'chats'});
   else if(action==='dm-back')go({app:'instagram',page:'dm'});
@@ -290,11 +366,10 @@ document.addEventListener('click',event=>{
     if(modal?.kind!=='compose')return;captureDraft();
     const index=modal.images.findIndex(x=>x.id===d.member);
     if(index>=0)modal.images.splice(index,1);
-    else if(modal.type==='story')modal.images=[{...photos.find(p=>p.id===d.member)}];
-    else if(modal.images.length<10)modal.images.push({...photos.find(p=>p.id===d.member)});
-    else toast('一則貼文最多 10 張照片');renderModal();
+    else modal.images=[{...photos.find(p=>p.id===d.member)}];
+    renderModal();
   } else if(action==='remove-photo') {captureDraft();modal.images.splice(Number(d.index),1);renderModal();}
-  else if(action==='upload-images') {$('#image-upload').value='';$('#image-upload').multiple=modal?.type!=='story';$('#image-upload').dataset.mode='compose';$('#image-upload').click();}
+  else if(action==='upload-images') {$('#image-upload').value='';$('#image-upload').multiple=false;$('#image-upload').dataset.mode='compose';$('#image-upload').click();}
   else if(action==='upload-avatar') {$('#image-upload').value='';$('#image-upload').multiple=false;$('#image-upload').dataset.mode='avatar';$('#image-upload').click();}
   else if(action==='publish') {
     if(modal?.kind!=='compose'||!modal.images.length||inFlightUpload)return;
@@ -305,6 +380,18 @@ document.addEventListener('click',event=>{
     const i=state.bookmarked.indexOf(d.id);if(i<0)state.bookmarked.push(d.id);else state.bookmarked.splice(i,1);commit();
   } else if(action==='slide')slidePost(d.id,Number(d.dir));
   else if(action==='comments')openModal({kind:'comments',postId:d.id});
+  else if(action==='like-comment'){
+    if(toggleCommentLike(state,d.id,d.comment)){commit();renderModal();}
+  }
+  else if(action==='reply-comment'){
+    if(modal?.kind!=='comments'||modal.postId!==d.id)return;
+    const comment=state.posts.find(p=>p.id===d.id)?.comments.find(c=>c.id===d.comment);if(!comment)return;
+    modal.replyTo=comment.id;modal.expandedThreads=[...new Set([...(modal.expandedThreads||[]),comment.parentId||comment.id])];renderModal();$('#comment-input')?.focus();
+  }
+  else if(action==='cancel-comment-reply'){modal.replyTo=null;renderModal();$('#comment-input')?.focus();}
+  else if(action==='toggle-replies'){
+    const expanded=new Set(modal.expandedThreads||[]);if(expanded.has(d.comment))expanded.delete(d.comment);else expanded.add(d.comment);modal.expandedThreads=[...expanded];renderModal();
+  }
   else if(action==='share-post')openModal({kind:'share-post',postId:d.id});
   else if(action==='send-post')sendSharedPost(d.id,d.member);
   else if(action==='view-post') {previousRoute={...route};go({app:'instagram',page:'post',postId:d.id,from:d.from});}
@@ -329,38 +416,46 @@ document.addEventListener('click',event=>{
   else if(action==='sms-back')go({app:'sms'});
   else if(action==='search')openModal({kind:'search',channel:d.channel});
   else if(action==='chat-info')openModal({kind:'chat-info',member:d.member});
-  else if(action==='chat-emoji'){const el=$('#chat-input');el.value+=' 🤍';el.focus();captureDraft();}
+  else if(action==='chat-heart'){
+    if(route.app!=='kakao'||route.page!=='chat')return;
+    sendChatMessage('kakao',route.member,C.kakaoEmoji.value);commit();
+  }
   else if(action==='chat-share')openModal({kind:'pick-post'});
   else if(action==='toast-open'){
     if(!toastAction)return;const n=toastAction;$('#toast').innerHTML='';clearTimeout(toastTimer);toastAction=null;
-    if(n.postId){previousRoute={app:'instagram',page:'feed'};go({app:'instagram',page:'post',postId:n.postId});}else go({app:n.channel==='kakao'?'kakao':'instagram',page:'chat',member:n.member});
+    if(n.postId){previousRoute={app:'instagram',page:'feed'};go({app:'instagram',page:'post',postId:n.postId});if(['comment','comment-like'].includes(n.kind)){const comment=state.posts.find(p=>p.id===n.postId)?.comments.find(c=>c.id===n.commentId);openModal({kind:'comments',postId:n.postId,expandedThreads:comment?.parentId?[comment.parentId]:[]});}}else go({app:n.channel==='kakao'?'kakao':'instagram',page:'chat',member:n.member});
   } else if(action==='reset')openModal({kind:'reset'});
-  else if(action==='confirm-reset'){
-    closeModal(false);
-    for(const key of Object.keys(drafts))delete drafts[key];
-    clearTimeout(toastTimer);$('#toast').innerHTML='';toastAction=null;
-    state=createState(C);saveBroken=false;previousRoute={app:'home'};route={app:'setup'};commit();
-  }
+  else if(action==='confirm-reset')return restartGame(button);
 });
 
+function sendChatMessage(channel,id,text) {
+  addMessage(state,channel,id,text,'me');
+  queueKeywordReplies(state,C,channel,id,text);
+  queueEmojiReplies(state,C,channel,id,text);
+}
 document.addEventListener('submit',event=>{
   const id=event.target.id;
   if(!['setup-form','chat-form','comment-form','profile-form'].includes(id))return;
   event.preventDefault();
+  if(resetting)return;
   if(id==='setup-form') {
-    try{completeOnboarding(state,$('#setup-username').value,$('#setup-nickname').value);commit(false);go({app:'lock'});}
+    try{completeOnboarding(state,$('#setup-username').value,$('#setup-nickname').value,Date.now(),C);commit(false);go({app:'lock'});}
     catch(error){$('#setup-error').textContent=error.message;}
     return;
   }
   if(!state.onboardingComplete)return;
   if(id==='chat-form') {
     const input=$('#chat-input'),text=input.value.trim();if(!text)return;
-    const channel=route.app==='kakao'?'kakao':'instagram';addMessage(state,channel,route.member,text,'me');queueKeywordReplies(state,C,channel,route.member,text);input.value='';drafts[`${route.app}:${route.member}`]='';commit();
+    const channel=route.app==='kakao'?'kakao':'instagram';sendChatMessage(channel,route.member,text);input.value='';drafts[`${route.app}:${route.member}`]='';commit();
   } else if(id==='comment-form') {
-    const text=$('#comment-input').value.trim();if(!text)return;const post=state.posts.find(p=>p.id===modal.postId);post.comments.push({id:uid(),author:'me',text,time:Date.now()});commit();renderModal();$('#comment-input')?.focus();
+    const text=$('#comment-input').value.trim();if(!text)return;
+    const comment=addComment(state,C,modal.postId,text,modal.replyTo||null);if(!comment)return;
+    $('#comment-input').value='';modal.draft='';modal.replyTo=null;
+    if(comment.parentId)modal.expandedThreads=[...new Set([...(modal.expandedThreads||[]),comment.parentId])];
+    commit();renderModal();$('#comment-input')?.focus();
   } else if(id==='profile-form') {
     const name=$('#player-name').value.trim(),handle=$('#player-username').value.trim();if(!name||!handle)return;
-    try{completeOnboarding(state,handle,$('#player-nickname').value);}catch(error){toast(error.message);return;}
+    try{completeOnboarding(state,handle,$('#player-nickname').value,Date.now(),C);}catch(error){toast(error.message);return;}
     state.profile.name=name;state.profile.bio=$('#player-bio').value;commit();closeModal();toast('已儲存');
   }
 });
@@ -404,35 +499,39 @@ async function readImage(file) {
 }
 $('#image-upload').addEventListener('change',async event=>{
   const files=[...event.target.files];if(!files.length)return;
-  const mode=event.target.dataset.mode,activeModal=modal;
+  const mode=event.target.dataset.mode,activeModal=modal,uploadState=state;
   if(mode==='compose'&&activeModal?.kind!=='compose')return;
   inFlightUpload=true;if(mode==='compose'){captureDraft();renderModal();}
   try {
-    const capacity=mode==='avatar'?1:activeModal.type==='story'?1:10-activeModal.images.length;
-    if(capacity<1){toast('一則貼文最多 10 張照片');return;}
     const processed=[];
-    for(const file of files.slice(0,capacity))processed.push({id:uid(),src:await readImage(file),filename:file.name});
+    for(const file of files.slice(0,1))processed.push({id:uid(),src:await readImage(file),filename:file.name});
+    if(resetting||state!==uploadState)return;
     if(mode==='avatar'){state.profile.avatar=processed[0].src;commit();toast('已更換你的頭貼');}
-    else if(modal===activeModal){if(activeModal.type==='story')activeModal.images=processed.slice(0,1);else activeModal.images.push(...processed);}
-    if(files.length>capacity)toast(`已選取前 ${capacity} 張照片`);
-  } catch(error){toast(error.message);}
-  finally{inFlightUpload=false;if(modal===activeModal)renderModal();}
+    else if(modal===activeModal)activeModal.images=processed;
+    if(files.length>1)toast('已選取第一張照片');
+  } catch(error){if(state===uploadState&&!resetting)toast(error.message);}
+  finally{if(state===uploadState){inFlightUpload=false;if(modal===activeModal)renderModal();}}
 });
+function processJobs(now=Date.now()) {
+  if(!state||saveBroken||resetting||!state.onboardingComplete)return;
+  const notices=runDueJobs(state,C,now);
+  if(!notices.length)return;
+  for(const n of notices)if(route.page==='chat'&&route.member===n.member&&((route.app==='kakao'&&n.channel==='kakao')||(route.app==='instagram'&&n.channel==='instagram')))markRead(n.channel,n.member);
+  const updateComments=modal?.kind==='comments'&&notices.some(n=>['comment','comment-like'].includes(n.kind)&&n.postId===modal.postId);
+  commit();
+  if(updateComments)renderModal();
+  const n=notices.filter(n=>n.text&&!n.quiet).at(-1);if(n)toast(n.text,n);
+}
 async function boot() {
   $('#signal').innerHTML=icon('signal');$('#wifi').innerHTML=icon('wifi');
   const loaded=await openStorage();
   try{state=loaded?validateSave(loaded,C):createState(C);}
   catch{state=createState(C);saveBroken=true;}
-  route={app:state.onboardingComplete?'lock':'setup'};refresh();if(!loaded)persist();
+  advancePostLikes(state,C);scheduleRandomDialogue(state,C);
+  route={app:state.onboardingComplete?'lock':'setup'};refresh();persist();
   if(saveBroken)toast('原存檔無法讀取，可在設定中重新開始。');
-  clockTimer=setInterval(updateClock,15000);
-  setInterval(()=>{
-    if(!state||saveBroken||!state.onboardingComplete)return;
-    const notices=runDueJobs(state,C);
-    if(!notices.length)return;
-    for(const n of notices)if(route.page==='chat'&&route.member===n.member&&((route.app==='kakao'&&n.channel==='kakao')||(route.app==='instagram'&&n.channel==='instagram')))markRead(n.channel,n.member);
-    commit();
-    const n=notices.at(-1);toast(n.text,n);
-  },400);
+  clockTimer=setInterval(updateClock,1000);
+  setInterval(updatePostEngagement,C.memberAudience?.refreshMs||5000);
+  setInterval(processJobs,400);
 }
 boot();

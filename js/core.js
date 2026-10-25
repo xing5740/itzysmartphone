@@ -481,6 +481,17 @@ export function publish(state, config, {type="post", images, caption=""}, now=Da
   if(type!=="story")queuePlayerFanComments(state,config,item,now,random);
   return item;
 }
+// 發文相關私訊逐則傳送，下一則從上一則實際送達後起算，避免背景分頁補送時擠在一起。
+function queuePhotoReplyPart(state,config,member,parts,stage,now){
+  const [text,...remaining]=parts;if(!text)return;
+  state.jobs.push({id:uid(),type:"incoming",channel:"instagram",member,text,photoReply:stage,remaining,dueAt:now+(config.photoEvents.messageSpacing??1500)});
+}
+function sendPhotoReply(state,config,member,text,stage,now){
+  const [first,...rest]=splitChatText(text);if(!first)return "";
+  addMessage(state,"instagram",member,first,member,now);
+  queuePhotoReplyPart(state,config,member,rest,stage,now);
+  return first;
+}
 export function runDueJobs(state, config, now=Date.now()) {
   const notices = [];
   scheduleRandomDialogue(state,config,now);
@@ -535,13 +546,16 @@ export function runDueJobs(state, config, now=Date.now()) {
     } else if (job.type==="incoming") {
       if (!state.chats[job.channel]?.[job.member] || !job.text) continue;
       addMessage(state,job.channel,m.id,job.text,m.id,now);
+      if(job.photoReply)queuePhotoReplyPart(state,config,m.id,job.remaining,job.photoReply,now);
       notices.push({channel:job.channel,member:m.id,text:chatNoticeText(job.text)});
     } else if (job.type==="photo-dm" && state.events[m.id]?.phase==="queued") {
-      addMessage(state,"instagram",m.id,script.question,m.id,now);
+      const first=sendPhotoReply(state,config,m.id,script.question,"question",now);
       state.events[m.id].phase="asked";
       state.jobs.push({id:uid(),type:"photo-post",member:m.id,dueAt:now+config.photoEvents.postDelay});
-      notices.push({channel:"instagram",member:m.id,text:chatNoticeText(script.question)});
+      notices.push({channel:"instagram",member:m.id,text:first});
     } else if (job.type==="photo-post" && state.events[m.id]?.phase==="asked") {
+      const pending=state.jobs.find(j=>j.type==="incoming"&&j.member===m.id&&j.photoReply==="question");
+      if(pending){state.jobs.push({...job,dueAt:Math.max(now+1,pending.dueAt+1)});continue;}
       const post={id:uid(),author:m.id,images:[{src:config.assets.pairedPhoto(m.id,"her"),member:m.id,side:"her"}],caption:script.caption,time:now,likes:0,liked:false,comments:[],slide:0};
       initializePostAudience(state,config,post,now);
       state.posts.unshift(post);
@@ -559,8 +573,8 @@ export function runDueJobs(state, config, now=Date.now()) {
       }
       const userExists=event.userShareType==="story" ? state.stories.some(s=>s.id===event.userShareId) : state.posts.some(p=>p.id===event.userShareId);
       if (userExists && state.posts.some(p=>p.id===event.counterpartId)) {
-        addMessage(state,"instagram",m.id,script.followUp,m.id,now);
-        notices.push({channel:"instagram",member:m.id,text:chatNoticeText(script.followUp)});
+        const first=sendPhotoReply(state,config,m.id,script.followUp,"followUp",now);
+        notices.push({channel:"instagram",member:m.id,text:first});
       }
       event.phase="done";
     }
@@ -596,6 +610,7 @@ export function validateSave(value, config) {
   }
   if(value.stories.some(s=>!s || typeof s.id!=="string" || !authors.includes(s.author) || typeof s.src!=="string" || !Number.isFinite(s.createdAt))) throw new Error("存檔的限時動態資料不完整");
   if(value.jobs.some(j=>!j || typeof j.id!=="string" || !(members.includes(j.member)||(["comment-like","fan-comment"].includes(j.type)&&fans?.[j.member])) || !Number.isFinite(j.dueAt) || !["incoming","welcome-reply","dialogue","post-comment","fan-comment","comment-like","photo-dm","photo-post","photo-follow-up","photo-observer"].includes(j.type) || (["incoming","welcome-reply"].includes(j.type)&&(!["kakao","instagram"].includes(j.channel)||typeof j.text!=="string")) || (j.type==="dialogue"&&(!["kakao","instagram"].includes(j.channel)||typeof j.nodeId!=="string")) || (["post-comment","fan-comment"].includes(j.type)&&(typeof j.postId!=="string"||typeof j.text!=="string")) || (j.type==="comment-like"&&(typeof j.postId!=="string"||typeof j.commentId!=="string")))) throw new Error("存檔的排程資料不完整");
+  if(value.jobs.some(j=>j.photoReply!==undefined&&(j.type!=="incoming"||j.channel!=="instagram"||!["question","followUp"].includes(j.photoReply)||!Array.isArray(j.remaining)||j.remaining.some(text=>typeof text!=="string"||!text.trim()))))throw new Error("存檔的貼文私訊排程不完整");
   if(value.jobs.some(j=>j.afterPosts!==undefined&&(!["post-comment","fan-comment"].includes(j.type)||!Array.isArray(j.afterPosts)||!j.afterPosts.length||j.afterPosts.some(id=>!members.includes(id))||!Number.isFinite(j.delayAfterPosts)||j.delayAfterPosts<0)))throw new Error("存檔的留言順序資料不完整");
   if(Object.entries(value.events).some(([id,e])=>!members.includes(id) || !e || !["queued","asked","posted","done"].includes(e.phase) || typeof e.userShareId!=="string" || !["post","story"].includes(e.userShareType))) throw new Error("存檔的照片事件不完整");
   if(value.photoDetails&&members.some(id=>!value.photoDetails[id]||!Number.isInteger(value.photoDetails[id].daysAgo)||value.photoDetails[id].daysAgo<1||value.photoDetails[id].daysAgo>7||typeof value.photoDetails[id].description!=="string"))throw new Error("存檔的照片資訊不完整");

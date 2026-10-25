@@ -379,3 +379,16 @@ test('KakaoTalk starts in age order and new incoming or outgoing messages reorde
   const restored=await appFixture({stored:a.fixture.state});restored.click('kakao-tab',{tab:'chats'});assert.deepEqual(order(restored.root.innerHTML,'kakao'),expected);
   restored.click('ig-tab',{tab:'dm'});assert.deepEqual(order(restored.root.innerHTML,'instagram'),members);
 });
+
+test('photo DM parts arrive 1.5 seconds apart without losing drafts and posts show no address',async()=>{
+  const a=await appFixture();a.click('compose');a.click('select-photo',{member:'ryujin'});a.click('publish');
+  assert.doesNotMatch(a.root.innerHTML,/서울, 대한민국/);
+  const first=a.fixture.state.jobs.find(j=>j.type==='photo-dm');a.fixture.processJobs(first.dueAt);
+  a.click('open-chat',{channel:'instagram',member:'ryujin'});assert.equal(a.fixture.state.chats.instagram.ryujin.length,1);
+  a.input('chat-input','還沒打完的回覆');const next=a.fixture.state.jobs.find(j=>j.photoReply==='question');
+  a.fixture.processJobs(next.dueAt-1);assert.equal(a.fixture.state.chats.instagram.ryujin.length,1);
+  a.fixture.processJobs(next.dueAt);assert.equal(a.fixture.state.chats.instagram.ryujin.length,2);
+  assert.equal(a.elements.get('chat-input').value,'還沒打完的回覆');assert.match(a.root.innerHTML,/怎麼突然發了？/);
+  const post=a.fixture.state.jobs.find(j=>j.type==='photo-post');a.fixture.processJobs(post.dueAt);a.click('ig-tab',{tab:'feed'});
+  assert.equal((a.root.innerHTML.match(/class="post-header"/g)||[]).length,2);assert.doesNotMatch(a.root.innerHTML,/서울, 대한민국/);
+});

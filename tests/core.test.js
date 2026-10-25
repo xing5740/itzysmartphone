@@ -717,9 +717,11 @@ test('initial and delayed emoji, keyword and photo messages all split into order
   let state=createState(c,start);assert.deepEqual(Array.from(state.chats.kakao.yeji,m=>m.text),['嗨','吃飯了嗎？']);
   queueEmojiReplies(state,c,'kakao','yeji','❤️',start,()=>0);queueKeywordReplies(state,c,'kakao','yeji','出去玩',start);
   state=validateSave(JSON.parse(JSON.stringify(state)),c);
-  runDueJobs(state,c,start+900);assert.deepEqual(state.chats.kakao.yeji.slice(-2).map(m=>m.text),['愛心收到了','好開心！']);
+  runDueJobs(state,c,start+900);assert.equal(state.chats.kakao.yeji.at(-1).text,'愛心收到了');
   runDueJobs(state,c,start+1000);assert.deepEqual(state.chats.kakao.yeji.slice(-2).map(m=>m.text),['忙完了','來聊天！']);
-  runDueJobs(state,c,start+1200);assert.deepEqual(state.chats.kakao.yeji.slice(-2).map(m=>m.text),['好呀','什麼時候？']);
+  runDueJobs(state,c,start+1200);assert.equal(state.chats.kakao.yeji.at(-1).text,'好呀');
+  runDueJobs(state,c,start+1800);assert.equal(state.chats.kakao.yeji.at(-1).text,'好開心！');
+  runDueJobs(state,c,start+2400);assert.equal(state.chats.kakao.yeji.at(-1).text,'什麼時候？');
   publish(state,c,{images:[photo('yeji')]},start);runDueJobs(state,c,dmAt);
   assert.deepEqual(state.chats.instagram.yeji.map(m=>m.text),['我想你了']);deliverPhotoReplyParts(state,c);
   assert.deepEqual(state.chats.instagram.yeji.map(m=>m.text),['我想你了','什麼時候一起出去玩？']);
@@ -772,4 +774,43 @@ test('late processing spaces remaining photo messages from actual delivery and t
   runDueJobs(state,c,third.dueAt-1);assert.equal(state.chats.instagram.yeji.length,2);
   runDueJobs(state,c,third.dueAt);assert.equal(state.chats.instagram.yeji.length,3);assert.equal(state.posts.length,1);
   const postJob=state.jobs.find(j=>j.type==='photo-post');runDueJobs(state,c,postJob.dueAt);assert.equal(state.posts.length,2);
+});
+
+test('all configured chat sentences are explicitly separated and contain no full stops',()=>{
+  const fields=[];
+  const collect=value=>{if(Array.isArray(value))value.forEach(collect);else{assert.equal(typeof value,'string');fields.push(value);}};
+  for(const channel of Object.values(fullConfig.initialMessages))for(const messages of Object.values(channel))collect(messages);
+  for(const groups of Object.values(fullConfig.kakaoEmoji.replies))collect(groups);
+  for(const script of Object.values(fullConfig.dialogues))for(const node of Object.values(script.nodes)){
+    if(node.message)collect(node.message);if(node.response)collect(node.response);
+    for(const choice of node.choices||[])collect(choice.text);
+  }
+  for(const script of Object.values(fullConfig.photoEvents.scripts)){collect(script.question);collect(script.followUp);}
+  for(const thread of fullConfig.sms)collect(thread.messages);
+  assert.ok(fields.length>90);
+  for(const text of fields){assert.ok(text.trim());assert.doesNotMatch(text,/[。．]|(?<!\.)\.(?![.A-Za-z0-9_/])/u);}
+  assert.ok(Object.values(fullConfig.dialogues).some(script=>Object.values(script.nodes).some(node=>Array.isArray(node.message))));
+  assert.ok(Object.values(fullConfig.photoEvents.scripts).some(script=>Array.isArray(script.question)||Array.isArray(script.followUp)));
+});
+
+test('array welcome replies and choices survive pending saves and retain welcome and random dialogue boundaries',()=>{
+  const original=config.dialogues.ryujin;
+  const c={...config,dialogues:{...config.dialogues,ryujin:{...original,nodes:{...original.nodes,
+    welcome:{initial:true,response:['{{nickname}}，好呀','週末見！'],choices:[{id:'reply',text:['我有空','一起出去玩吧！']}]},
+    invite:{...original.nodes.invite,message:['{{nickname}}，我忙完了','找你一起出去玩？']}}}}};
+  let state=createState(c,start);completeOnboarding(state,'rain.zip','小雨',start,c);startDialogue(state,c,'kakao','ryujin',start);
+  chooseDialogue(state,c,'kakao','ryujin','welcome','reply',start+1);
+  assert.deepEqual(Array.from(state.chats.kakao.ryujin.slice(-2),m=>m.text),['我有空','一起出去玩吧！']);
+  const pending=state.jobs.find(j=>j.type==='welcome-reply');assert.ok(Array.isArray(pending.text));
+  state=validateSave(JSON.parse(JSON.stringify(state)),c);runDueJobs(state,c,pending.dueAt-1);
+  assert.equal(state.welcomeDone.ryujin,undefined);assert.equal(state.randomDialogue.nextAt,null);
+  runDueJobs(state,c,pending.dueAt);assert.equal(state.welcomeDone.ryujin,true);
+  assert.deepEqual(state.chats.kakao.ryujin.slice(-2).map(m=>personalize(state,m.text)),['小雨，好呀','週末見！']);
+  runDueJobs(state,c,state.randomDialogue.nextAt);assert.equal(state.randomDialogue.activeMember,'ryujin');
+  assert.deepEqual(state.chats.kakao.ryujin.slice(-2).map(m=>personalize(state,m.text)),['小雨，我忙完了','找你一起出去玩？']);
+  const legacy=createState(c,start);completeOnboarding(legacy,'rain.zip','小雨',start,c);delete legacy.welcomeReplyVersion;legacy.welcomeDone.ryujin=true;
+  addMessage(legacy,'kakao','ryujin','我有空。一起出去玩吧！','me',start+1);
+  const restored=validateSave(JSON.parse(JSON.stringify(legacy)),c);assert.equal(restored.welcomeDone.ryujin,undefined);
+  assert.equal(restored.jobs.filter(j=>j.type==='welcome-reply'&&j.member==='ryujin').length,1);
+  const invalid=JSON.parse(JSON.stringify(restored));invalid.jobs.find(j=>j.type==='welcome-reply').text=['好呀',123];assert.throws(()=>validateSave(invalid,c),/排程/);
 });

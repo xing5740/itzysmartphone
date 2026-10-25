@@ -25,3 +25,5 @@
 
 
 .setup-disclaimer{margin:22px 0 0;font-size:11px;line-height:1.9;color:#72727b;text-align:center}
+
+.story-avatar>.story-username{display:block;width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

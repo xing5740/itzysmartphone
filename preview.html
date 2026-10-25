@@ -7,10 +7,10 @@
     <meta name="description" content="你的手機，與 ITZY 五位好友的日常。台灣中文互動手機模擬遊戲。">
     <title>itzy phone</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-    <style>:root{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans TC','Segoe UI',sans-serif;color:#171717;background:#e8e8ed;font-synthesis:none;--line:#e5e5e5;--blue:#1683fb;--screen-radius:40px;--home-height:30px}
+    <style>:root{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans TC','Segoe UI',sans-serif;color:#171717;background:#e8e8ed;font-synthesis:none;--line:#e5e5e5;--blue:#1683fb;--stage-gap:16px;--screen-radius:40px;--home-height:30px}
 *{box-sizing:border-box}body{margin:0;min-height:100svh;background:#e8e8ed}button,input,textarea,select{font:inherit}button{border:0;cursor:pointer;color:inherit;background:none;-webkit-tap-highlight-color:transparent}button:disabled{cursor:default;opacity:.4}button:focus-visible,a:focus-visible{outline:2px solid #1683fb;outline-offset:3px}input:focus,textarea:focus{outline:0}a{color:inherit}button svg{pointer-events:none}img{display:block;object-fit:cover}svg.icon{width:24px;height:24px;flex-shrink:0;vertical-align:middle}[hidden]{display:none!important}
-.stage{min-height:100svh;display:grid;place-items:center;padding:16px}.device-area{display:flex;justify-content:center;align-items:center}.device{width:390px;height:min(844px,calc(100svh - 32px));position:relative;padding:7px;border-radius:47px;background:#151515;box-shadow:0 0 0 1px #737378,0 14px 42px #1112;isolation:isolate}.screen{height:100%;width:100%;background:#fff;overflow:hidden;position:relative;border-radius:var(--screen-radius);display:flex;flex-direction:column;isolation:isolate}.home-indicator{position:absolute;bottom:0;left:0;right:0;height:var(--home-height);width:100%;z-index:40;padding:0;display:flex;align-items:flex-end;justify-content:center;touch-action:none;background:#fff}.home-indicator>span{height:5px;width:128px;border-radius:5px;background:#111;margin-bottom:9px;pointer-events:none}.home-indicator:disabled{opacity:1}.app-home .home-indicator,.app-lock .home-indicator{background:transparent}.app-home .home-indicator>span,.app-lock .home-indicator>span{background:#fff;box-shadow:0 1px 5px #0005}
-.status-bar{height:25px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:600;z-index:15;flex-shrink:0;background:#fff;color:#151515}.status-right{display:flex;align-items:center;gap:4px}.status-right svg.icon{width:13px;height:13px;stroke-width:2.5}.status-right #signal svg{width:14px}.battery{height:9px;width:20px;border:1px solid currentColor;padding:1px;border-radius:2px;position:relative;margin-left:2px}.battery:after{content:'';position:absolute;width:1px;height:3px;right:-3px;top:2px;background:currentColor}.battery i{display:block;width:88%;height:100%;background:currentColor}.status-bar.wallpaper-status{background:transparent;position:absolute;inset:0 0 auto}.status-bar.story-status{background:#151515;color:#fff}.app-root{flex:1;min-height:0;position:relative;overflow:hidden;display:flex;flex-direction:column;color:#171717;font-family:-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif;font-size:13px}.boot{height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:15px;background:#eae2e5;color:#ab7f88;font-size:40px}.boot span{font-size:12px}.scroll{overflow-y:auto;overflow-x:hidden;min-height:0;flex:1;overscroll-behavior:contain;scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}.wallpaper{position:absolute;inset:0;background-size:cover;background-position:center}.lock-screen{height:100%;position:relative;display:flex;flex-direction:column;align-items:center;padding-top:62px;color:#3f4642;touch-action:pan-x;user-select:none}.lock-screen>div:not(.wallpaper),.lock-screen>button{position:relative}.lock-icon svg{height:22px;width:22px}.lock-date{margin-top:12px;font-size:16px;letter-spacing:.4px}.lock-time{font-size:72px;font-weight:300;letter-spacing:-4px;line-height:1.2;margin-bottom:32px}.lock-subtitle{display:flex;align-items:center;gap:5px;font-size:11px;letter-spacing:.3px}.lock-subtitle svg{width:16px}.lock-notifications{width:calc(100% - 28px);margin-top:34px}.lock-notice{background:#ffffffa3;backdrop-filter:blur(16px);border:1px solid #ffffff8c;border-radius:15px;padding:11px 12px;width:100%;text-align:left;display:flex;gap:9px;margin-bottom:8px;box-shadow:0 2px 12px #89716a08}.lock-notice .notice-app{font-size:20px}.notice-app.kakao{background:#fee500;color:#3b1e1e;border-radius:6px;width:29px;height:29px;display:grid;place-items:center}.notice-app.kakao svg{width:18px}.lock-notice strong{font-size:11px;display:block;margin-bottom:3px}.lock-notice p{font-size:11px;margin:0;line-height:1.5;color:#606663;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.lock-open{position:absolute!important;inset:0;padding:0;width:100%;height:100%;z-index:0}.lock-screen>.lock-notifications{z-index:1;position:relative}.home-screen{position:relative;flex:1;min-height:0;width:100%;height:100%;padding:43px 22px 18px;display:flex;flex-direction:column}.home-screen>div:not(.wallpaper){position:relative}.weather-widget{background:linear-gradient(125deg,#597a8eeb,#96b1bdde);border:1px solid #ffffff45;border-radius:21px;padding:15px 17px 10px;color:#fff;box-shadow:0 5px 15px #40566912}.weather-top{display:flex;align-items:center;justify-content:space-between}.weather-city{font-size:14px;font-weight:500}.weather-date{font-size:8px;opacity:.75;letter-spacing:.6px}.weather-summary{display:flex;align-items:center;justify-content:space-between}.weather-temp{font-size:43px;font-weight:300;letter-spacing:-2px;line-height:1.4}.weather-condition{text-align:right;font-size:10px;line-height:1.8}.weather-condition>.icon{width:26px;height:26px;fill:#fff;stroke:#fff;display:block;margin-left:auto}.weather-hours{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid #ffffff38;padding-top:9px;margin-top:4px}.weather-hour{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10px}.weather-hour span:first-child{font-size:8px;opacity:.8}.weather-hour .icon{width:17px;height:17px;fill:#fff;stroke:#fff}.weather-note{font-size:8px;opacity:.75;margin:10px 0 0;letter-spacing:.2px;text-align:center}.app-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px 12px;margin-top:25px}.app-tile{display:flex;align-items:center;flex-direction:column;padding:0;gap:6px;position:relative;width:100%;min-width:0}.app-tile>span:last-child{font-size:10px;color:#424a43;text-shadow:0 1px 4px #fff9;white-space:nowrap}.app-icon{width:53px;height:53px;border-radius:13px;display:grid;place-items:center;position:relative;box-shadow:0 4px 7px #665b6213;overflow:visible}.app-icon>.icon{width:32px;height:32px;stroke-width:1.9}.icon-kakao{background:#fee500;color:#3b1e1e}.kakao-mark{background:#3b1e1e;border-radius:50%;width:37px;height:29px;position:relative;display:grid;place-items:center;color:#fee500;font-family:Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:-.5px}.kakao-mark:after{content:'';position:absolute;bottom:-4px;left:7px;border-top:8px solid #3b1e1e;border-right:6px solid transparent;transform:rotate(12deg)}.icon-instagram{background:radial-gradient(circle at 28% 100%,#fed77b 2%,#fd9947 23%,#ea4568 45%,#c52e95 65%,#6f43c4 95%);color:white}.icon-instagram>.icon{width:37px;height:37px;stroke-width:1.65}.icon-photos{background:#fff}.petals{position:relative;width:41px;height:41px;filter:saturate(.9)}.petals i{position:absolute;top:1px;left:14px;width:14px;height:25px;border-radius:50%;transform-origin:7px 20px;opacity:.8}.icon-phone{background:linear-gradient(#65e976,#23bd47);color:white}.icon-phone>.icon{fill:white;stroke-width:1.1;width:32px;transform:rotate(-8deg)}.icon-sms{background:linear-gradient(#69e479,#26c744);color:white}.icon-sms>.icon{fill:white;stroke-width:0;width:38px;height:38px}.icon-safari{background:white;color:#2faaf6}.icon-camera{background:linear-gradient(#edeef1,#c4c6ca);color:#37383c}.icon-camera>.icon{width:39px;height:39px;fill:#58595b;stroke:#d9dade;stroke-width:1}.app-badge{position:absolute;top:-6px;right:-7px;min-width:19px;height:19px;background:#ef4f53;color:#fff;border-radius:12px;font-size:11px;display:grid;place-items:center;padding:0 5px;box-shadow:0 0 0 1px #e8dce4;z-index:2}.home-dock{margin-top:auto;flex-shrink:0;background:#ffffff68;backdrop-filter:blur(18px);border:1px solid #fff5;border-radius:23px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:13px 11px 10px;margin-left:-11px;margin-right:-11px}.home-dock .app-tile{gap:5px}.home-dock .app-tile>span:last-child{font-size:9px}.app-topbar{min-height:53px;display:flex;align-items:center;padding:9px 14px;gap:10px;flex-shrink:0;background:white;border-bottom:1px solid #eee}.app-title{font-size:23px;font-weight:700;letter-spacing:-.7px;margin:0;flex:1}.top-button{width:29px;height:31px;padding:2px;display:grid;place-items:center;flex-shrink:0}.top-button .icon{width:23px;height:23px}.header-back{color:#161616;width:24px;margin-left:-5px}.header-name{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}.header-name strong{font-size:13px}.header-name small{font-size:9px;color:#858585;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.avatar{width:46px;height:46px;object-fit:cover;border-radius:50%;background:#e9e4e3;flex-shrink:0}.avatar.small{width:33px;height:33px}.avatar.tiny{width:24px;height:24px}.avatar.large{width:70px;height:70px}.avatar.kakao-avatar{border-radius:17px}.avatar.small.kakao-avatar{border-radius:12px}.bottom-nav{height:54px;background:#fff;display:flex;align-items:center;justify-content:space-around;flex-shrink:0;border-top:1px solid #eee;padding:3px 4px}.bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:48px;min-height:40px;position:relative;gap:4px;color:#949494;font-size:8px}.bottom-nav button.active{color:#121212}.bottom-nav .icon{width:22px;height:22px}.bottom-nav .app-badge{height:14px;min-width:14px;top:-1px;right:2px;font-size:8px;padding:0 3px}.bottom-nav .avatar{height:24px;width:24px}.nav-icon-wrap{position:relative;display:block}.section-label{font-size:9px;color:#999;padding:13px 16px 7px;display:flex;justify-content:space-between}.list-row{width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:13px 16px;min-height:73px}.list-row:hover{background:#00000003}.list-row-copy{flex:1;min-width:0}.list-row-copy strong{font-size:13px;display:block;font-weight:600}.list-row-copy p{font-size:11px;color:#979797;margin:6px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5}.list-row-meta{align-self:flex-start;display:flex;flex-direction:column;align-items:flex-end;gap:8px;font-size:9px;color:#aaa;padding-top:5px}.unread-pill{display:grid;place-items:center;min-width:17px;height:17px;border-radius:12px;background:#f06768;color:white;font-size:10px;padding:0 4px}.self-row{padding-top:19px;padding-bottom:19px;margin-bottom:6px;border-bottom:1px solid #f2f2f2}.friend-status{font-size:9px;color:#b5b5b5}.chat-bg{background:#b8c9d7}.chat-bg .app-topbar{background:#b8c9d7;border-bottom:0}.chat-bg .status-bar{background:#b8c9d7}.chat-log{padding:12px 12px 20px;display:flex;flex-direction:column;gap:16px}.chat-date{font-size:9px;color:#536270;text-align:center;align-self:center;padding:5px 10px;border-radius:20px;background:#9bafbf66;margin-bottom:6px}.message-row{display:flex;gap:7px;align-items:flex-start;max-width:100%}.message-row.mine{justify-content:flex-end;margin-left:36px}.message-content{min-width:0;max-width:calc(100% - 45px)}.message-author{font-size:10px;margin:0 0 5px 1px;color:#53606d}.bubble-with-time{display:flex;gap:4px;align-items:flex-end}.message-row.mine .bubble-with-time{flex-direction:row-reverse}.bubble{background:#fff;border-radius:0 11px 11px 11px;padding:10px 11px;font-size:12px;line-height:1.65;overflow-wrap:anywhere;white-space:pre-wrap;max-width:246px;box-shadow:0 1px 1px #00000007}.mine .bubble{background:#fee500;border-radius:11px 0 11px 11px}.message-time{font-size:8px;color:#657787;white-space:nowrap;margin-bottom:1px;display:flex;flex-direction:column;gap:3px}.message-time .read{color:#e0b100;text-align:right}.chat-compose{display:flex;align-items:flex-end;padding:8px 9px;background:#fff;gap:7px;flex-shrink:0;border-top:1px solid #eee;min-height:48px}.chat-compose input{flex:1;min-width:0;border:1px solid #e6e6e6;border-radius:17px;padding:8px 12px;font-size:12px;background:#fafafa}.chat-compose button{padding:5px;flex-shrink:0;align-self:center;color:#979797}.chat-compose .send-button{background:#fee500;color:#32271c;border-radius:8px;width:32px;height:32px}.chat-compose .send-button .icon{width:18px;height:18px}.no-messages{margin:auto;text-align:center;color:#a1a1a1;padding:40px 20px;font-size:11px;line-height:1.9}.no-messages .icon{width:38px;height:38px;margin-bottom:15px;color:#bebebe}.chat-bg .no-messages{color:#6c8295}.ig-logo{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:26px;letter-spacing:-1.2px;margin:0;flex:1;font-weight:600}.ig-topbar{border-bottom:0}.story-tray{display:flex;gap:12px;padding:8px 13px 14px;border-bottom:1px solid #eee;overflow-x:auto;scrollbar-width:none;flex-shrink:0}.story-avatar{flex-shrink:0;width:58px;text-align:center;padding:0;font-size:9px;position:relative;display:flex;flex-direction:column;align-items:center;gap:6px}.story-ring{width:59px;height:59px;padding:3px;background:linear-gradient(25deg,#fccb66,#ed4775,#af36b5);border-radius:50%;display:grid;place-items:center}.story-ring.seen{background:#d9d9d9}.story-ring.empty{background:transparent}.story-ring>.avatar{width:53px;height:53px;border:2px solid #fff}.story-add{position:absolute;right:0;top:41px;border-radius:50%;height:17px;width:17px;display:grid;place-items:center;background:#1683fb;color:#fff;border:2px solid white}.story-add svg{width:11px;height:11px;stroke-width:3}.post{padding-bottom:15px;border-bottom:1px solid #f1f1f1;background:#fff}.post-header{display:flex;align-items:center;gap:9px;padding:11px 12px}.post-header .avatar{width:29px;height:29px}.post-username{font-size:11px;font-weight:600;flex:1;min-width:0}.post-username small{display:block;font-size:8px;color:#888;font-weight:400;margin-top:2px}.post-image-wrap{aspect-ratio:1;position:relative;background:#eae8e2;overflow:hidden;touch-action:pan-y}.post-image{width:100%;height:100%;object-fit:cover;user-select:none}.slide-count{position:absolute;top:11px;right:11px;background:#0009;color:#fff;font-size:10px;padding:4px 7px;border-radius:12px}.slide-arrow{position:absolute;top:45%;width:25px;height:25px;border-radius:50%;background:#fff9;display:grid;place-items:center;padding:4px;box-shadow:0 1px 4px #0001}.slide-arrow svg{width:15px;height:15px}.slide-arrow.prev{left:9px}.slide-arrow.next{right:9px}.post-actions{display:flex;align-items:center;gap:12px;padding:10px 12px 6px}.post-actions button{padding:0;width:23px;height:25px;display:grid;place-items:center}.post-actions button:last-child{margin-left:auto}.post-actions .liked{color:#ee495d}.post-actions .icon{width:23px;height:23px}.slide-dots{display:flex;gap:4px;margin:auto;padding-right:30px}.slide-dots i{height:4px;width:4px;background:#d0d0d0;border-radius:50%}.slide-dots i.active{background:#2593ef}.post-details{padding:0 13px;font-size:11px;line-height:1.7}.post-likes{font-weight:600;font-size:10px;margin-bottom:3px}.post-caption strong{margin-right:5px}.comment-preview{color:#939393;padding:5px 0 0;font-size:10px;text-align:left;display:block}.post-date{font-size:8px;color:#aaa;margin-top:6px}.feed-empty{display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center;padding:35px 25px;min-height:200px}.empty-decoration{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;border:1px solid #dfd9d5;color:#8c7f78;margin-bottom:15px}.empty-decoration>.icon{width:27px;height:27px}.feed-empty h3{font-size:15px;font-weight:500;margin:0 0 9px}.feed-empty p{font-size:11px;color:#a19b96;line-height:1.9;margin:0}.text-action{font-size:11px;color:#59836a;font-weight:600;margin-top:15px;padding:8px}.ig-chat{background:#fff}.ig-chat .message-author{color:#888}.ig-chat .bubble{border:1px solid #eee;border-radius:17px;padding:10px 13px;box-shadow:none}.ig-chat .mine .bubble{background:#e9e6fa;border-color:#e9e6fa}.ig-chat .message-time{color:#aaa}.ig-chat .chat-date{background:none;color:#aaa}.ig-chat .chat-compose{border-top:0;margin:0 9px 10px;border-radius:25px;border:1px solid #dedede;padding:5px 10px}.ig-chat .chat-compose input{border:0;background:#fff}.ig-chat .chat-compose .send-button{background:transparent;color:#7283d3;font-size:11px;width:auto;padding:0 4px}.dm-shared-post{padding:0;overflow:hidden;white-space:normal;width:180px;border-radius:14px}.dm-shared-post img{width:180px;height:180px}.dm-shared-post strong{display:block;font-size:10px;padding:8px 10px}.dm-shared-post p{padding:0 10px 9px;margin:0;font-size:10px;white-space:pre-wrap}.profile-info{padding:20px 16px 14px}.profile-stats{display:flex;align-items:center;gap:25px}.profile-numbers{display:flex;flex:1;justify-content:space-around}.profile-numbers div{display:flex;flex-direction:column;gap:4px;text-align:center;font-size:10px}.profile-numbers strong{font-size:16px}.profile-bio{font-size:11px;line-height:1.7;white-space:pre-wrap;margin-top:14px}.profile-bio strong{display:block;margin-bottom:3px}.profile-edit{width:100%;background:#f1f1f1;border-radius:7px;padding:7px;font-size:11px;font-weight:600;margin-top:13px}.profile-tabs{border-bottom:1px solid #ddd;display:flex;margin-top:2px}.profile-tabs span{width:50%;padding:12px;text-align:center}.profile-tabs .active{border-bottom:1px solid #161616}.profile-tabs .icon{width:20px}.profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}.profile-grid button{padding:0;position:relative;aspect-ratio:1;overflow:hidden}.profile-grid img{width:100%;height:100%}.profile-grid .icon{position:absolute;top:6px;right:6px;width:14px;height:14px;color:#fff;filter:drop-shadow(0 1px 2px #0005)}.photos-title{padding:17px 15px 13px}.photos-title h2{font-size:27px;letter-spacing:-.6px;margin:3px 0 6px}.photos-title small{font-size:10px;color:#8f8f8f}.photos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}.photo-tile{padding:0;aspect-ratio:1;position:relative;overflow:hidden;background:#e9e3df}.photo-tile img{height:100%;width:100%}.photo-tile-label{position:absolute;bottom:5px;left:6px;color:white;font-size:9px;text-shadow:0 1px 4px #0008}.photo-full{height:100%;display:flex;flex-direction:column;background:#fff}.photo-full-image{flex:1;min-height:0;display:grid;place-items:center;background:#f4f2ef}.photo-full-image img{width:100%;height:auto;max-height:100%;object-fit:contain}.photo-full-info{padding:12px 15px;font-size:11px;line-height:1.8;color:#777;background:#fff}.photo-full-info strong{color:#333;font-weight:500}.photo-toolbar{height:52px;border-top:1px solid #eee;display:flex;justify-content:space-between;align-items:center;padding:0 15px;color:#1683fb}.photo-toolbar button{font-size:12px;display:flex;gap:6px;align-items:center}.photo-toolbar .icon{width:21px}.phone-title{padding:15px 16px 10px;font-size:28px;letter-spacing:-.5px;font-weight:700;margin:0}.call-row{display:flex;gap:9px;align-items:center;padding:13px 15px;border-bottom:1px solid #f0f0f0}.call-direction{color:#999}.call-direction .icon{width:13px;height:13px}.call-row-copy{flex:1;min-width:0}.call-row-copy strong{font-size:12px;display:block;margin-bottom:4px}.call-row-copy small{font-size:10px;color:#aaa}.call-row time{font-size:10px;color:#999;white-space:nowrap}.info-button{padding:0;color:#1683fb;margin-left:5px}.info-button .icon{width:19px;height:19px}.ios-tabs{margin:0 16px 6px;background:#ededf0;display:flex;border-radius:7px;padding:2px}.ios-tabs button{flex:1;padding:5px;font-size:10px;border-radius:5px}.ios-tabs button.active{background:white;box-shadow:0 1px 3px #0002}.contact-detail{padding:25px 15px;text-align:center;background:linear-gradient(#f3f2f6,#fff 75%);flex:1}.contact-detail .avatar{width:86px;height:86px;margin:auto}.contact-detail h2{font-size:22px;margin:12px 0 7px}.contact-detail>p{font-size:11px;color:#aaa}.contact-buttons{display:flex;gap:8px;margin:23px 0}.contact-buttons button{display:flex;flex:1;flex-direction:column;align-items:center;gap:7px;background:#fff;padding:11px 5px;border-radius:9px;font-size:9px;color:#1683fb;box-shadow:0 2px 10px #00000003}.contact-buttons button:disabled{color:#aab2bc;opacity:1}.contact-field{text-align:left;background:#fff;padding:14px;border-radius:10px;font-size:11px;line-height:1.7;margin:10px 0}.contact-field span{display:block;color:#1683fb;margin-top:4px}.sms-title{font-size:28px;font-weight:700;margin:10px 15px}.sms-row{border-bottom:1px solid #eee}.sms-icon{width:41px;height:41px;border-radius:50%;display:grid;place-items:center;background:#b9bac0;color:white;flex-shrink:0}.sms-icon svg{width:25px}.sms-chat .bubble{background:#e9e9eb;border-radius:14px;color:#333}.sms-chat .message-content{max-width:100%}.sms-chat .chat-log{gap:14px}.sms-chat .chat-date{background:none;color:#aaa}.sms-chat .message-row{padding-right:30px}.sms-chat .message-time{color:#aaa}.sms-readonly{padding:15px;text-align:center;font-size:10px;color:#aaa;background:#f8f8f9}.search-box{display:flex;align-items:center;gap:6px;margin:2px 15px 10px;background:#f2f2f4;padding:7px 9px;border-radius:8px}.search-box .icon{width:15px;height:15px;color:#999}.search-box input{border:0;background:none;font-size:11px;min-width:0;flex:1}.list-empty{text-align:center;color:#aaa;font-size:12px;padding:40px 20px}.overlay-root:empty{display:none}.overlay-root{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;justify-content:flex-end;background:#0006;backdrop-filter:blur(3px)}.sheet{background:#fff;border-radius:18px 18px 0 0;max-height:94%;display:flex;flex-direction:column;animation:slide-up .2s ease-out;min-height:0}.sheet-handle{width:31px;height:4px;border-radius:5px;background:#d7d7d7;align-self:center;margin-top:7px;margin-bottom:1px;flex-shrink:0}.sheet-header{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid #eee;gap:10px;flex-shrink:0}.sheet-header h2{font-size:14px;margin:0;font-weight:600}.sheet-header button{font-size:11px;color:#697d9b;padding:3px 0;min-width:26px}.sheet-header .icon{height:20px;width:20px}.sheet-scroll{padding:15px;overflow-y:auto;overscroll-behavior:contain}.sheet-description{font-size:11px;line-height:1.9;color:#8d8d8d;margin:0 0 15px}.sheet-section-label{font-size:10px;font-weight:600;color:#666;margin:4px 0 10px;display:block}.sheet-photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:15px}.sheet-photo-choice{position:relative;aspect-ratio:1;padding:0;border-radius:5px;overflow:hidden}.sheet-photo-choice img{width:100%;height:100%}.selection-number{position:absolute;top:5px;right:5px;width:21px;height:21px;background:#ffffff55;border:1.5px solid #fff;border-radius:50%;color:#fff;font-size:10px;display:grid;place-items:center}.selected .selection-number{background:#a77b8b;border-color:#a77b8b}.selected:after{content:'';position:absolute;inset:0;border:3px solid #a77b8b;border-radius:5px;pointer-events:none}.upload-button{width:100%;border:1px dashed #cfc5c9;padding:11px;border-radius:9px;display:flex;gap:7px;align-items:center;justify-content:center;font-size:11px;color:#9d7c88}.upload-button .icon{width:16px;height:16px}.compose-preview{display:flex;overflow-x:auto;gap:7px;scrollbar-width:none;margin:15px 0 10px}.compose-preview button{padding:0;width:65px;height:65px;flex-shrink:0;position:relative}.compose-preview img{width:100%;height:100%;border-radius:5px}.remove-image{position:absolute;top:2px;right:2px;border-radius:50%;background:#0008;color:#fff;width:15px;height:15px;display:grid;place-items:center;font-size:11px}.compose-count{font-size:9px;color:#aaa;margin:6px 0 12px}.field-label{font-size:10px;color:#888;display:block;margin:12px 0 5px}.text-field{border:1px solid #e0e0e0;background:#fafafa;border-radius:8px;font-size:12px;padding:10px;width:100%;resize:vertical;color:#353535;line-height:1.7}.text-field:focus{border-color:#ac91a0;background:#fff}.primary-button{background:#526a5c;color:#fff;padding:12px;border-radius:9px;font-size:12px;width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:7px}.primary-button.danger{background:#b76c72}.secondary-button{border:1px solid #ddd;color:#777;padding:10px;font-size:11px;border-radius:9px;width:100%;margin-top:10px}.share-choice{display:flex;align-items:center;gap:12px;padding:14px 0;width:100%;border-bottom:1px solid #eee;text-align:left}.share-choice>.icon{width:25px;height:25px;color:#927c86}.share-choice strong{display:block;font-size:12px;font-weight:500}.share-choice small{font-size:10px;color:#aaa;display:block;margin-top:5px}.share-choice>div{flex:1}.share-choice>.icon:last-child{width:15px}.comment-row{display:flex;gap:9px;margin-bottom:18px;align-items:flex-start}.comment-content{font-size:11px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;flex:1;min-width:0}.comment-content strong{font-weight:600;margin-right:5px}.comment-content small{display:block;font-size:9px;color:#aaa;margin-top:3px}.comments-empty{font-size:11px;color:#aaa;text-align:center;padding:25px 0 35px}.comments-sheet{min-height:55%;max-height:88%}.share-recipient{display:flex;align-items:center;gap:10px;width:100%;padding:10px 0;text-align:left}.share-recipient>div{flex:1}.share-recipient strong{font-size:12px;display:block}.share-recipient small{font-size:10px;color:#999}.share-send{font-size:10px;color:#fff;background:#8c86b4;border-radius:7px;padding:7px 13px}.settings-tabs{display:flex;gap:7px;padding:12px 15px 0}.settings-tabs button{padding:7px 11px;border-radius:20px;background:#f2f0ef;color:#999;font-size:10px}.settings-tabs button.active{background:#e6dce0;color:#805b6b}.form-row{display:flex;gap:8px}.form-row>label{flex:1;min-width:0}.settings-note{font-size:10px;color:#aaa;line-height:1.8;margin-top:10px}.settings-section{border-bottom:1px solid #eee;padding:0 0 15px;margin-bottom:13px}.settings-section h3{font-size:12px;font-weight:600;margin:0 0 8px}.settings-section p{font-size:10px;line-height:1.9;color:#999}.help-list{padding:0 0 0 17px;margin:0;font-size:11px;line-height:1.9;color:#777}.help-list li{margin-bottom:12px}.help-list strong{color:#444}.storage-status{font-size:10px;color:#889584;line-height:1.9}.modal-buttons{display:flex;gap:9px}.modal-buttons button{flex:1}.error-note{padding:10px;border-radius:8px;background:#fff1ef;color:#af6d66;font-size:10px;margin:10px 0;line-height:1.7}.story-viewer{position:absolute;inset:0;background:#1b1b1b;color:#fff;display:flex;flex-direction:column}.story-bars{display:flex;gap:3px;padding:10px 8px 7px;flex-shrink:0}.story-bars span{height:2px;background:#ffffff4d;flex:1;overflow:hidden;border-radius:2px}.story-bars i{display:block;height:100%;width:0;background:#fff}.story-bars .done i{width:100%}.story-bars .current i{animation:story-fill 6s linear forwards}.story-heading{display:flex;align-items:center;gap:8px;padding:5px 12px 12px;flex-shrink:0;position:relative;z-index:2}.story-heading>div{flex:1;min-width:0}.story-heading strong{font-size:11px}.story-heading small{color:#ffffff80;font-size:9px;margin-left:7px}.story-heading button{color:white;padding:0}.story-picture{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center}.story-picture img{width:100%;height:100%;object-fit:contain}.story-tap{position:absolute;inset:0;display:flex}.story-tap button{width:66%;padding:0;outline-offset:-4px}.story-tap button:first-child{width:34%}.story-footer{padding:14px 12px 20px;font-size:10px;color:#ffffffa0;display:flex;justify-content:space-between;align-items:center}.story-footer button{color:#fff;display:flex;align-items:center;gap:7px;font-size:11px}.story-footer svg{width:18px}.story-paused .story-bars .current i{animation-play-state:paused}.toast{position:absolute;z-index:50;top:8px;left:8px;right:8px;padding:12px;display:flex;align-items:center;gap:9px;border-radius:13px;background:#fffffff2;box-shadow:0 4px 22px #0002;backdrop-filter:blur(16px);font-size:11px;line-height:1.5;color:#303030;animation:toast-in .25s ease-out;text-align:left;width:calc(100% - 16px)}.toast .avatar{width:32px;height:32px}.toast>div{min-width:0;flex:1}.toast strong{display:block;font-size:10px;margin-bottom:2px}.toast p{margin:0;font-size:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.toast-simple{top:auto;bottom:12px;background:#303830ed;color:white;text-align:center;display:block;width:auto;max-width:calc(100% - 24px);left:12px;right:12px;padding:11px;font-size:11px}.notification-dot{width:7px;height:7px;background:#ff5571;border-radius:50%;position:absolute;right:-2px;top:0}.link-source{font-size:10px;color:#699477;word-break:break-word}.weather-detail{text-align:center;background:linear-gradient(#6b8798,#a2b7c1);color:white;border-radius:12px;padding:20px 15px}.weather-detail>.icon{width:42px;height:42px;fill:#fff;margin:7px}.weather-detail h3{font-weight:400;font-size:18px;margin:4px}.weather-detail .weather-temp{font-size:65px}.weather-detail p{font-size:11px;line-height:1.9}.weather-detail+.settings-note{margin-top:15px}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.stage{min-height:100svh;display:grid;place-items:center;padding:calc(var(--stage-gap) + env(safe-area-inset-top)) calc(var(--stage-gap) + env(safe-area-inset-right)) calc(var(--stage-gap) + env(safe-area-inset-bottom)) calc(var(--stage-gap) + env(safe-area-inset-left))}.device-area{display:flex;justify-content:center;align-items:center;max-width:100%;min-width:0}.device{width:min(390px,calc(100vw - var(--stage-gap) - var(--stage-gap) - env(safe-area-inset-left) - env(safe-area-inset-right)));height:min(844px,calc(100svh - var(--stage-gap) - var(--stage-gap) - env(safe-area-inset-top) - env(safe-area-inset-bottom)));min-height:440px;position:relative;padding:7px;border-radius:47px;background:#151515;box-shadow:0 0 0 1px #737378,0 14px 42px #1112;isolation:isolate;flex-shrink:0}.screen{height:100%;width:100%;background:#fff;overflow:hidden;position:relative;border-radius:var(--screen-radius);display:flex;flex-direction:column;isolation:isolate}.home-indicator{position:absolute;bottom:0;left:0;right:0;height:var(--home-height);width:100%;z-index:40;padding:0;display:flex;align-items:flex-end;justify-content:center;touch-action:none;background:#fff}.home-indicator>span{height:5px;width:128px;border-radius:5px;background:#111;margin-bottom:9px;pointer-events:none}.home-indicator:disabled{opacity:1}.app-home .home-indicator,.app-lock .home-indicator{background:transparent}.app-home .home-indicator>span,.app-lock .home-indicator>span{background:#fff;box-shadow:0 1px 5px #0005}
+.status-bar{height:25px;padding:0 10px;display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:600;z-index:15;flex-shrink:0;background:#fff;color:#151515}.status-right{display:flex;align-items:center;gap:4px}.status-right svg.icon{width:13px;height:13px;stroke-width:2.5}.status-right #signal svg{width:14px}.battery{height:9px;width:20px;border:1px solid currentColor;padding:1px;border-radius:2px;position:relative;margin-left:2px}.battery:after{content:'';position:absolute;width:1px;height:3px;right:-3px;top:2px;background:currentColor}.battery i{display:block;width:88%;height:100%;background:currentColor}.status-bar.wallpaper-status{background:transparent;position:absolute;inset:0 0 auto}.status-bar.story-status{background:#151515;color:#fff}.app-root{flex:1;min-height:0;position:relative;overflow:hidden;display:flex;flex-direction:column;color:#171717;font-family:-apple-system,BlinkMacSystemFont,'Noto Sans TC',sans-serif;font-size:13px}.boot{height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:15px;background:#eae2e5;color:#ab7f88;font-size:40px}.boot span{font-size:12px}.scroll{overflow-y:auto;overflow-x:hidden;min-height:0;flex:1;overscroll-behavior:contain;scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}.wallpaper{position:absolute;inset:0;background-size:cover;background-position:center}.lock-screen{height:100%;position:relative;display:flex;flex-direction:column;align-items:center;padding-top:62px;color:#3f4642;touch-action:pan-x;user-select:none}.lock-screen>div:not(.wallpaper),.lock-screen>button{position:relative}.lock-icon svg{height:22px;width:22px}.lock-date{margin-top:12px;font-size:16px;letter-spacing:.4px}.lock-time{font-size:72px;font-weight:300;letter-spacing:-4px;line-height:1.2;margin-bottom:32px}.lock-subtitle{display:flex;align-items:center;gap:5px;font-size:11px;letter-spacing:.3px}.lock-subtitle svg{width:16px}.lock-notifications{width:calc(100% - 28px);margin-top:34px}.lock-notice{background:#ffffffa3;backdrop-filter:blur(16px);border:1px solid #ffffff8c;border-radius:15px;padding:11px 12px;width:100%;text-align:left;display:flex;gap:9px;margin-bottom:8px;box-shadow:0 2px 12px #89716a08}.lock-notice .notice-app{font-size:20px;width:29px;height:29px;border-radius:6px;display:grid;place-items:center;flex-shrink:0}.notice-app.instagram{background:radial-gradient(circle at 28% 100%,#fed77b,#ea4568 45%,#6f43c4);color:#fff}.notice-app.instagram svg{width:21px;height:21px}.notice-app.kakao{background:#fee500;color:#3b1e1e;border-radius:6px;width:29px;height:29px;display:grid;place-items:center}.notice-app.kakao svg{width:18px}.lock-notice strong{font-size:11px;display:block;margin-bottom:3px}.lock-notice p{font-size:11px;margin:0;line-height:1.5;color:#606663;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.lock-open{position:absolute!important;inset:0;padding:0;width:100%;height:100%;z-index:0}.lock-screen>.lock-notifications{z-index:1;position:relative}.home-screen{position:relative;flex:1;min-height:0;width:100%;height:100%;padding:43px 22px 18px;display:flex;flex-direction:column}.home-screen>div:not(.wallpaper){position:relative}.weather-widget{background:linear-gradient(125deg,#597a8eeb,#96b1bdde);border:1px solid #ffffff45;border-radius:21px;padding:15px 17px 10px;color:#fff;box-shadow:0 5px 15px #40566912}.weather-top{display:flex;align-items:center;justify-content:space-between}.weather-city{font-size:14px;font-weight:500}.weather-date{font-size:8px;opacity:.75;letter-spacing:.6px}.weather-summary{display:flex;align-items:center;justify-content:space-between}.weather-temp{font-size:43px;font-weight:300;letter-spacing:-2px;line-height:1.4}.weather-condition{text-align:right;font-size:10px;line-height:1.8}.weather-condition>.icon{width:26px;height:26px;fill:#fff;stroke:#fff;display:block;margin-left:auto}.weather-hours{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid #ffffff38;padding-top:9px;margin-top:4px}.weather-hour{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10px}.weather-hour span:first-child{font-size:8px;opacity:.8}.weather-hour .icon{width:17px;height:17px;fill:#fff;stroke:#fff}.weather-note{font-size:8px;opacity:.75;margin:10px 0 0;letter-spacing:.2px;text-align:center}.app-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px 12px;margin-top:25px}.app-tile{display:flex;align-items:center;flex-direction:column;padding:0;gap:6px;position:relative;width:100%;min-width:0}.app-tile>span:last-child{font-size:10px;color:#424a43;text-shadow:0 1px 4px #fff9;white-space:nowrap}.app-icon{width:53px;height:53px;border-radius:13px;display:grid;place-items:center;position:relative;box-shadow:0 4px 7px #665b6213;overflow:visible}.app-icon>.icon{width:32px;height:32px;stroke-width:1.9}.icon-kakao{background:#fee500;color:#3b1e1e}.kakao-mark{background:#3b1e1e;border-radius:50%;width:37px;height:29px;position:relative;display:grid;place-items:center;color:#fee500;font-family:Arial,sans-serif;font-size:10px;font-weight:900;letter-spacing:-.5px}.kakao-mark:after{content:'';position:absolute;bottom:-4px;left:7px;border-top:8px solid #3b1e1e;border-right:6px solid transparent;transform:rotate(12deg)}.icon-instagram{background:radial-gradient(circle at 28% 100%,#fed77b 2%,#fd9947 23%,#ea4568 45%,#c52e95 65%,#6f43c4 95%);color:white}.icon-instagram>.icon{width:37px;height:37px;stroke-width:1.65}.icon-photos{background:#fff}.petals{position:relative;width:41px;height:41px;filter:saturate(.9)}.petals i{position:absolute;top:1px;left:14px;width:14px;height:25px;border-radius:50%;transform-origin:7px 20px;opacity:.8}.icon-phone{background:linear-gradient(#65e976,#23bd47);color:white}.icon-phone>.icon{fill:white;stroke-width:1.1;width:32px;transform:rotate(-8deg)}.icon-sms{background:linear-gradient(#69e479,#26c744);color:white}.icon-sms>.icon{fill:white;stroke-width:0;width:38px;height:38px}.icon-safari{background:white;color:#2faaf6}.icon-camera{background:linear-gradient(#edeef1,#c4c6ca);color:#37383c}.icon-camera>.icon{width:39px;height:39px;fill:#58595b;stroke:#d9dade;stroke-width:1}.app-badge{position:absolute;top:-6px;right:-7px;min-width:19px;height:19px;background:#ef4f53;color:#fff;border-radius:12px;font-size:11px;display:grid;place-items:center;padding:0 5px;box-shadow:0 0 0 1px #e8dce4;z-index:2}.home-dock{margin-top:auto;flex-shrink:0;background:#ffffff68;backdrop-filter:blur(18px);border:1px solid #fff5;border-radius:23px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:13px 11px 10px;margin-left:-11px;margin-right:-11px}.home-dock .app-tile{gap:5px}.home-dock .app-tile>span:last-child{font-size:9px}.app-topbar{min-height:53px;display:flex;align-items:center;padding:9px 14px;gap:10px;flex-shrink:0;background:white;border-bottom:1px solid #eee}.app-title{font-size:23px;font-weight:700;letter-spacing:-.7px;margin:0;flex:1}.top-button{width:29px;height:31px;padding:2px;display:grid;place-items:center;flex-shrink:0}.top-button .icon{width:23px;height:23px}.header-back{color:#161616;width:24px;margin-left:-5px}.header-name{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}.header-name strong{font-size:13px}.header-name small{font-size:9px;color:#858585;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.avatar{width:46px;height:46px;object-fit:cover;border-radius:50%;background:#e9e4e3;flex-shrink:0}.avatar.small{width:33px;height:33px}.avatar.tiny{width:24px;height:24px}.avatar.large{width:70px;height:70px}.avatar.kakao-avatar{border-radius:17px}.avatar.small.kakao-avatar{border-radius:12px}.bottom-nav{height:54px;background:#fff;display:flex;align-items:center;justify-content:space-around;flex-shrink:0;border-top:1px solid #eee;padding:3px 4px}.bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:48px;min-height:40px;position:relative;gap:4px;color:#949494;font-size:8px}.bottom-nav button.active{color:#121212}.bottom-nav .icon{width:22px;height:22px}.bottom-nav .app-badge{height:14px;min-width:14px;top:-1px;right:2px;font-size:8px;padding:0 3px}.bottom-nav .avatar{height:24px;width:24px}.nav-icon-wrap{position:relative;display:block}.section-label{font-size:9px;color:#999;padding:13px 16px 7px;display:flex;justify-content:space-between}.list-row{width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:13px 16px;min-height:73px}.list-row:hover{background:#00000003}.list-row-copy{flex:1;min-width:0}.list-row-copy strong{font-size:13px;display:block;font-weight:600}.list-row-copy p{font-size:11px;color:#979797;margin:6px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5}.list-row-meta{align-self:flex-start;display:flex;flex-direction:column;align-items:flex-end;gap:8px;font-size:9px;color:#aaa;padding-top:5px}.unread-pill{display:grid;place-items:center;min-width:17px;height:17px;border-radius:12px;background:#f06768;color:white;font-size:10px;padding:0 4px}.self-row{padding-top:19px;padding-bottom:19px;margin-bottom:6px;border-bottom:1px solid #f2f2f2}.friend-status{font-size:9px;color:#b5b5b5}.chat-bg{background:#b8c9d7}.chat-bg .app-topbar{background:#b8c9d7;border-bottom:0}.chat-bg .status-bar{background:#b8c9d7}.chat-log{padding:12px 12px 20px;display:flex;flex-direction:column;gap:16px}.chat-date{font-size:9px;color:#536270;text-align:center;align-self:center;padding:5px 10px;border-radius:20px;background:#9bafbf66;margin-bottom:6px}.message-row{display:flex;gap:7px;align-items:flex-start;max-width:100%}.message-row.mine{justify-content:flex-end;margin-left:36px}.message-content{min-width:0;max-width:calc(100% - 45px)}.message-author{font-size:10px;margin:0 0 5px 1px;color:#53606d}.bubble-with-time{display:flex;gap:4px;align-items:flex-end}.message-row.mine .bubble-with-time{flex-direction:row-reverse}.bubble{background:#fff;border-radius:0 11px 11px 11px;padding:10px 11px;font-size:12px;line-height:1.65;overflow-wrap:anywhere;white-space:pre-wrap;max-width:246px;box-shadow:0 1px 1px #00000007}.mine .bubble{background:#fee500;border-radius:11px 0 11px 11px}.message-time{font-size:8px;color:#657787;white-space:nowrap;margin-bottom:1px;display:flex;flex-direction:column;gap:3px}.message-time .read{color:#e0b100;text-align:right}.chat-compose{display:flex;align-items:flex-end;padding:8px 9px;background:#fff;gap:7px;flex-shrink:0;border-top:1px solid #eee;min-height:48px}.chat-compose input{flex:1;min-width:0;border:1px solid #e6e6e6;border-radius:17px;padding:8px 12px;font-size:12px;background:#fafafa}.chat-compose button{padding:5px;flex-shrink:0;align-self:center;color:#979797}.chat-compose .send-button{background:#fee500;color:#32271c;border-radius:8px;width:32px;height:32px}.chat-compose .send-button .icon{width:18px;height:18px}.no-messages{margin:auto;text-align:center;color:#a1a1a1;padding:40px 20px;font-size:11px;line-height:1.9}.no-messages .icon{width:38px;height:38px;margin-bottom:15px;color:#bebebe}.chat-bg .no-messages{color:#6c8295}.ig-logo{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:26px;letter-spacing:-1.2px;margin:0;flex:1;font-weight:600}.ig-topbar{border-bottom:0}.story-tray{display:flex;gap:12px;padding:8px 13px 14px;border-bottom:1px solid #eee;overflow-x:auto;scrollbar-width:none;flex-shrink:0}.story-avatar{flex-shrink:0;width:58px;text-align:center;padding:0;font-size:9px;position:relative;display:flex;flex-direction:column;align-items:center;gap:6px}.story-ring{width:59px;height:59px;padding:3px;background:linear-gradient(25deg,#fccb66,#ed4775,#af36b5);border-radius:50%;display:grid;place-items:center}.story-ring.seen{background:#d9d9d9}.story-ring.empty{background:transparent}.story-ring>.avatar{width:53px;height:53px;border:2px solid #fff}.story-avatar-photo{position:relative;width:59px;height:59px;flex-shrink:0}.story-open{display:block;width:100%;height:100%;padding:0}.story-add{position:absolute;right:0;bottom:0;top:auto;border-radius:50%;height:19px;width:19px;padding:0;display:grid;place-items:center;line-height:1;background:#1683fb;color:#fff;border:2px solid white}.story-add>.icon{display:block;width:11px;height:11px;stroke-width:3}.post{padding-bottom:15px;border-bottom:1px solid #f1f1f1;background:#fff}.post-header{display:flex;align-items:center;gap:9px;padding:11px 12px}.post-header .avatar{width:29px;height:29px}.post-username{font-size:11px;font-weight:600;flex:1;min-width:0}.post-username small{display:block;font-size:8px;color:#888;font-weight:400;margin-top:2px}.post-image-wrap{aspect-ratio:1;position:relative;background:#eae8e2;overflow:hidden;touch-action:pan-y}.post-image{width:100%;height:100%;object-fit:cover;user-select:none}.slide-count{position:absolute;top:11px;right:11px;background:#0009;color:#fff;font-size:10px;padding:4px 7px;border-radius:12px}.slide-arrow{position:absolute;top:45%;width:25px;height:25px;border-radius:50%;background:#fff9;display:grid;place-items:center;padding:4px;box-shadow:0 1px 4px #0001}.slide-arrow svg{width:15px;height:15px}.slide-arrow.prev{left:9px}.slide-arrow.next{right:9px}.post-actions{display:flex;align-items:center;gap:12px;padding:10px 12px 6px}.post-actions button{padding:0;width:23px;height:25px;display:grid;place-items:center}.post-actions button:last-child{margin-left:auto}.post-actions .liked{color:#ee495d}.post-actions .icon{width:23px;height:23px}.slide-dots{display:flex;gap:4px;margin:auto;padding-right:30px}.slide-dots i{height:4px;width:4px;background:#d0d0d0;border-radius:50%}.slide-dots i.active{background:#2593ef}.post-details{padding:0 13px;font-size:11px;line-height:1.7}.post-likes{font-weight:600;font-size:10px;margin-bottom:3px}.post-caption strong{margin-right:5px}.comment-preview{color:#939393;padding:5px 0 0;font-size:10px;text-align:left;display:block}.post-date{font-size:8px;color:#aaa;margin-top:6px}.feed-empty{display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:center;padding:35px 25px;min-height:200px}.empty-decoration{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;border:1px solid #dfd9d5;color:#8c7f78;margin-bottom:15px}.empty-decoration>.icon{width:27px;height:27px}.feed-empty h3{font-size:15px;font-weight:500;margin:0 0 9px}.feed-empty p{font-size:11px;color:#a19b96;line-height:1.9;margin:0}.text-action{font-size:11px;color:#59836a;font-weight:600;margin-top:15px;padding:8px}.ig-chat{background:#fff}.ig-chat .message-author{color:#888}.ig-chat .bubble{border:1px solid #eee;border-radius:17px;padding:10px 13px;box-shadow:none}.ig-chat .mine .bubble{background:#e9e6fa;border-color:#e9e6fa}.ig-chat .message-time{color:#aaa}.ig-chat .chat-date{background:none;color:#aaa}.ig-chat .chat-compose{border-top:0;margin:0 9px 10px;border-radius:25px;border:1px solid #dedede;padding:5px 10px}.ig-chat .chat-compose input{border:0;background:#fff}.ig-chat .chat-compose .send-button{background:transparent;color:#7283d3;font-size:11px;width:auto;padding:0 4px}.dm-shared-post{padding:0;overflow:hidden;white-space:normal;width:180px;border-radius:14px}.dm-shared-post img{width:180px;height:180px}.dm-shared-post strong{display:block;font-size:10px;padding:8px 10px}.dm-shared-post p{padding:0 10px 9px;margin:0;font-size:10px;white-space:pre-wrap}.profile-info{padding:20px 16px 14px}.profile-stats{display:flex;align-items:center;gap:25px}.profile-numbers{display:flex;flex:1;justify-content:space-around}.profile-numbers div{display:flex;flex-direction:column;gap:4px;text-align:center;font-size:10px}.profile-numbers strong{font-size:16px}.profile-bio{font-size:11px;line-height:1.7;white-space:pre-wrap;margin-top:14px}.profile-bio strong{display:block;margin-bottom:3px}.profile-edit{width:100%;background:#f1f1f1;border-radius:7px;padding:7px;font-size:11px;font-weight:600;margin-top:13px}.profile-tabs{border-bottom:1px solid #ddd;display:flex;margin-top:2px}.profile-tabs span{width:50%;padding:12px;text-align:center}.profile-tabs .active{border-bottom:1px solid #161616}.profile-tabs .icon{width:20px}.profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}.profile-grid button{padding:0;position:relative;aspect-ratio:1;overflow:hidden}.profile-grid img{width:100%;height:100%}.profile-grid .icon{position:absolute;top:6px;right:6px;width:14px;height:14px;color:#fff;filter:drop-shadow(0 1px 2px #0005)}.photos-title{padding:17px 15px 13px}.photos-title h2{font-size:27px;letter-spacing:-.6px;margin:3px 0 6px}.photos-title small{font-size:10px;color:#8f8f8f}.photos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}.photo-tile{padding:0;aspect-ratio:1;position:relative;overflow:hidden;background:#e9e3df}.photo-tile img{height:100%;width:100%}.photo-tile-label{position:absolute;bottom:5px;left:6px;color:white;font-size:9px;text-shadow:0 1px 4px #0008}.photo-full{height:100%;display:flex;flex-direction:column;background:#fff}.photo-full-image{flex:1;min-height:0;display:grid;place-items:center;background:#f4f2ef}.photo-full-image img{width:100%;height:auto;max-height:100%;object-fit:contain}.photo-full-info{padding:12px 15px;font-size:11px;line-height:1.8;color:#777;background:#fff}.photo-full-info strong{color:#333;font-weight:500}.photo-toolbar{height:52px;border-top:1px solid #eee;display:flex;justify-content:space-between;align-items:center;padding:0 15px;color:#1683fb}.photo-toolbar button{font-size:12px;display:flex;gap:6px;align-items:center}.photo-toolbar .icon{width:21px}.phone-title{padding:15px 16px 10px;font-size:28px;letter-spacing:-.5px;font-weight:700;margin:0}.call-row{display:flex;gap:9px;align-items:center;padding:13px 15px;border-bottom:1px solid #f0f0f0}.call-direction{color:#999}.call-direction .icon{width:13px;height:13px}.call-row-copy{flex:1;min-width:0}.call-row-copy strong{font-size:12px;display:block;margin-bottom:4px}.call-row-copy small{font-size:10px;color:#aaa}.call-row time{font-size:10px;color:#999;white-space:nowrap}.info-button{padding:0;color:#1683fb;margin-left:5px}.info-button .icon{width:19px;height:19px}.ios-tabs{margin:0 16px 6px;background:#ededf0;display:flex;border-radius:7px;padding:2px}.ios-tabs button{flex:1;padding:5px;font-size:10px;border-radius:5px}.ios-tabs button.active{background:white;box-shadow:0 1px 3px #0002}.contact-detail{padding:25px 15px;text-align:center;background:linear-gradient(#f3f2f6,#fff 75%);flex:1}.contact-detail .avatar{width:86px;height:86px;margin:auto}.contact-detail h2{font-size:22px;margin:12px 0 7px}.contact-detail>p{font-size:11px;color:#aaa}.contact-buttons{display:flex;gap:8px;margin:23px 0}.contact-buttons button{display:flex;flex:1;flex-direction:column;align-items:center;gap:7px;background:#fff;padding:11px 5px;border-radius:9px;font-size:9px;color:#1683fb;box-shadow:0 2px 10px #00000003}.contact-buttons button:disabled{color:#aab2bc;opacity:1}.contact-field{text-align:left;background:#fff;padding:14px;border-radius:10px;font-size:11px;line-height:1.7;margin:10px 0}.contact-field span{display:block;color:#1683fb;margin-top:4px}.sms-title{font-size:28px;font-weight:700;margin:10px 15px}.sms-row{border-bottom:1px solid #eee}.sms-icon{width:41px;height:41px;border-radius:50%;display:grid;place-items:center;background:#b9bac0;color:white;flex-shrink:0}.sms-icon svg{width:25px}.sms-chat .bubble{background:#e9e9eb;border-radius:14px;color:#333}.sms-chat .message-content{max-width:100%}.sms-chat .chat-log{gap:14px}.sms-chat .chat-date{background:none;color:#aaa}.sms-chat .message-row{padding-right:30px}.sms-chat .message-time{color:#aaa}.sms-readonly{padding:15px;text-align:center;font-size:10px;color:#aaa;background:#f8f8f9}.search-box{display:flex;align-items:center;gap:6px;margin:2px 15px 10px;background:#f2f2f4;padding:7px 9px;border-radius:8px}.search-box .icon{width:15px;height:15px;color:#999}.search-box input{border:0;background:none;font-size:11px;min-width:0;flex:1}.list-empty{text-align:center;color:#aaa;font-size:12px;padding:40px 20px}.overlay-root:empty{display:none}.overlay-root{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;justify-content:flex-end;background:#0006;backdrop-filter:blur(3px)}.sheet{background:#fff;border-radius:18px 18px 0 0;max-height:94%;display:flex;flex-direction:column;animation:slide-up .2s ease-out;min-height:0}.sheet-handle{width:31px;height:4px;border-radius:5px;background:#d7d7d7;align-self:center;margin-top:7px;margin-bottom:1px;flex-shrink:0}.sheet-header{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid #eee;gap:10px;flex-shrink:0}.sheet-header h2{font-size:14px;margin:0;font-weight:600}.sheet-header button{font-size:11px;color:#697d9b;padding:3px 0;min-width:26px}.sheet-header .icon{height:20px;width:20px}.sheet-scroll{padding:15px;overflow-y:auto;overscroll-behavior:contain}.sheet-description{font-size:11px;line-height:1.9;color:#8d8d8d;margin:0 0 15px}.sheet-section-label{font-size:10px;font-weight:600;color:#666;margin:4px 0 10px;display:block}.sheet-photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:15px}.sheet-photo-choice{position:relative;aspect-ratio:1;padding:0;border-radius:5px;overflow:hidden}.sheet-photo-choice img{width:100%;height:100%}.selection-number{position:absolute;top:5px;right:5px;width:21px;height:21px;background:#ffffff55;border:1.5px solid #fff;border-radius:50%;color:#fff;font-size:10px;display:grid;place-items:center}.selected .selection-number{background:#a77b8b;border-color:#a77b8b}.selected:after{content:'';position:absolute;inset:0;border:3px solid #a77b8b;border-radius:5px;pointer-events:none}.upload-button{width:100%;border:1px dashed #cfc5c9;padding:11px;border-radius:9px;display:flex;gap:7px;align-items:center;justify-content:center;font-size:11px;color:#9d7c88}.upload-button .icon{width:16px;height:16px}.compose-preview{display:flex;overflow-x:auto;gap:7px;scrollbar-width:none;margin:15px 0 10px}.compose-preview button{padding:0;width:65px;height:65px;flex-shrink:0;position:relative}.compose-preview img{width:100%;height:100%;border-radius:5px}.remove-image{position:absolute;top:2px;right:2px;border-radius:50%;background:#0008;color:#fff;width:15px;height:15px;display:grid;place-items:center;font-size:11px}.compose-count{font-size:9px;color:#aaa;margin:6px 0 12px}.field-label{font-size:10px;color:#888;display:block;margin:12px 0 5px}.text-field{border:1px solid #e0e0e0;background:#fafafa;border-radius:8px;font-size:12px;padding:10px;width:100%;resize:vertical;color:#353535;line-height:1.7}.text-field:focus{border-color:#ac91a0;background:#fff}.primary-button{background:#526a5c;color:#fff;padding:12px;border-radius:9px;font-size:12px;width:100%;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:7px}.primary-button.danger{background:#b76c72}.secondary-button{border:1px solid #ddd;color:#777;padding:10px;font-size:11px;border-radius:9px;width:100%;margin-top:10px}.share-choice{display:flex;align-items:center;gap:12px;padding:14px 0;width:100%;border-bottom:1px solid #eee;text-align:left}.share-choice>.icon{width:25px;height:25px;color:#927c86}.share-choice strong{display:block;font-size:12px;font-weight:500}.share-choice small{font-size:10px;color:#aaa;display:block;margin-top:5px}.share-choice>div{flex:1}.share-choice>.icon:last-child{width:15px}.comment-row{display:flex;gap:9px;margin-bottom:18px;align-items:flex-start}.comment-content{font-size:11px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere;flex:1;min-width:0}.comment-content strong{font-weight:600;margin-right:5px}.comment-content small{display:block;font-size:9px;color:#aaa;margin-top:3px}.comments-empty{font-size:11px;color:#aaa;text-align:center;padding:25px 0 35px}.comments-sheet{min-height:55%;max-height:88%}.share-recipient{display:flex;align-items:center;gap:10px;width:100%;padding:10px 0;text-align:left}.share-recipient>div{flex:1}.share-recipient strong{font-size:12px;display:block}.share-recipient small{font-size:10px;color:#999}.share-send{font-size:10px;color:#fff;background:#8c86b4;border-radius:7px;padding:7px 13px}.settings-tabs{display:flex;gap:7px;padding:12px 15px 0}.settings-tabs button{padding:7px 11px;border-radius:20px;background:#f2f0ef;color:#999;font-size:10px}.settings-tabs button.active{background:#e6dce0;color:#805b6b}.form-row{display:flex;gap:8px}.form-row>label{flex:1;min-width:0}.settings-note{font-size:10px;color:#aaa;line-height:1.8;margin-top:10px}.settings-section{border-bottom:1px solid #eee;padding:0 0 15px;margin-bottom:13px}.settings-section h3{font-size:12px;font-weight:600;margin:0 0 8px}.settings-section p{font-size:10px;line-height:1.9;color:#999}.help-list{padding:0 0 0 17px;margin:0;font-size:11px;line-height:1.9;color:#777}.help-list li{margin-bottom:12px}.help-list strong{color:#444}.storage-status{font-size:10px;color:#889584;line-height:1.9}.modal-buttons{display:flex;gap:9px}.modal-buttons button{flex:1}.error-note{padding:10px;border-radius:8px;background:#fff1ef;color:#af6d66;font-size:10px;margin:10px 0;line-height:1.7}.story-viewer{position:absolute;inset:0;background:#1b1b1b;color:#fff;display:flex;flex-direction:column}.story-bars{display:flex;gap:3px;padding:10px 8px 7px;flex-shrink:0}.story-bars span{height:2px;background:#ffffff4d;flex:1;overflow:hidden;border-radius:2px}.story-bars i{display:block;height:100%;width:0;background:#fff}.story-bars .done i{width:100%}.story-bars .current i{animation:story-fill 6s linear forwards}.story-heading{display:flex;align-items:center;gap:8px;padding:5px 12px 12px;flex-shrink:0;position:relative;z-index:2}.story-heading>div{flex:1;min-width:0}.story-heading strong{font-size:11px}.story-heading small{color:#ffffff80;font-size:9px;margin-left:7px}.story-heading button{color:white;padding:0}.story-picture{flex:1;min-height:0;position:relative;display:flex;align-items:center;justify-content:center}.story-picture img{width:100%;height:100%;object-fit:contain}.story-tap{position:absolute;inset:0;display:flex}.story-tap button{width:66%;padding:0;outline-offset:-4px}.story-tap button:first-child{width:34%}.story-footer{padding:14px 12px 20px;font-size:10px;color:#ffffffa0;display:flex;justify-content:space-between;align-items:center}.story-footer button{color:#fff;display:flex;align-items:center;gap:7px;font-size:11px}.story-footer svg{width:18px}.story-paused .story-bars .current i{animation-play-state:paused}.toast{position:absolute;z-index:50;top:8px;left:8px;right:8px;padding:12px;display:flex;align-items:center;gap:9px;border-radius:13px;background:#fffffff2;box-shadow:0 4px 22px #0002;backdrop-filter:blur(16px);font-size:11px;line-height:1.5;color:#303030;animation:toast-in .25s ease-out;text-align:left;width:calc(100% - 16px)}.toast .avatar{width:32px;height:32px}.toast>div{min-width:0;flex:1}.toast strong{display:block;font-size:10px;margin-bottom:2px}.toast p{margin:0;font-size:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.toast-simple{top:auto;bottom:12px;background:#303830ed;color:white;text-align:center;display:block;width:auto;max-width:calc(100% - 24px);left:12px;right:12px;padding:11px;font-size:11px}.notification-dot{width:7px;height:7px;background:#ff5571;border-radius:50%;position:absolute;right:-2px;top:0}.link-source{font-size:10px;color:#699477;word-break:break-word}.weather-detail{text-align:center;background:linear-gradient(#6b8798,#a2b7c1);color:white;border-radius:12px;padding:20px 15px}.weather-detail>.icon{width:42px;height:42px;fill:#fff;margin:7px}.weather-detail h3{font-weight:400;font-size:18px;margin:4px}.weather-detail .weather-temp{font-size:65px}.weather-detail p{font-size:11px;line-height:1.9}.weather-detail+.settings-note{margin-top:15px}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 
 /* The phone uses a full screen with an on-screen Home indicator. */
 .status-bar{height:40px;padding:2px 23px 0;font-size:12px}.status-bar.wallpaper-status{color:#fff;text-shadow:0 1px 6px #0009}.app-root{padding-bottom:var(--home-height)}.app-home .app-root,.app-lock .app-root,.app-setup .app-root{padding-bottom:0}.boot{background:#fff;color:#888;font-size:12px;gap:0}
@@ -21,31 +21,63 @@
 .screen.has-story .home-indicator{background:#1b1b1b}.screen.has-story .home-indicator>span{background:#fff}.sheet{padding-bottom:var(--home-height)}.story-viewer{padding-bottom:var(--home-height)}.story-footer{padding-bottom:14px}.toast-simple{bottom:calc(var(--home-height) + 10px)}.screen.app-kakao .status-bar{background:#fff}.screen.app-kakao.is-chat .status-bar{background:#b8c9d7}.screen.app-phone .status-bar,.screen.app-sms .status-bar{background:#fff}.sheet .avatar.large{margin-left:auto;margin-right:auto}
 .keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:15px 25px;padding:30px 45px}.keypad button{width:62px;height:62px;border-radius:50%;background:#f0f0f1;font-size:27px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px;justify-self:center}.keypad small{font-size:8px;letter-spacing:2px}.keypad .call-key{background:#47c665;color:#fff}.keypad .call-key .icon{width:26px;height:26px;fill:currentColor}.phone-bottom button.active{color:#1683fb}
 @keyframes slide-up{from{transform:translateY(30px);opacity:.5}to{transform:translateY(0);opacity:1}}@keyframes toast-in{from{transform:translateY(-10px);opacity:0}to{transform:translateY(0);opacity:1}}@keyframes story-fill{from{width:0}to{width:100%}}
-@media(max-width:500px){:root{--screen-radius:0;--home-height:calc(27px + env(safe-area-inset-bottom))}body{background:#fff}.stage{padding:0;min-height:100dvh}.device{width:100vw;height:100dvh;padding:0;border-radius:0;background:#fff;box-shadow:none}.screen{border-radius:0}.status-bar{height:calc(38px + env(safe-area-inset-top));padding-top:calc(2px + env(safe-area-inset-top))}.home-indicator>span{margin-bottom:calc(8px + env(safe-area-inset-bottom))}.home-screen{padding-top:calc(56px + env(safe-area-inset-top));padding-bottom:calc(40px + env(safe-area-inset-bottom))}.lock-screen{padding-top:calc(77px + env(safe-area-inset-top))}.setup-screen{padding-top:58px}.bottom-nav{height:56px}.app-topbar{min-height:55px}}
-@media(max-height:690px){.home-screen{padding-top:calc(46px + env(safe-area-inset-top));padding-bottom:calc(38px + env(safe-area-inset-bottom))}.weather-widget{padding:11px 14px}.weather-temp{font-size:35px}.weather-hours{padding-top:6px;margin-top:2px}.weather-hour{gap:3px}.app-grid{margin-top:18px}.app-icon{width:49px;height:49px;border-radius:12px}.home-dock{padding:10px 11px 8px}.icon-safari>.safari-dial{height:42px;width:42px}.lock-screen{padding-top:calc(60px + env(safe-area-inset-top))}.lock-time{font-size:65px}.lock-notifications{margin-top:22px}.setup-screen{padding-top:35px}.setup-heading{margin-bottom:20px}}
+@media(max-width:500px){:root{--stage-gap:12px;--screen-radius:34px;--home-height:30px}.device{padding:6px;border-radius:40px}.status-bar{height:38px;padding-top:2px}.home-screen{padding-top:56px;padding-bottom:43px}.lock-screen{padding-top:77px}.setup-screen{padding-top:58px}.bottom-nav{height:56px}.app-topbar{min-height:55px}}
+@media(max-height:690px){.home-screen{padding-top:46px;padding-bottom:38px}.weather-widget{padding:11px 14px}.weather-temp{font-size:35px}.weather-hours{padding-top:6px;margin-top:2px}.weather-hour{gap:3px}.app-grid{margin-top:18px}.app-icon{width:49px;height:49px;border-radius:12px}.home-dock{padding:10px 11px 8px}.icon-safari>.safari-dial{height:42px;width:42px}.lock-screen{padding-top:60px}.lock-time{font-size:65px}.lock-notifications{margin-top:22px}.setup-screen{padding-top:35px}.setup-heading{margin-bottom:20px}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+
+.dialogue-choices{display:flex;flex-direction:column;gap:7px;padding:9px 12px;background:#ffffffd9;border-top:1px solid #00000008;flex-shrink:0;max-height:35%;overflow-y:auto}.dialogue-choices button{padding:11px 13px;background:#fff;border:1px solid #d9dfe5;border-radius:13px;text-align:left;font-size:12px;line-height:1.5;overflow-wrap:anywhere;min-height:42px}.dialogue-choices button:active{background:#eef3f7}.chat-bg .dialogue-choices{background:#b8c9d7}.chat-bg .dialogue-choices button{border-color:#ffffff90}.ig-chat .dialogue-choices button{border-color:#dedaf1;color:#65599b}.typing-indicator{display:flex;gap:4px;align-items:center;align-self:flex-start;padding:12px 14px;background:#ffffffc9;border-radius:12px}.typing-indicator i{width:5px;height:5px;background:#95a1ab;border-radius:50%;animation:typing-pulse 1s infinite alternate}.typing-indicator i:nth-child(2){animation-delay:.2s}.typing-indicator i:nth-child(3){animation-delay:.4s}@keyframes typing-pulse{to{opacity:.3}}
+
+.chat-compose .quick-emoji{width:32px;height:32px;padding:0;display:grid;place-items:center;font-family:"Apple Color Emoji","Segoe UI Emoji",sans-serif;font-size:22px;line-height:1;color:#111;border-radius:8px}.chat-compose .quick-emoji:active{background:#f1f1f1}
+.comment-content .comment-text{white-space:pre-wrap;overflow-wrap:anywhere}.comment-meta{display:flex;align-items:center;gap:13px;margin-top:5px;color:#929292;white-space:normal;font-size:9px;line-height:1.6}.comment-meta button{padding:0;color:#929292;font-size:9px;font-weight:600;min-height:22px}.comment-meta time{white-space:nowrap}.comment-heart{display:grid;place-items:center;flex-shrink:0;width:27px;height:30px;padding:6px 3px;color:#777;margin-top:0}.comment-heart .icon{width:15px;height:15px;stroke-width:1.5}.comment-heart.liked{color:#ed4956}.comment-mention{color:#3577a8}.comment-replies{margin-left:41px}.comment-replies .avatar{width:26px;height:26px}.comment-replies .comment-row{gap:8px;margin-bottom:15px}.thread-toggle{display:flex;align-items:center;gap:10px;padding:0 0 15px;margin-left:41px;color:#999;font-size:9px;font-weight:600;min-height:30px}.thread-toggle>span{height:1px;width:25px;background:#c9c9c9}.comment-replying{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#f4f4f4;color:#888;padding:7px 12px;font-size:10px;flex-shrink:0}.comment-replying button{padding:2px;color:#999}.comment-replying .icon{width:17px;height:17px}.comment-divider{height:1px;background:#eee;margin:5px 0 18px}.like-person{display:flex;align-items:center;gap:10px;padding:10px 0}.like-person strong{display:block;font-size:12px;font-weight:600}.like-person small{display:block;font-size:10px;color:#999;margin-top:4px}.comments-sheet .sheet-scroll{scrollbar-width:thin}.comment-thread:last-child>.comment-row{margin-bottom:12px}
+
+.fan-avatar{display:inline-flex;align-items:center;justify-content:center;color:#655768;font-size:14px;font-weight:600;flex-shrink:0;user-select:none}
+
+
+.setup-disclaimer{margin:22px 0 0;font-size:11px;line-height:1.9;color:#72727b;text-align:center}
 </style>
-    <script>/* 劇本編輯區：直接修改本檔即可。所有人物互動皆為同人虛構。
- * 初始訊息只套用於新存檔；修改後可到「遊戲設定 → 重新開始」。
- * keywordRules 預留空白，不會自行產生 AI 回覆。設定範例見 README。
+    <script>/*
+ * ITZY 手機設定與劇本（人物互動皆為同人虛構）
+ *
+ * 編輯方式：直接修改下方設定，欄位範例與完整說明見 README.md。
+ * - 玩家預設資料、開場訊息與開局排程主要用於新存檔；測試時可用「設定 → 重新開始」。
+ * - 玩家已修改的資料以瀏覽器存檔為準；已完成的對話與配圖事件不會因修改本檔而重播。
+ * - 時間欄位 delay、spacing、refreshMs 等皆以毫秒計算：1000 = 1 秒。
+ * - 互動文字可用 {{nickname}} 代入玩家稱呼、{{name}} 代入玩家顯示名稱。
+ * - 粉絲誇誇台詞另以 {{member}} 代入照片中的成員名稱。
  */
 window.PHONE_CONFIG = {
-  player: { name: "김서연", nickname: "", username: "seoyeon.zip", bio: "", avatar: "assets/avatar-me.svg" },
-  // 每張照片的預設說明；玩家也能在「照片」裡自行修改，並儲存在存檔。
-  photoDescriptions: { yeji:"",lia:"",ryujin:"",chaeryeong:"",yuna:"" },
+  // 1. 玩家與照片：玩家可在開局設定帳號、稱呼，之後也能在設定中修改。
+  player: { name: "믿지", nickname: "midzy", username: "midzyloveitzy", bio: "", avatar: "assets/avatar-me.svg" },
+  // 相簿照片的預設說明；玩家自行編輯後以存檔為準，分享單張照片時會帶入發文說明。
+  photoDescriptions: {
+    yeji:"Yeji 傳來的自拍照",
+    lia:"和 Lia 一起去吃飯的時候拍的",
+    ryujin:"和 Ryujin 一起去逛街的時候拍的",
+    chaeryeong:"和 Chaeryeong 一起出去玩的時候拍的",
+    yuna:"Yuna 傳來的自拍照"
+  },
+  // 鎖定畫面與主畫面的桌布路徑。
   wallpapers: { lock: "photo/lockscreen.jpg", home: "photo/homescreen.jpg" },
+
+  // 2. 成員資料與圖片路徑。
+  // id 是聊天室、劇本與照片的共用識別碼；username 是 Instagram 帳號。
+  // name / displayName / korean 分別為一般顯示名稱、Instagram 名稱、韓文名稱。
   members: [
-    { id: "yeji", name: "Yeji", displayName: "YEJI", korean: "예지", username: "yezyizhere", color: "#d9c3b5", emoji: "🐈", observer: "ryujin" },
-    { id: "lia", name: "Lia", displayName: "LIA", korean: "리아", username: "lia_loves___", color: "#d8c3d9", emoji: "🤍", observer: "yuna" },
-    { id: "ryujin", name: "Ryujin", displayName: "RYUJIN", korean: "류진", username: "iamfinethankyouandryu", color: "#bdcdd1", emoji: "🐱", observer: "chaeryeong" },
-    { id: "chaeryeong", name: "Chaeryeong", displayName: "CHAERYEONG", korean: "채령", username: "chaerrry0", color: "#cbd4bd", emoji: "🦊", observer: "lia" },
-    { id: "yuna", name: "Yuna", displayName: "YUNA", korean: "유나", username: "igotyuandme", color: "#e5c3c7", emoji: "🐰", observer: "yeji" }
+    { id: "yeji", name: "Yeji", displayName: "YEJI", korean: "예지", username: "yezyizhere", color: "#d9c3b5", emoji: "🐈" },
+    { id: "lia", name: "Lia", displayName: "LIA", korean: "리아", username: "lia_loves___", color: "#d8c3d9", emoji: "🤍" },
+    { id: "ryujin", name: "Ryujin", displayName: "RYUJIN", korean: "류진", username: "iamfinethankyouandryu", color: "#bdcdd1", emoji: "🐱" },
+    { id: "chaeryeong", name: "Chaeryeong", displayName: "CHAERYEONG", korean: "채령", username: "chaerrry0", color: "#cbd4bd", emoji: "🦊" },
+    { id: "yuna", name: "Yuna", displayName: "YUNA", korean: "유나", username: "igotyuandme", color: "#e5c3c7", emoji: "🐰" }
   ],
+  // pairedPhoto 的 side：me 是玩家上傳的照片，her 是成員接著發佈的對應照片。
   assets: {
     instagramAvatar: id => `photo/ins/profile/${id}.jpg`,
-    phoneAvatar: id => `photo/ins/profile/${id}.jpg`, // 目前沿用現有頭貼；可改為 photo/phone/ 下的個別照片
+    phoneAvatar: id => `photo/ins/profile/${id}.jpg`, // 電話聯絡人目前共用 Instagram 頭貼，可自行換成其他路徑。
     pairedPhoto: (id, side) => `photo/ins/${id}/${side}.jpg`
   },
+
+  // 3. 首爾天氣：固定保存的預報快照，不會每天更新。
+  // date / checkedAt / source 用於標示資料日期與來源；手機時鐘另依瀏覽器時間顯示。
   weather: {
     date: "2026-10-24", city: "首爾", temperature: 19, condition: "多雲", high: 19, low: 12,
     note: "傍晚漸涼，出門記得帶件外套。",
@@ -54,30 +86,291 @@ window.PHONE_CONFIG = {
     sourceLabel: "Time and Date / CustomWeather；小時資料：建立時天氣查詢",
     checkedAt: "2026-10-24（首爾時間）"
   },
-  // 以下為可自由替換的開場示範，不是成員的真實訊息。
+
+  // 4. 開場訊息：每位成員的陣列依序放入聊天室，只在建立新存檔時套用。
+  // KKT 歡迎訊息的回覆選項設在下方 dialogues → 成員 → nodes.welcome。
+  // Instagram 目前沒有開場訊息，私訊由照片劇情觸發。
   initialMessages: {
     kakao: {
-      yeji: ["{{nickname}}，今天也要記得吃飯 🤍"], lia: ["下次一起去上次說的那間咖啡廳？"],
-      ryujin: ["{{nickname}}，你在幹嘛？"], chaeryeong: ["回家了嗎？外面有點涼。"], yuna: ["看到好看的天空就想到你，{{nickname}} ☁️"]
+      yeji: ["{{nickname}}，今天也要記得吃飯 🖤"], lia: ["下次一起去上次說的那間咖啡廳？"],
+      ryujin: ["{{nickname}}，你在幹嘛？"], chaeryeong: ["回家了嗎？外面有點涼。"], yuna: ["看到好看的天空就想到你"]
     },
     instagram: { yeji: [], lia: [], ryujin: [], chaeryeong: [], yuna: [] }
   },
-  // 可設定成員在開啟遊戲後主動傳來的訊息。空陣列表示沒有。
-  // { id:"hello-1", channel:"kakao", member:"yeji", delay:5000, text:"你今天有空嗎？" }
-  incomingMessages: [],
-  keywordRules: { kakao: [], instagram: [] },
-  // 範例：{ id:"dinner", member:"yeji", keywords:["吃飯","晚餐"], replies:["想吃什麼？"], delay:1200, once:true }
-  photoEvents: {
-    dmDelay: 1200, postDelay: 3500, observerDelay: 2200,
-    scripts: {
-      yeji: { question:"{{nickname}}，怎麼突然把這張放上來了？那天的照片你還留著喔 🤍", caption:"那就放一張，同一天的。☁️", observer:"等一下，你跟 Yeji 發的照片……是同一天拍的吧？" },
-      lia: { question:"{{nickname}}，你上傳了那天的照片？為什麼突然想到這張 ☺️", caption:"a little memory with you 🤍", observer:"你跟 Lia 姐姐的貼文怎麼有點像？你們一起出去的？" },
-      ryujin: { question:"{{nickname}}，這張你居然還留著。怎麼突然發了？", caption:"same day, different view.", observer:"我是不是發現了什麼？你跟 Ryujin 的照片好像對得起來耶。" },
-      chaeryeong: { question:"{{nickname}}，是我們那天拍的……你怎麼選了這張？", caption:"想把那天再留久一點。🌿", observer:"你跟 Chaeryeong 是不是有事情沒跟我說？我看到照片了喔。" },
-      yuna: { question:"{{nickname}}！這張！你怎麼突然發上來了 🥺", caption:"my favorite kind of day 🎀", observer:"你跟 Yuna 今天的貼文……怎麼看起來是在一起？" }
+
+  // 5. KKT 快速 emoji：value 是傳送按鈕旁的 emoji，也可手動輸入後送出。
+  // replies 依成員分組；外層陣列是隨機選一組，內層陣列是該組依序傳送的訊息。
+  // delay 是每則回覆的間隔；此互動不推進下方的選項式對話。
+  kakaoEmoji: {
+    value:"❤️",delay:900,
+    replies:{
+      yeji:[
+        ["❤️","這顆愛心我收下了"],
+        ["突然傳這個，是在想我嗎？","那我也回你一顆 🖤"],
+        ["這顆我先收好。","你本人什麼時候出現？"]
+      ],
+      lia:[
+        ["收到你的愛心了☺️","今天有發生什麼開心的事嗎？"],
+        ["在撒嬌嗎？","好啦，我有看到。再陪我聊一下？"],
+        ["❤️","今天也要好好吃飯，吃飽了再來找我"]
+      ],
+      ryujin:[
+        ["只有愛心？","本人呢？"],
+        ["❤️","好了，現在換你說想我"],
+        ["突然這麼可愛","我剛剛差點對著手機笑出來"]
+      ],
+      chaeryeong:[
+        ["突然這樣……","害我盯著手機笑了好久"],
+        ["收到啦，{{nickname}}。","我也想你❤️"],
+        ["你是不是有事情想跟我說？","我會一直聽你講的"]
+      ],
+      yuna:[
+        ["只有一顆嗎？","❤️❤️❤️", "我要給你三顆"],
+        ["{{nickname}}你是不是想我了！","我剛剛也正想傳訊息給你"],
+        ["這顆愛心我截圖了","下次見面的時候，也要對我比一次愛心"]
+      ]
     }
   },
-  seedStories: true,
+
+  // 6. 選項式對話：目前只在 KKT 啟用，Instagram 使用下方照片劇情。
+  // start 指定歡迎節點，randomStart 指定隨機日常對話的起點；next 必須對應到已有節點。
+  // welcome.initial: true 沿用原有歡迎訊息，直接顯示一個選項，不再傳送一次開場文字。
+  // message 是成員台詞；choices[].text 是玩家點選後送出的文字。
+  // choices[].next 指定下一個節點，choices[].delay 可調整回覆延遲（預設 900 毫秒）。
+  // 沒有 choices 的節點代表對話結束；選項 id 在同一節點內不可重複。
+  dialogueChannels: ["kakao"],
+  // 每位成員各自完成歡迎對話，才可被抽中開啟日常對話；不需等待其他成員。
+  // 歡迎流程：成員開場 → 玩家選一個回覆 → 成員 response 回應後結束。
+  // responseDelay 可設定最後回應的等待時間，預設 1200 毫秒；收到後才解鎖該成員。
+  // 同時只進行一位成員的日常對話，結束後再等待 45～120 秒；同一段對話不重複觸發。
+  randomDialogues:{enabled:true,delay:[45000,120000]},
+  dialogues: {
+    yeji: {
+      start:"welcome",randomStart:"invite",
+      nodes:{
+        welcome:{initial:true,response:"那就好，別又忙到忘記吃飯 🖤",choices:[{id:"reply",text:"我有好好吃飯，你也是 🖤"}]},
+        invite:{message:"{{nickname}}，今天有空嗎？想找你一起出去。",choices:[
+          {id:"coffee",text:"一起去喝咖啡？",next:"coffee"},
+          {id:"later",text:"今天有點忙，改天好嗎？",next:"later"}
+        ]},
+        coffee:{message:"好啊！你想下午去，還是晚上？",choices:[
+          {id:"afternoon",text:"下午吧，我想坐窗邊。",next:"afternoon"},
+          {id:"evening",text:"晚上見，吃完飯再去。",next:"evening"}
+        ]},
+        afternoon:{message:"那就下午，我先去找間有窗邊座位的店🖤"},
+        evening:{message:"好，晚上見。到時候傳訊息給我。"},
+        later:{message:"沒關係，先忙你的。等你有空再約。"}
+      }
+    },
+    lia: {
+      start:"welcome",randomStart:"invite",
+      nodes:{
+        welcome:{initial:true,response:"說好了喔，我先把那間店存起來 ☺️",choices:[{id:"reply",text:"好啊，下次一起去！"}]},
+        invite:{message:"{{nickname}}，我看到一家新開的甜點店，要不要一起去？",choices:[
+          {id:"yes",text:"好啊，想和你一起吃甜點。",next:"yes"},
+          {id:"takeout",text:"買回來一起吃好不好？",next:"takeout"}
+        ]},
+        yes:{message:"那我把地址傳給你，我們在店門口見 ☺️"},
+        takeout:{message:"好主意。你想吃什麼？我順路帶過去。"}
+      }
+    },
+    ryujin: {
+      start:"welcome",randomStart:"invite",
+      nodes:{
+        welcome:{initial:true,response:"剛忙完就先休息一下，晚點再找你。",choices:[{id:"reply",text:"剛忙完，在想要不要找你出去。"}]},
+        invite:{message:"{{nickname}}，晚上要不要一起看電影？",choices:[
+          {id:"choose",text:"好啊，這次讓我選片。",next:"choose"},
+          {id:"walk",text:"比起電影，我比較想和你出去走走。",next:"walk"}
+        ]},
+        choose:{message:"可以。那爆米花我選。"},
+        walk:{message:"也行。我們一起想想要去哪。"}
+      }
+    },
+    chaeryeong: {
+      start:"welcome",randomStart:"invite",
+      nodes:{
+        welcome:{initial:true,response:"那我就放心了，你也先休息一下 🤍",choices:[{id:"reply",text:"到家了，你也記得穿暖一點。"}]},
+        invite:{message:"{{nickname}}，吃晚餐了嗎？",choices:[
+          {id:"together",text:"還沒，要一起吃嗎？",next:"together"},
+          {id:"dessert",text:"吃過了，但可以陪你吃。",next:"dessert"}
+        ]},
+        together:{message:"好啊，我也還沒吃。我們找間近一點的吧。"},
+        dessert:{message:"那我請你吃飯後甜點。"}
+      }
+    },
+    yuna: {
+      start:"welcome",randomStart:"invite",
+      nodes:{
+        welcome:{initial:true,response:"約好了！看到漂亮的天空也要傳給我喔。",choices:[{id:"reply",text:"好漂亮！下次一起看天空。"}]},
+        invite:{message:"{{nickname}}！我想出去拍照，你陪我好不好？",choices:[
+          {id:"photos",text:"好，我幫你拍。",next:"photos"},
+          {id:"together",text:"可以，但你也要跟我一起入鏡。",next:"together"}
+        ]},
+        photos:{message:"那我要把今天拍得最好看的那張留給你🎀"},
+        together:{message:"當然！我連合照的姿勢都想好了。"}
+      }
+    }
+  },
+
+  // 7. 額外來訊與關鍵字回覆：目前皆留空，不會產生 AI 回覆。
+  // incomingMessages 在新存檔中排程；delay 從建立進度起算，開局設定期間會暫停計時。
+  // 範例：{ id:"hello-1", channel:"kakao", member:"yeji", delay:5000, text:"你今天有空嗎？" }
+  incomingMessages: [],
+  // keywordRules 按 App 分組；成員與任一關鍵字符合時，才依序送出 replies。
+  // 規則 id 不可重複；once: true 表示每份存檔只觸發一次，delay 是逐則回覆的間隔。
+  // kakao 陣列範例：{ id:"dinner", member:"yeji", keywords:["吃飯","晚餐"], replies:["想吃什麼？"], delay:1200, once:true }
+  keywordRules: { kakao: [], instagram: [] },
+
+  // 8. 配圖劇情：玩家選相簿中的成員照片分享後觸發，每位成員每份存檔只觸發一次配圖互動。
+  // 順序：本人私訊 → 本人發貼文 → 本人在玩家貼文留言 → 其他成員留言 → 本人再次私訊。
+  // 分享限動也可觸發私訊與對應貼文，但不產生公開留言；成員的對應照片會發成貼文。
+  photoEvents: {
+    dmDelay: 30000,       // 玩家分享後，等待第一則私訊：30 秒。
+    postDelay: 30000,     // 第一則私訊出現後，等待成員發貼文：30 秒。
+    followUpDelay: 30000, // 最後一則預定留言出現後，等待本人再次追問：30 秒。
+    // question 是第一則私訊，caption 是成員貼文說明，followUp 是本人再次追問的私訊。
+    scripts: {
+      yeji: { followUp:"{{nickname}}，我的貼文你看到了嗎？你還沒跟我說，怎麼突然想發那張照片 🖤", question:"{{nickname}}，怎麼突然把這張放上來了？那天的照片你還留著喔 🤍", caption:"那就放一張，同一天的。☁️" },
+      lia: { followUp:"我也把那天的照片放上去了。{{nickname}}，所以是突然想起那天了嗎？", question:"{{nickname}}，你上傳了那天的照片？為什麼突然想到這張 ☺️", caption:"a little memory with you 🤍" },
+      ryujin: { followUp:"看到我剛發的了吧？所以，怎麼突然挑了那張？", question:"{{nickname}}，這張你居然還留著。怎麼突然發了？", caption:"same day, different view." },
+      chaeryeong: { followUp:"我也發了那天的照片。{{nickname}}，你是不是也有點想再一起出去了？", question:"{{nickname}}，是我們那天拍的……你怎麼選了這張？", caption:"想把那天再留久一點。🌿" },
+      yuna: { followUp:"{{nickname}}，看到我發的照片了嗎！所以你今天怎麼突然想放那張呀？", question:"{{nickname}}！這張！你怎麼突然發上來了 🥺", caption:"my favorite kind of day 🎀" }
+    }
+  },
+
+  // 9. 玩家貼文的成員留言：照片本人必定留言，其他成員隨機留正面回應。
+  // 相同照片再次發成新貼文，仍會產生新留言；配圖私訊互動則不重播。
+  // 首次分享時，memberDelay / otherDelay 從成員發出對應貼文起算；重複分享則從玩家發文起算。
+  postComments:{
+    memberDelay:15000,    // 成員發出對應貼文後，等待本人在玩家貼文留言：15 秒。
+    otherDelay:20000,     // 從成員發出對應貼文起算，其他成員最早開始留言：20 秒。
+    spacing:3000,        // 本人留言之後，其他成員逐一留言的間隔：3 秒。
+    otherChance:0.5,      // 每位其他成員觸發留言的機率，0～1；目前為 50%。
+    maxOthers:2,          // 每則玩家貼文最多有幾位其他成員留言。
+    replyLikeDelay:10000, // 玩家回覆留言後，對方替該回覆按讚的等待時間：10 秒。
+    // contexts 由上往下比對，採用第一個符合的情境；貼文說明為空時使用照片說明。
+    // keywords 任一詞符合即可；exclude 任一詞符合時，略過該情境。
+    // memberReplies 是照片本人的台詞，otherReplies 是其他成員的台詞；每次各隨機抽一句。
+    contexts:[
+      {id:"sentSelfie",keywords:["傳來的自拍","傳給我的自拍","傳給你的自拍"],exclude:["不是自拍","並非自拍","非自拍"],
+        memberReplies:["那張自拍你還留著喔ㅋㅋㅋ", "你居然發這張自拍", "這張自拍我自己也喜歡"],
+        otherReplies:["自拍也太漂亮", "這張自拍可愛欸", "這張自拍我先存"]},
+      {id:"selfie",keywords:["自拍","selfie","셀카","selca"],exclude:["不是自拍","並非自拍","非自拍"],
+        memberReplies:["這張自拍我也喜歡", "原來你喜歡這張自拍", "我先把這張自拍存回去"],
+        otherReplies:["自拍也太好看", "這張自拍可愛", "好喜歡這張自拍"]},
+      {id:"coffee",keywords:["咖啡","cafe","café"],
+        memberReplies:["這張咖啡廳的照片好有氣氛 ☕","看到這張，又想喝咖啡了。","這張喝咖啡時的照片我喜歡。"],
+        otherReplies:["咖啡照好有氛圍，拍得真好。","喝咖啡的照片也好好看 ☕","這張咖啡照的感覺好舒服。"]},
+      {id:"meal",keywords:["吃飯","晚餐","午餐","早餐","餐廳","聚餐","吃東西","dinner","lunch"],
+        memberReplies:["看到這張又餓了", "那天吃飯真的好開心", "這頓飯是不是該再約一次"],
+        otherReplies:["吃飯都拍得這麼好看", "吃飯這張好自然", "這個吃飯的表情好可愛"]},
+      {id:"shopping",keywords:["逛街","購物","買衣服","百貨","商場","shopping"],
+        memberReplies:["又想去逛街了", "逛街那天你到底拍了幾張ㅋㅋ", "下次逛街還找你"],
+        otherReplies:["逛街也拍得好好看", "逛街這張好自然", "好喜歡這張逛街照"]},
+      {id:"outing",keywords:["出去玩","出遊","旅行","旅遊","散步","郊遊"],
+        memberReplies:["那天真的玩得好開心", "下次出去玩還帶你", "又想出去了怎麼辦"],
+        otherReplies:["出遊照拍得好好看", "這張看起來好開心", "好喜歡你們出去玩的照片"]},
+      {id:"portrait",keywords:["我拍的","我幫","幫她拍","幫她照"],
+        memberReplies:["這張你拍得不錯欸", "那下次也交給你了", "原來你那天拍到這張"],
+        otherReplies:["你真的好會拍", "這個角度喜歡", "攝影師有點厲害"]}
+    ],
+    // 未符合任何情境時，依成員抽選中性留言，避免假設拍攝者或行程。
+    memberReplies:{
+      yeji:["這張我喜歡 🖤","這張我想存起來。","原來你選了這張，眼光很好欸。"],
+      lia:["這張好溫柔，喜歡 ☺️","謝謝 {{nickname}} 分享這張照片。","好喜歡這張的感覺 🤍"],
+      ryujin:["可以，這張選得很好。","這張看起來不錯。","這張我收走了。"],
+      chaeryeong:["這張好喜歡，謝謝你 🤍","這張的感覺好好看。","好開心你分享了這張照片。"],
+      yuna:["哇！這張我喜歡 ❤️","這張我要存起來！","我喜歡這張，你好會選！"]
+    },
+    otherReplies:{
+      yeji:["這張真好看，很有氛圍。","這個角度好好看。","這張的感覺很自然。"],
+      lia:["這張真的好漂亮 🤍","好喜歡這個光線。","這張看起來好舒服。"],
+      ryujin:["這張不錯。","這張有水準。","這個構圖很好看。"],
+      chaeryeong:["拍得真好，看起來好溫柔。","這張好自然，我喜歡。","好喜歡這張的顏色，好漂亮。"],
+      yuna:["這張也太好看了吧！","這張超好看！❤️","這張照片好有氛圍！"]
+    }
+  },
+
+  // 10. 粉絲留言與自然讚數：[最小值, 最大值] 是隨機範圍，包含兩端。
+  // 成員貼文約有一百則粉絲留言；玩家貼文也有少量粉絲留言。互動會隨進度保存。
+  memberAudience:{
+    fanPoolSize:1200,       // 共用的虛構粉絲帳號池人數；每則貼文從中抽選留言者。
+    commentCount:[95,105],  // 每則成員貼文的粉絲留言數。
+    initialLikes:[1500,4500], // 成員貼文的起始自然讚數。
+    likesPerMinute:[36,96], // 每則成員貼文隨機選定的每分鐘增讚數。
+    refreshMs:5000,         // 畫面更新讚數的間隔：5 秒；重新開啟會依經過時間補上讚數。
+    playerLikesPerMinute:[4,12], // 玩家貼文每分鐘自然增讚數，從粉絲帳號中抽選。
+    playerMaxLikes:240,     // 玩家貼文的粉絲讚數上限；玩家自己按的讚另計。
+    playerCommentCount:[5,10], // 每則玩家貼文的粉絲留言數。
+    playerCommentDelay:[4000,10000], // 成員留言之後，等待第一則粉絲留言的時間。
+    playerCommentSpacing:[2500,7000], // 後續粉絲留言逐則出現的隨機間隔。
+    emojiChance:0.22,       // 粉絲留言加上 emoji 的比例；多數使用純文字。
+    // 帳號混合人名、生活用字與不同格式；偶爾附上數字，不使用固定 midzy 前綴或流水號。
+    // 這些是合成 ID 的素材，不會連線取得真實帳號；留言介面只顯示 ID。
+    usernameNames:["seoyeon","minji","yujin","jiwoo","sohee","eunseo","yuna","sumin","haeun","nayeon","jiyeon","hyerin","dayeon","sua","dahye","chaewon","yerim","jiyu","seohyun","hyewon","eunji","suyeon","harin","yeonwoo","jimin","jina","nana","mimi","yuri","rina","haruka","aoi","yui","saki","mei","mika","hina","kaori","akari","ayaka","claire","chloe","ellie","sophie","luna","emily","alice","ella","jenny","lily","hazel","ruby","iris","nora","zoe","mia","aria","ivy","evie","celine","annie","daisy","sienna","amber","nina","lea","yaya","momo","sora","rin","linlin","chia","yuting","hsuan","wenwen","peiyu"],
+    usernameSurnames:["kim","lee","park","choi","jung","han","yoon","seo","lim","shin","moon","cho","song","baek","kwon","oh","jo","ryu","kang","jeon"],
+    usernameWords:["peach","midzy","seoul","starlight","velvet","mango","cherry","cloud","moon","spring","bloom","sunny","heart","coffee","matcha","latte","vanilla","cocoa","honey","lemon","melon","apricot","olive","cookie","toast","butter","cinnamon","monday","sunday","friday","summer","winter","autumn","april","june","august","rain","snow","ocean","river","forest","garden","petal","lilac","rose","tulip","clover","mint","sage","willow","birch","maple","cotton","linen","ribbon","pearl","silver","golden","dawn","sunset","twilight","night","daylight","afternoon","morning","mellow","cozy","tiny","little","soft","slow","blue","pink","lilies","doodle","bunny","kitty","tangerine","weekend","afterglow","warmth","music","piano","vinyl","polaroid"],
+    usernamePrefixes:["dear","its","im","hey","hello","with","by","luv","my","oh","only","daily","little","stay","from","for","still","just","always","thisis"],
+    usernameSuffixes:["archive","diary","film","jpg","jpeg","zip","log","room","days","notes","studio","page","letters","memo","daily","mood","club","corner","palette","onfilm","playlist","moments","sketch","journal","camera","stories","postcard","gallery","pixels","hour"],
+    // 可用 {{name}}、{{surname}}、{{prefix}}、{{word}}、{{word2}}、{{suffix}}、{{initial}}、{{stretchedName}}。
+    usernameFormats:["{{name}}.{{suffix}}","{{name}}_{{word}}","{{prefix}}.{{name}}","{{surname}}.{{name}}","{{word}}.{{suffix}}","{{name}}__{{suffix}}","{{word}}_{{word2}}","{{name}}{{word}}","{{prefix}}_{{word}}","{{stretchedName}}.{{suffix}}","{{name}}.{{word}}","{{word}}by{{name}}","{{initial}}_{{word}}_{{suffix}}","{{name}}_{{suffix}}_","{{word}}.and.{{word2}}","{{prefix}}{{name}}"],
+    usernameNumberChance:0.28, // 附上短數字、年份或月日風格數字的機率，0～1。
+    // 頭貼底色與留言結尾的 emoji。
+    colors:["#e8cdd4","#cddce8","#d9d4eb","#d6e3cc","#f0d8bf","#d0e4df","#e8d0db","#d7dbe5"],
+    emojis:[""," 🤍"," ❤️"," ✨"," 🥹"," 😍"," 💖"," 🌷"],
+    // 每則留言隨機組合台詞與 emoji；{{member}} 會代入成員名稱。
+    compliments:[
+      "好好看","這張真的漂亮","救命 好美","這張我先存了",
+      "怎麼這麼好看啦","這個光好漂亮","好喜歡這張","看了好幾次才滑走",
+      "今天這張太可以了","這個表情好可愛","也太溫柔","美到我停下來",
+      "喜歡這個感覺","真的會看很久","我又回來看一次","這張直接桌布",
+      "笑起來好好看","完全是我的取向","這張有夠喜歡","啊啊啊好漂亮",
+      "也太適合這個光","好自然的一張","這張先收藏","怎麼又更好看了",
+      "看到更新就跑來了","好可愛喔","這個角度喜歡","漂亮得有點過分",
+      "今天也是漂亮的人","好看就算了還這麼可愛","我宣布這張是今天最愛","這張不能只有我看到",
+      "美得我忘記要說什麼","本來想滑走結果停住","看一次再看一次","這張照片有聲音嗎 好像在笑",
+      "好想存原圖","這張的顏色好舒服","太喜歡了啦","這個笑容我收下了",
+      "好看得很輕鬆欸","看著就心情很好","照片好有生活感","這張好有電影的感覺",
+      "好喜歡這種自然的照片","不用做什麼就很好看","太犯規了吧","點開就不想關了",
+      "這張怎麼能不按讚","存好了 謝謝分享","就是喜歡這個樣子","有被漂亮到",
+      "這張讓我重看好幾遍","不用挑角度也漂亮","好想把這張印出來","超級喜歡這張",
+      "好漂亮 我詞窮了","每次更新都會跑來看","等等這張真的好好看","這張是可以免費看的嗎",
+      "眼神好溫柔","這個氛圍好棒","好喜歡這次的照片","看見照片就笑了",
+      "今天也有被可愛到","照片裡的笑容太好了","這張的光線好乾淨","拜託多發這種照片",
+      "再多一張好不好","好看得我捨不得滑掉","我的首頁謝謝你","這張真的要留著",
+      "不是 第一次看就好喜歡","我今天的快樂來源","不用修就很好看吧","真的好適合這個顏色",
+      "我怎麼還在這裡看","每次都說最後看一次","這張好像朋友幫忙拍的 好自然","好喜歡這種隨手拍",
+      "超好看！！！","漂亮漂亮漂亮","好可愛ㅋㅋㅋ","예쁘다",
+      "너무 예뻐","so pretty","love this photo","this one is so cute",
+      "pretty as always","這張也太可愛了吧","{{member}} 這張好漂亮","{{member}} 笑起來真的好好看",
+      "{{member}} 今天也好可愛","{{member}} 這張我存了","{{member}} 拜託多發一點","看到 {{member}} 就忍不住按讚",
+      "這種感覺很適合 {{member}}","{{member}} 這個表情太可愛","喜歡 {{member}} 這樣自然的樣子","{{member}} 的照片我真的看不膩"
+    ],
+    // 玩家配對照片：稱讚拍攝與照片中的成員；任意裝置照片只使用一般攝影稱讚。
+    playerCompliments:[
+      "你也太會拍","這張拍得好好看","攝影師有點東西欸","好會抓角度",
+      "這張我想存","光線抓得好漂亮","這個構圖好喜歡","好喜歡你拍的照片",
+      "鏡頭裡的人也太漂亮","人好看 照片也好看","拍得好自然","攝影師跟模特兒都好厲害",
+      "{{member}} 這張太好看了吧","你把 {{member}} 拍得好漂亮","這張 {{member}} 我先收藏","{{member}} 好適合你的鏡頭",
+      "這張笑得好可愛","可以多發幾張嗎","這個角度的 {{member}} 好喜歡","這張好像雜誌照",
+      "你拍的 {{member}} 好自然喔","這個光加上 {{member}} 太剛好了","照片裡的人真的好漂亮","這張可以直接當桌布",
+      "好會拍 再多拍一點","兩個都太厲害了啦","怎麼隨手拍都這麼好看","好會捕捉表情",
+      "這個畫面好舒服","又有新的收藏了","拜託繼續拍下去","這張真的拍進我心裡",
+      "照片也太有生活感","{{member}} 笑得好開心","這張 {{member}} 太可愛了","給攝影師一個讚",
+      "好看的照片要按兩次愛心","沒忍住放大看了","求你們多拍一點","拍得真好 人也真的好看"
+    ],
+    playerPhotoCompliments:[
+      "好會拍","這張好好看","這個光好漂亮","照片的顏色好舒服",
+      "這個構圖喜歡","好喜歡這張的感覺","這張先收藏","光線抓得好好",
+      "拍得好有生活感","這張看著好舒服","好會找角度","想知道用什麼拍的",
+      "好喜歡你拍的照片","這張有電影的感覺","給攝影師按讚","好會拍 再多發一點"
+    ]
+  },
+
+  // 11. 示範限動與簡訊。
+  // seedStories 是舊版開局示範限動開關，目前保持關閉；不影響玩家自行發佈限動。
+  seedStories: false,
+  // 唯讀的生活情境簡訊；name 是寄件者，time 是顯示文字，messages 按順序排列。
   sms: [
     { id:"delivery", name:"CJ 大韓通運", time:"10:12", messages:["[配送通知] 您的包裹已送達，放置於家門口。訂單尾碼 0423。", "如有配送問題，請透過購物平台聯絡客服。"] },
     { id:"bank", name:"新韓銀行", time:"昨天", messages:["[刷卡通知] 10/23 14:28，咖啡廳消費 5,500 韓元。", "若非本人交易，請透過銀行 App 查詢。"] },
@@ -99,20 +392,39 @@ function photoLibrary(state, config) {
 function personalize(state,text) {
   return String(text??"").replaceAll("{{nickname}}",state.profile.nickname||state.profile.name).replaceAll("{{name}}",state.profile.name);
 }
-function completeOnboarding(state, username, nickname, now=Date.now()) {
+function completeOnboarding(state, username, nickname, now=Date.now(),config=null) {
   const handle=String(username).trim().replace(/^@/,""),name=String(nickname).trim();
   if(!/^[A-Za-z0-9_.]{1,30}$/.test(handle))throw new Error("Instagram ID 請使用 1–30 個英文字母、數字、底線或句點。");
   if(!name||name.length>40)throw new Error("稱呼請填寫 1–40 個字。");
   state.profile.username=handle;state.profile.nickname=name;state.profile.name=name;
   if(!state.onboardingComplete){const paused=Math.max(0,now-(state.setupStartedAt??now));state.jobs.forEach(j=>j.dueAt+=paused);}
   state.onboardingComplete=true;state.setupStartedAt=null;
+  if(config)scheduleRandomDialogue(state,config,now);
 }
 function upgradeState(state, config) {
+  state.fans??={};
+  if(Object.keys(state.fans).length&&state.fanUsernameVersion!==2&&config.memberAudience)seedFans(state,config.memberAudience,Math.random);
+  for(const post of state.posts)for(const comment of post.comments){
+    if(!comment.id)comment.id=uid();
+    if(comment.parentId===undefined)comment.parentId=null;
+    if(comment.replyTo===undefined)comment.replyTo=null;
+    if(!comment.likedBy)comment.likedBy=[];
+  }
+  if(!state.dialogueSessions)state.dialogueSessions={kakao:{},instagram:{}};
+  upgradeDialogueFlow(state,config);
+  upgradeWelcomeReplies(state,config);
   if(typeof state.profile.nickname!=="string")state.profile.nickname=state.profile.name;
   if(typeof state.onboardingComplete!=="boolean"){state.onboardingComplete=false;state.setupStartedAt=Date.now();}
   if(!state.photoDetails)state.photoDetails=createPhotoDetails(config);
+  if(state.photoDescriptionVersion!==1){
+    for(const m of config.members)if(state.photoDetails[m.id].description==="")state.photoDetails[m.id].description=config.photoDescriptions?.[m.id]||"";
+    state.photoDescriptionVersion=1;
+  }
   if(state.profile.bio==="서울의 작은 일상 ☁️\n和喜歡的人，收集一些日常。")state.profile.bio="";
-  for(const story of state.stories)if(story.demo&&story.author!=="me")story.src=config.assets.pairedPhoto(story.author,"her");
+  state.stories=state.stories.filter(story=>!story.demo||story.author==="me");
+  upgradePhotoSequence(state,config);
+  for(const post of state.posts){initializePostAudience(state,config,post,Date.now());if(post.author==="me")queuePlayerFanComments(state,config,post,Date.now(),Math.random);}
+  scheduleRandomDialogue(state,config,Date.now());
   return state;
 }
 function createState(config, now = Date.now()) {
@@ -121,9 +433,9 @@ function createState(config, now = Date.now()) {
     chats[channel][member.id] = (config.initialMessages[channel]?.[member.id] || []).map((text, i) => ({ id:uid(),sender:member.id,text,time:now - (5-i)*60000,read:false,kind:"text" }));
   }
   return {
-    version:1, profile:{...config.player,nickname:config.player.nickname||""}, onboardingComplete:false,setupStartedAt:now,photoDetails:createPhotoDetails(config),chats,posts:[],
+    version:1, profile:{...config.player,nickname:config.player.nickname||""}, onboardingComplete:false,setupStartedAt:now,photoDetails:createPhotoDetails(config),photoDescriptionVersion:1,chats,posts:[],
     stories:config.seedStories ? config.members.map((m,i)=>({id:uid(),author:m.id,src:config.assets.pairedPhoto(m.id,"her"),createdAt:now-i*180000,seen:false,demo:true})) : [],
-    events:{}, jobs:(config.incomingMessages || []).map(x=>({...x,type:"incoming",dueAt:now+x.delay})), usedRules:[], bookmarked:[]
+    events:{}, photoSequenceVersion:2,fans:{},dialogueFlowVersion:1,welcomeReplyVersion:1,welcomeDone:{},welcomePending:{},randomDialogue:{activeMember:null,completed:[],nextAt:null},dialogueSessions:{kakao:{},instagram:{}},jobs:(config.incomingMessages || []).map(x=>({...x,type:"incoming",dueAt:now+x.delay})), usedRules:[], bookmarked:[]
   };
 }
 function addMessage(state, channel, member, text, sender=member, now=Date.now(), extra={}) {
@@ -141,12 +453,345 @@ function queueKeywordReplies(state, config, channel, member, text, now=Date.now(
     (rule.replies || []).forEach((reply,i)=>state.jobs.push({id:uid(),type:"incoming",channel,member,text:reply,dueAt:now+(rule.delay??1200)*(i+1)}));
   }
 }
-function publish(state, config, {type="post", images, caption=""}, now=Date.now()) {
+function dialogueScript(config,channel,member) {
+  return config.dialogueChannels?.includes(channel)?config.dialogues?.[member]:null;
+}
+function queueEmojiReplies(state,config,channel,member,text,now=Date.now(),random=Math.random) {
+  const settings=config.kakaoEmoji;
+  if(channel!=="kakao"||!settings?.value||text.trim()!==settings.value||!state.chats.kakao[member])return false;
+  const variants=settings.replies?.[member];
+  if(!variants?.length)return false;
+  const selected=variants[Math.floor(random()*variants.length)];
+  const replies=(Array.isArray(selected)?selected:[selected]).filter(t=>typeof t==="string"&&t.trim());
+  replies.forEach((reply,i)=>state.jobs.push({id:uid(),type:"incoming",channel,member,text:reply,dueAt:now+(settings.delay??900)*(i+1)}));
+  return replies.length>0;
+}
+function queueDialogueNode(state,channel,member,nodeId,now,delay=900) {
+  const id=uid();
+  state.dialogueSessions[channel][member].pending=id;
+  state.jobs.push({id,type:"dialogue",channel,member,nodeId,dueAt:now+delay});
+}
+function startDialogue(state,config,channel,member,now=Date.now()) {
+  const script=dialogueScript(config,channel,member);
+  if(!script?.nodes?.[script.start]||!state.onboardingComplete)return false;
+  const session=state.dialogueSessions[channel][member];
+  if(session&&(session.pending||script.nodes[session.nodeId]||session.finished))return false;
+  state.dialogueSessions[channel][member]={nodeId:null,pending:null,finished:false};
+  if(script.nodes[script.start].initial)state.dialogueSessions[channel][member].nodeId=script.start;
+  else queueDialogueNode(state,channel,member,script.start,now,script.delay??600);
+  return true;
+}
+function dialogueChoices(state,config,channel,member) {
+  const session=state.dialogueSessions[channel]?.[member];
+  if(!session||session.pending||session.finished)return [];
+  if(channel==="kakao"&&state.welcomePending?.[member]&&dialogueScript(config,channel,member)?.nodes[session.nodeId]?.initial)return [];
+  if(session.random&&state.randomDialogue?.activeMember!==member)return [];
+  return dialogueScript(config,channel,member)?.nodes?.[session.nodeId]?.choices||[];
+}
+function chooseDialogue(state,config,channel,member,nodeId,choiceId,now=Date.now()) {
+  const script=dialogueScript(config,channel,member);
+  if(channel==="kakao"&&nodeId===script?.start&&script.nodes[nodeId]?.initial){
+    if(!state.onboardingComplete||state.welcomeDone?.[member]||state.welcomePending?.[member])return false;
+    const choice=script.nodes[nodeId].choices?.find(c=>c.id===choiceId);if(!choice)return false;
+    addMessage(state,channel,member,personalize(state,choice.text),"me",now);
+    queueWelcomeReply(state,config,member,now);
+    return true;
+  }
+  const session=state.dialogueSessions[channel]?.[member];
+  if(!session||session.pending||session.finished||session.nodeId!==nodeId)return false;
+  if(session.random&&state.randomDialogue?.activeMember!==member)return false;
+  const choice=dialogueChoices(state,config,channel,member).find(c=>c.id===choiceId);
+  if(!choice)return false;
+  if(choice.next&&!script.nodes[choice.next])throw new Error("這個對話選項尚未設定完整。");
+  addMessage(state,channel,member,personalize(state,choice.text),"me",now);
+  if(choice.next)queueDialogueNode(state,channel,member,choice.next,now,choice.delay??900);
+  else {
+    session.finished=true;
+    if(channel==="kakao"&&script.nodes[nodeId].initial){state.welcomeDone??={};state.welcomeDone[member]=true;}
+    finishRandomDialogue(state,config,member,now);
+    scheduleRandomDialogue(state,config,now);
+  }
+  return true;
+}
+function queueWelcomeReply(state,config,member,now) {
+  const script=config.dialogues[member],node=script.nodes[script.start],id=uid();
+  state.welcomePending??={};state.welcomePending[member]=id;
+  state.jobs.push({id,type:"welcome-reply",channel:"kakao",member,text:node.response,dueAt:now+(node.responseDelay??1200)});
+}
+function upgradeWelcomeReplies(state,config) {
+  state.welcomePending??={};
+  if(state.welcomeReplyVersion===1)return;
+  for(const m of config.members){
+    const script=config.dialogues[m.id],node=script?.nodes[script.start];
+    if(!node?.initial||!state.welcomeDone[m.id])continue;
+    const messages=state.chats.kakao[m.id];
+    if(messages.some(message=>message.welcomeReply))continue;
+    delete state.welcomeDone[m.id];
+    const answered=messages.some(message=>message.sender==="me"&&node.choices.some(choice=>message.text===personalize(state,choice.text)));
+    if(answered&&!state.welcomePending[m.id])queueWelcomeReply(state,config,m.id,Date.now());
+    const session=state.dialogueSessions.kakao[m.id];if(session&&!session.random&&session.nodeId===script.start)session.finished=false;
+  }
+  state.welcomeReplyVersion=1;
+}
+function upgradeDialogueFlow(state,config) {
+  state.welcomeDone??={};state.randomDialogue??={activeMember:null,completed:[],nextAt:null};
+  if(state.dialogueFlowVersion===1)return;
+  for(const m of config.members){
+    const session=state.dialogueSessions.kakao[m.id];if(!session)continue;
+    if(session.nodeId==="welcome"){
+      if(session.pending){state.jobs=state.jobs.filter(j=>j.id!==session.pending);session.pending=null;session.finished=true;}
+      if(session.finished)state.welcomeDone[m.id]=true;
+    }else{
+      state.welcomeDone[m.id]=true;session.random=true;
+      if(session.finished)state.randomDialogue.completed.push(m.id);
+      else state.randomDialogue.activeMember??=m.id;
+    }
+  }
+  state.dialogueFlowVersion=1;
+  scheduleRandomDialogue(state,config,Date.now());
+}
+function finishRandomDialogue(state,config,member,now) {
+  const session=state.dialogueSessions.kakao[member],r=state.randomDialogue;
+  if(!session?.random||!session.finished||r?.activeMember!==member)return;
+  r.completed=[...new Set([...r.completed,member])];r.activeMember=null;r.nextAt=null;
+  scheduleRandomDialogue(state,config,now);
+}
+function scheduleRandomDialogue(state,config,now=Date.now(),random=Math.random) {
+  const settings=config.randomDialogues;
+  if(!settings?.enabled||!state.onboardingComplete||!config.dialogueChannels?.includes("kakao"))return;
+  const r=state.randomDialogue??={activeMember:null,completed:[],nextAt:null};
+  if(r.activeMember){
+    const script=config.dialogues[r.activeMember];
+    if(!script.nodes[script.start]?.initial||state.welcomeDone?.[r.activeMember])return;
+    r.activeMember=null;r.nextAt=null;
+  }
+  const eligible=config.members.filter(m=>state.welcomeDone?.[m.id]&&!r.completed.includes(m.id)&&config.dialogues[m.id]?.nodes[config.dialogues[m.id].randomStart]);
+  if(!eligible.length){r.nextAt=null;return;}
+  if(r.nextAt===null){r.nextAt=now+randomInteger(settings.delay,random);return;}
+  if(now<r.nextAt)return;
+  const member=eligible[Math.floor(random()*eligible.length)].id;
+  r.activeMember=member;r.nextAt=null;
+  const old=state.dialogueSessions.kakao[member];
+  if(old?.random&&!old.finished)return;
+  state.dialogueSessions.kakao[member]={nodeId:null,pending:null,finished:false,random:true};
+  queueDialogueNode(state,"kakao",member,config.dialogues[member].randomStart,now,0);
+}
+function commentContext(state,config,post,memberId) {
+  const normalize=text=>String(text||"").toLocaleLowerCase().replace(/\s+/g,"");
+  const images=post.images.filter(p=>p.member===memberId);
+  const fallback=images[0]?.description??state.photoDetails?.[memberId]?.description??config.photoDescriptions?.[memberId]??"";
+  let description=post.caption.trim();
+  if(description&&new Set(post.images.map(p=>p.member).filter(Boolean)).size>1){
+    const matches=(text,m)=>[m.id,m.name,m.korean].filter(Boolean).some(name=>normalize(text).includes(normalize(name)));
+    const named=config.members.filter(m=>matches(description,m));
+    if(named.length){
+      const m=config.members.find(m=>m.id===memberId);
+      const ownClauses=description.split(/[，,。；;\n]|以及|還有|另外/).filter(text=>matches(text,m));
+      description=ownClauses.length?ownClauses.join("，"):fallback;
+    }
+  }
+  const text=normalize(description||fallback);
+  return config.postComments.contexts?.find(rule=>rule.keywords.some(word=>text.includes(normalize(word)))&&!(rule.exclude||[]).some(word=>text.includes(normalize(word))))||null;
+}
+function queuePostComments(state,config,post,now,random) {
+  const settings=config.postComments;
+  if(!settings)return;
+  const owners=[...new Set(post.images.filter(p=>p.side==="me"&&config.members.some(m=>m.id===p.member)).map(p=>p.member))];
+  if(!owners.length)return;
+  const choose=(texts,fallback)=>{const values=(texts||[]).filter(t=>typeof t==="string"&&t.trim());return values.length?values[Math.floor(random()*values.length)]:fallback;};
+  const afterPosts=owners.filter(id=>state.events[id]?.userShareId===post.id&&state.events[id].phase!=="done");
+  const anchor=now+(afterPosts.length?config.photoEvents.dmDelay+config.photoEvents.postDelay:0);
+  const queue=(member,text,dueAt)=>state.jobs.push({id:uid(),type:"post-comment",member,postId:post.id,text,dueAt:anchor+dueAt-now,...(afterPosts.length?{afterPosts,delayAfterPosts:dueAt-now}:{})});
+  const contexts=owners.map(id=>commentContext(state,config,post,id));
+  const sharedContext=contexts.every(c=>c?.id===contexts[0]?.id)?contexts[0]:null;
+  owners.forEach((id,i)=>queue(id,choose(contexts[i]?.memberReplies||settings.memberReplies?.[id],"這張我很喜歡 ❤️"),now+(settings.memberDelay??15000)+i*(settings.spacing??3000)));
+  const others=config.members.filter(m=>!owners.includes(m.id));
+  for(let i=others.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[others[i],others[j]]=[others[j],others[i]];}
+  const firstDelay=Math.max(settings.otherDelay??20000,(settings.memberDelay??15000)+owners.length*(settings.spacing??3000));
+  let count=0;
+  for(const m of others){
+    if(count>=(settings.maxOthers??2))break;
+    if(random()>=(settings.otherChance??0.5))continue;
+    queue(m.id,choose(sharedContext?.otherReplies||settings.otherReplies?.[m.id],"這張真好看！"),now+firstDelay+count*(settings.spacing??3000));
+    count++;
+  }
+}
+function releasePostComments(state,postId,now) {
+  for(const job of state.jobs.filter(j=>["post-comment","fan-comment"].includes(j.type)&&j.postId===postId&&j.afterPosts)){
+    if(job.afterPosts.every(id=>state.events[id]?.counterpartId&&state.posts.some(p=>p.id===state.events[id].counterpartId))){
+      job.dueAt=now+job.delayAfterPosts;delete job.afterPosts;delete job.delayAfterPosts;
+    }
+  }
+}
+function upgradePhotoSequence(state,config) {
+  const removedObservers=[];
+  state.jobs=state.jobs.flatMap(job=>{
+    if(job.type!=="photo-observer")return [job];
+    // 第二版的舊排程名稱實際上已是本人追問；更早版本才會傳給另一位成員。
+    if(state.photoSequenceVersion===2)return [{...job,type:"photo-follow-up"}];
+    removedObservers.push(job.member);return [];
+  });
+  if(state.photoSequenceVersion===2)return;
+  for(const job of state.jobs.filter(j=>j.type==="photo-post")){
+    const question=[...state.chats.instagram[job.member]].reverse().find(m=>m.sender===job.member&&m.text===config.photoEvents.scripts[job.member].question);
+    if(question)job.dueAt=question.time+config.photoEvents.postDelay;
+  }
+  for(const post of state.posts.filter(p=>p.author==="me")){
+    const owners=Object.keys(state.events).filter(id=>state.events[id].userShareId===post.id&&state.events[id].phase!=="done");
+    if(!owners.length)continue;
+    const comments=state.jobs.filter(j=>j.type==="post-comment"&&j.postId===post.id);
+    comments.forEach((j,i)=>{j.afterPosts=owners;j.delayAfterPosts=(config.postComments?.memberDelay??15000)+i*(config.postComments?.spacing??3000);});
+    if(owners.every(id=>state.events[id].counterpartId))releasePostComments(state,post.id,Date.now());
+  }
+  for(const job of state.jobs.filter(j=>j.type==="photo-follow-up")){
+    const postId=state.events[job.member]?.userShareId;
+    job.dueAt=Math.max(Date.now(),...state.jobs.filter(j=>j.type==="post-comment"&&j.postId===postId).map(j=>j.dueAt))+config.photoEvents.followUpDelay;
+  }
+  state.photoSequenceVersion=2;
+  for(const id of removedObservers)if(state.events[id]?.phase==="posted")state.events[id].phase="done";
+}
+function toggleCommentLike(state,postId,commentId) {
+  const comment=state.posts.find(p=>p.id===postId)?.comments.find(c=>c.id===commentId);
+  if(!comment)return false;
+  comment.likedBy??=[];
+  const index=comment.likedBy.indexOf("me");
+  if(index<0)comment.likedBy.push("me");else comment.likedBy.splice(index,1);
+  return true;
+}
+function randomInteger(range,random) {return range[0]+Math.floor(random()*(range[1]-range[0]+1));}
+function shuffled(values,random) {
+  const items=[...values];for(let i=items.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[items[i],items[j]]=[items[j],items[i]];}
+  return items;
+}
+function fanUsername(settings,used,random) {
+  const pick=values=>values[Math.floor(random()*values.length)];
+  const names=settings.usernameNames,words=settings.usernameWords,suffixes=settings.usernameSuffixes;
+  for(let attempt=0;;attempt++){
+    let candidate;
+    if(attempt<24){
+      const name=pick(names),word=pick(words);
+      let word2=pick(words);if(word2===word)word2=words[(words.indexOf(word)+1)%words.length];
+      const parts={name,word,word2,surname:pick(settings.usernameSurnames),prefix:pick(settings.usernamePrefixes),suffix:pick(suffixes),initial:name[0],stretchedName:name.replace(/[aeiou]/,v=>v.repeat(2))};
+      candidate=pick(settings.usernameFormats).replace(/\{\{(\w+)\}\}/g,(_,key)=>parts[key]);
+      if(random()<(settings.usernameNumberChance??0.28)){
+        const number=pick([String(randomInteger([2,99],random)),String(randomInteger([1995,2008],random)),`${String(randomInteger([1,12],random)).padStart(2,'0')}${String(randomInteger([1,28],random)).padStart(2,'0')}`]);
+        candidate+=pick(['','_','.'])+number;
+      }
+    }else{
+      // 隨機嘗試多次仍撞名時，改用詞組補足，避免重複亂數造成無限重試。
+      const index=used.size+attempt-24;
+      candidate=`${names[index%names.length]}.${words[Math.floor(index/names.length)%words.length]}_${suffixes[Math.floor(index/(names.length*words.length))%suffixes.length]}`;
+    }
+    candidate=candidate.slice(0,30).replace(/\.+$/,'');
+    if(!used.has(candidate.toLowerCase())){used.add(candidate.toLowerCase());return candidate;}
+  }
+}
+function seedFans(state,settings,random) {
+  state.fans??={};
+  const used=new Set([...Object.values(state.fans).map(f=>f.username).filter(name=>!/^\w+\.midzy_\d+_\d{3}$/.test(name)),state.profile.username].map(name=>name.toLowerCase()));
+  for(const fan of Object.values(state.fans)){
+    if(/^\w+\.midzy_\d+_\d{3}$/.test(fan.username))fan.username=fanUsername(settings,used,random);
+    delete fan.name;
+  }
+  for(let i=0;i<settings.fanPoolSize;i++){
+    const id=`fan-${i+1}`;if(state.fans[id])continue;
+    state.fans[id]={id,username:fanUsername(settings,used,random),color:settings.colors[Math.floor(random()*settings.colors.length)]};
+  }
+  state.fanUsernameVersion=2;
+}
+function fanCommentPool(settings,lines,member,count,random) {
+  const bare=shuffled([...new Set(lines.map(text=>text.replaceAll("{{member}}",member)))],random);
+  const decorated=shuffled(bare.flatMap(text=>settings.emojis.filter(Boolean).map(emoji=>text+emoji)),random);
+  const chance=settings.emojiChance??0.22;
+  return shuffled([...bare,...decorated.slice(0,Math.max(count-bare.length,Math.ceil(bare.length*chance/Math.max(0.01,1-chance))))],random);
+}
+function queuePlayerFanComments(state,config,post,now,random) {
+  const settings=config.memberAudience;
+  if(!settings?.playerCommentCount||post.playerFanCommentsQueued)return;
+  const count=randomInteger(settings.playerCommentCount,random);
+  post.playerFanCommentsQueued=true;if(!count)return;
+  seedFans(state,settings,random);
+  const member=config.members.find(m=>post.images.some(image=>image.member===m.id));
+  const texts=fanCommentPool(settings,member?settings.playerCompliments:settings.playerPhotoCompliments,member?.name||"",count,random);
+  const members=state.jobs.filter(j=>j.type==="post-comment"&&j.postId===post.id);
+  const afterPosts=config.members.filter(m=>state.events[m.id]?.userShareId===post.id&&["queued","asked"].includes(state.events[m.id].phase)).map(m=>m.id);
+  const anchor=now+(afterPosts.length?config.photoEvents.dmDelay+config.photoEvents.postDelay:0);
+  let offset=Math.max(0,...members.map(j=>j.delayAfterPosts??Math.max(0,j.dueAt-anchor)))+randomInteger(settings.playerCommentDelay,random);
+  const accounts=shuffled(Object.values(state.fans).filter(f=>!post.comments.some(c=>c.author===f.id)),random).slice(0,Math.min(count,texts.length));
+  for(const [index,fan] of accounts.entries()){
+    state.jobs.push({id:uid(),type:"fan-comment",member:fan.id,postId:post.id,text:texts[index],dueAt:anchor+offset,...(afterPosts.length?{afterPosts,delayAfterPosts:offset}:{})});
+    offset+=randomInteger(settings.playerCommentSpacing,random);
+  }
+}
+function initializePostAudience(state,config,post,now=Date.now(),random=Math.random) {
+  const settings=config.memberAudience;if(!settings)return;
+  const m=config.members.find(m=>m.id===post.author),ownLike=post.liked?1:0;
+  if(!post.engagement){
+    const base=m?Math.max(post.likes-ownLike,randomInteger(settings.initialLikes,random)):Math.max(0,post.likes-ownLike);
+    const playerRate=Array.isArray(settings.playerLikesPerMinute)?randomInteger(settings.playerLikesPerMinute,random):settings.playerLikesPerMinute;
+    post.engagement={baseLikes:base,organicLikes:base,likesPerMinute:m?randomInteger(settings.likesPerMinute,random):playerRate,startedAt:post.time,maxLikes:m?null:Math.max(base,settings.playerMaxLikes),audienceVersion:2};
+    post.likes=base+ownLike;
+  }
+  if(!m&&post.engagement.audienceVersion!==2){
+    const e=post.engagement;e.baseLikes=e.organicLikes;e.startedAt=now;
+    e.likesPerMinute=Array.isArray(settings.playerLikesPerMinute)?randomInteger(settings.playerLikesPerMinute,random):settings.playerLikesPerMinute;
+    e.maxLikes=Math.max(e.organicLikes,settings.playerMaxLikes);e.audienceVersion=2;
+  }
+  if(!m)return;
+  if(post.fanCommentsSeeded){
+    if(post.fanCommentStyle!==2){
+      const comments=post.comments.filter(c=>state.fans?.[c.author]&&!c.parentId);
+      const texts=fanCommentPool(settings,settings.compliments,m.name,comments.length,random);
+      comments.forEach((comment,index)=>comment.text=texts[index]);post.fanCommentStyle=2;
+    }
+    return;
+  }
+  seedFans(state,settings,random);
+  const existing=post.comments.filter(c=>state.fans[c.author]).length;
+  const count=Math.max(0,randomInteger(settings.commentCount,random)-existing);
+  const texts=fanCommentPool(settings,settings.compliments,m.name,count,random);
+  const accounts=shuffled(Object.values(state.fans).filter(fan=>!post.comments.some(c=>c.author===fan.id)),random).slice(0,count);
+  accounts.forEach((fan,i)=>post.comments.push({id:uid(),author:fan.id,text:texts[i],time:post.time+Math.floor(Math.min(Math.max(0,now-post.time),600000)*i/Math.max(1,accounts.length)),parentId:null,replyTo:null,likedBy:[]}));
+  post.fanCommentsSeeded=true;
+  post.fanCommentStyle=2;
+}
+function advancePostLikes(state,config,now=Date.now()) {
+  let changed=false;
+  for(const post of state.posts){
+    initializePostAudience(state,config,post,now);
+    const e=post.engagement;if(!e)continue;
+    let target=e.baseLikes+Math.floor(Math.max(0,now-e.startedAt)*e.likesPerMinute/60000);
+    if(e.maxLikes!==null)target=Math.min(target,e.maxLikes);
+    if(target>e.organicLikes){
+      if(post.author==="me"){
+        if(!Object.keys(state.fans).length)seedFans(state,config.memberAudience,Math.random);
+        post.fanLikes??=[];
+        const accounts=shuffled(Object.keys(state.fans).filter(id=>!post.fanLikes.includes(id)),Math.random);
+        post.fanLikes.push(...accounts.slice(0,target-e.organicLikes));
+      }
+      post.likes+=target-e.organicLikes;e.organicLikes=target;changed=true;
+    }
+  }
+  return changed;
+}
+function addComment(state,config,postId,text,replyTo=null,now=Date.now()) {
+  const post=state.posts.find(p=>p.id===postId),body=String(text??"").trim();
+  if(!post||!body)return null;
+  const target=replyTo?post.comments.find(c=>c.id===replyTo):null;
+  if(replyTo&&!target)return null;
+  const comment={id:uid(),author:"me",text:body,time:now,parentId:target?(target.parentId||target.id):null,replyTo:target?.id||null,likedBy:[]};
+  post.comments.push(comment);
+  if(target&&(config.members.some(m=>m.id===target.author)||state.fans?.[target.author]))state.jobs.push({id:uid(),type:"comment-like",member:target.author,postId,commentId:comment.id,dueAt:now+(config.postComments?.replyLikeDelay??10000)});
+  return comment;
+}
+function publish(state, config, {type="post", images, caption=""}, now=Date.now(),random=Math.random) {
   if (!images?.length) throw new Error("請先選擇照片");
+  if(type!=="story"&&images.length>1)throw new Error("一則貼文只能上傳一張照片");
   const item = type==="story"
     ? {id:uid(),author:"me",src:images[0].src,createdAt:now,seen:false}
     : {id:uid(),author:"me",images:images.map(x=>({...x})),caption,time:now,likes:0,liked:false,comments:[],slide:0};
   if (type==="story") state.stories.push(item); else state.posts.unshift(item);
+  if(type!=="story")initializePostAudience(state,config,item,now,random);
   const selected = type==="story" ? images.slice(0,1) : images;
   for (const image of selected) {
     const member = config.members.find(m=>m.id===image.member);
@@ -154,17 +799,56 @@ function publish(state, config, {type="post", images, caption=""}, now=Date.now(
     state.events[member.id]={phase:"queued",userShareId:item.id,userShareType:type};
     state.jobs.push({id:uid(),type:"photo-dm",member:member.id,dueAt:now+config.photoEvents.dmDelay});
   }
+  if(type!=="story")queuePostComments(state,config,item,now,random);
+  if(type!=="story")queuePlayerFanComments(state,config,item,now,random);
   return item;
 }
 function runDueJobs(state, config, now=Date.now()) {
   const notices = [];
+  scheduleRandomDialogue(state,config,now);
   const due=state.jobs.filter(j=>j.dueAt<=now).sort((a,b)=>a.dueAt-b.dueAt);
   for (const job of due) {
+    if(job.dueAt>now)continue;
+    if(["post-comment","fan-comment"].includes(job.type)&&job.afterPosts)continue;
+    if(job.type==="dialogue"&&job.channel==="kakao"&&state.dialogueSessions.kakao[job.member]?.random&&state.randomDialogue?.activeMember!==job.member)continue;
     state.jobs=state.jobs.filter(j=>j.id!==job.id);
-    const m=config.members.find(x=>x.id===job.member);
+    const m=config.members.find(x=>x.id===job.member)||(["comment-like","fan-comment"].includes(job.type)?state.fans?.[job.member]:null);
     if (!m) continue;
     const script=config.photoEvents.scripts[m.id];
-    if (job.type==="incoming") {
+    if(job.type==="welcome-reply"){
+      if(state.welcomePending?.[m.id]!==job.id)continue;
+      const message=addMessage(state,"kakao",m.id,job.text,m.id,now,{welcomeReply:true});
+      delete state.welcomePending[m.id];state.welcomeDone[m.id]=true;
+      const session=state.dialogueSessions.kakao[m.id];
+      if(session&&!session.random&&config.dialogues[m.id].nodes[session.nodeId]?.initial)session.finished=true;
+      scheduleRandomDialogue(state,config,now);
+      notices.push({channel:"kakao",member:m.id,text:message.text});
+    }else if(job.type==="comment-like"){
+      const post=state.posts.find(p=>p.id===job.postId),comment=post?.comments.find(c=>c.id===job.commentId);
+      const target=post?.comments.find(c=>c.id===comment?.replyTo);
+      if(!comment||comment.author!=="me"||target?.author!==m.id)continue;
+      comment.likedBy??=[];
+      if(comment.likedBy.includes(m.id))continue;
+      comment.likedBy.push(m.id);
+      notices.push({kind:"comment-like",postId:post.id,commentId:comment.id,member:m.id,text:"對你的回覆說讚"});
+    } else if(["post-comment","fan-comment"].includes(job.type)){
+      const post=state.posts.find(p=>p.id===job.postId);
+      if(!post||post.author!=="me"||post.comments.some(c=>c.id===job.id))continue;
+      const text=personalize(state,job.text);
+      post.comments.push({id:job.id,author:m.id,text,time:now,parentId:null,replyTo:null,likedBy:[]});
+      if(job.type==="post-comment")for(const followUp of state.jobs.filter(j=>j.type==="photo-follow-up"&&state.events[j.member]?.userShareId===post.id))followUp.dueAt=Math.max(followUp.dueAt,now+config.photoEvents.followUpDelay);
+      notices.push({kind:"comment",postId:post.id,commentId:job.id,member:m.id,text:`在你的貼文留言：${text}`,quiet:job.type==="fan-comment"});
+    } else if(job.type==="dialogue") {
+      const session=state.dialogueSessions[job.channel]?.[m.id];
+      if(!session||session.pending!==job.id)continue;
+      const node=dialogueScript(config,job.channel,m.id)?.nodes?.[job.nodeId];
+      session.pending=null;
+      if(!node){session.nodeId=null;session.finished=true;if(job.channel==="kakao")finishRandomDialogue(state,config,m.id,now);notices.push({channel:job.channel,member:m.id,text:""});continue;}
+      session.nodeId=job.nodeId;session.finished=!(node.choices?.length);
+      if(node.message){addMessage(state,job.channel,m.id,node.message,m.id,now);notices.push({channel:job.channel,member:m.id,text:node.message});}
+      else notices.push({channel:job.channel,member:m.id,text:""});
+      if(job.channel==="kakao")finishRandomDialogue(state,config,m.id,now);
+    } else if (job.type==="incoming") {
       if (!state.chats[job.channel]?.[job.member] || !job.text) continue;
       addMessage(state,job.channel,m.id,job.text,m.id,now);
       notices.push({channel:job.channel,member:m.id,text:job.text});
@@ -175,17 +859,24 @@ function runDueJobs(state, config, now=Date.now()) {
       notices.push({channel:"instagram",member:m.id,text:script.question});
     } else if (job.type==="photo-post" && state.events[m.id]?.phase==="asked") {
       const post={id:uid(),author:m.id,images:[{src:config.assets.pairedPhoto(m.id,"her"),member:m.id,side:"her"}],caption:script.caption,time:now,likes:0,liked:false,comments:[],slide:0};
+      initializePostAudience(state,config,post,now);
       state.posts.unshift(post);
       state.events[m.id].phase="posted";
       state.events[m.id].counterpartId=post.id;
-      state.jobs.push({id:uid(),type:"photo-observer",member:m.id,dueAt:now+config.photoEvents.observerDelay});
+      const userPostId=state.events[m.id].userShareId;
+      releasePostComments(state,userPostId,now);
+      const commentTimes=state.jobs.filter(j=>j.type==="post-comment"&&j.postId===userPostId).map(j=>j.dueAt);
+      state.jobs.push({id:uid(),type:"photo-follow-up",member:m.id,dueAt:Math.max(now,...commentTimes)+config.photoEvents.followUpDelay});
       notices.push({postId:post.id,member:m.id,text:`${m.name} 發佈了一則新貼文`});
-    } else if (job.type==="photo-observer" && state.events[m.id]?.phase==="posted") {
+    } else if (job.type==="photo-follow-up" && state.events[m.id]?.phase==="posted") {
       const event=state.events[m.id];
+      if(state.jobs.some(j=>j.type==="post-comment"&&j.postId===event.userShareId)){
+        state.jobs.push({...job,dueAt:now+config.photoEvents.followUpDelay});continue;
+      }
       const userExists=event.userShareType==="story" ? state.stories.some(s=>s.id===event.userShareId) : state.posts.some(p=>p.id===event.userShareId);
       if (userExists && state.posts.some(p=>p.id===event.counterpartId)) {
-        addMessage(state,"instagram",m.observer,script.observer,m.observer,now);
-        notices.push({channel:"instagram",member:m.observer,text:script.observer});
+        addMessage(state,"instagram",m.id,script.followUp,m.id,now);
+        notices.push({channel:"instagram",member:m.id,text:script.followUp});
       }
       event.phase="done";
     }
@@ -197,47 +888,112 @@ function unreadCount(state, channel, member) {
   return lists.reduce((sum,messages)=>sum+messages.filter(m=>!m.read && m.sender!=="me").length,0);
 }
 function validateSave(value, config) {
-  const members=config.members.map(m=>m.id),authors=["me",...members];
+  const members=config.members.map(m=>m.id),fans=value?.fans;
+  if(fans&&(typeof fans!=="object"||Array.isArray(fans)||Object.entries(fans).some(([id,f])=>!/^fan-\d+$/.test(id)||!f||f.id!==id||typeof f.username!=="string"||(f.name!==undefined&&typeof f.name!=="string")||!/^#[a-fA-F0-9]{6}$/.test(f.color))))throw new Error("存檔的粉絲資料不完整");
+  const authors=["me",...members,...Object.keys(fans||{})];
   if (!value || value.version!==1 || !value.profile || typeof value.profile.name!=="string" || typeof value.profile.username!=="string" || typeof value.profile.bio!=="string" || typeof value.profile.avatar!=="string" || !Array.isArray(value.posts) || !Array.isArray(value.stories) || !Array.isArray(value.jobs) || !Array.isArray(value.usedRules) || !Array.isArray(value.bookmarked) || !value.events || Array.isArray(value.events) || !value.chats) throw new Error("這不是有效的 itzy phone 存檔");
   for (const channel of ["kakao","instagram"]) for (const m of config.members) {
     if (!Array.isArray(value.chats[channel]?.[m.id]) || value.chats[channel][m.id].some(x=>!x || typeof x.text!=="string" || !Number.isFinite(x.time) || !["me",m.id].includes(x.sender) || !["text","post"].includes(x.kind) || (x.kind==="post"&&typeof x.postId!=="string"))) throw new Error("存檔的聊天資料不完整");
   }
   if(value.posts.some(p=>!p || typeof p.id!=="string" || !authors.includes(p.author) || !Number.isFinite(p.time) || !Number.isFinite(p.likes) || !Array.isArray(p.images) || !p.images.length || p.images.length>10 || !Array.isArray(p.comments) || typeof p.caption!=="string" || p.images.some(i=>!i || typeof i.src!=="string") || p.comments.some(c=>!c || !authors.includes(c.author) || typeof c.text!=="string" || !Number.isFinite(c.time)))) throw new Error("存檔的貼文資料不完整");
+  if(value.posts.some(p=>p.engagement!==undefined&&(!p.engagement||["baseLikes","organicLikes","likesPerMinute","startedAt"].some(key=>!Number.isFinite(p.engagement[key])||(key!=="startedAt"&&p.engagement[key]<0))||(p.engagement.maxLikes!==null&&(!Number.isFinite(p.engagement.maxLikes)||p.engagement.maxLikes<0)))))throw new Error("存檔的貼文讚數資料不完整");
+  if(value.posts.some(p=>p.fanLikes!==undefined&&(!Array.isArray(p.fanLikes)||p.fanLikes.some(id=>!fans?.[id])||new Set(p.fanLikes).size!==p.fanLikes.length)))throw new Error("存檔的粉絲按讚資料不完整");
+  if(value.welcomeDone&&(typeof value.welcomeDone!=="object"||Array.isArray(value.welcomeDone)||Object.entries(value.welcomeDone).some(([id,done])=>!members.includes(id)||typeof done!=="boolean")))throw new Error("存檔的歡迎對話資料不完整");
+  if(value.welcomePending&&(typeof value.welcomePending!=="object"||Array.isArray(value.welcomePending)||Object.entries(value.welcomePending).some(([member,id])=>!members.includes(member)||typeof id!=="string"||!value.jobs.some(j=>j.id===id&&j.type==="welcome-reply"&&j.member===member))))throw new Error("存檔的歡迎回應排程不完整");
+  if(value.randomDialogue){
+    const r=value.randomDialogue;
+    if((r.activeMember!==null&&!members.includes(r.activeMember))||!Array.isArray(r.completed)||r.completed.some(id=>!members.includes(id))||new Set(r.completed).size!==r.completed.length||(r.nextAt!==null&&!Number.isFinite(r.nextAt)))throw new Error("存檔的隨機對話資料不完整");
+  }
+  for(const post of value.posts)for(const c of post.comments){
+    if((c.id!==undefined&&typeof c.id!=="string")||(c.likedBy!==undefined&&(!Array.isArray(c.likedBy)||c.likedBy.some(id=>!authors.includes(id))||new Set(c.likedBy).size!==c.likedBy.length)))throw new Error("存檔的留言按讚資料不完整");
+    if(c.parentId!==undefined&&c.parentId!==null&&!post.comments.some(root=>root.id===c.parentId&&root.id!==c.id&&!root.parentId))throw new Error("存檔的留言討論串不完整");
+    if(c.replyTo!==undefined&&c.replyTo!==null&&!post.comments.some(target=>target.id===c.replyTo&&target.id!==c.id&&(target.parentId||target.id)===c.parentId))throw new Error("存檔的回覆對象不完整");
+  }
   if(value.stories.some(s=>!s || typeof s.id!=="string" || !authors.includes(s.author) || typeof s.src!=="string" || !Number.isFinite(s.createdAt))) throw new Error("存檔的限時動態資料不完整");
-  if(value.jobs.some(j=>!j || typeof j.id!=="string" || !members.includes(j.member) || !Number.isFinite(j.dueAt) || !["incoming","photo-dm","photo-post","photo-observer"].includes(j.type) || (j.type==="incoming"&&(!["kakao","instagram"].includes(j.channel)||typeof j.text!=="string")))) throw new Error("存檔的排程資料不完整");
+  if(value.jobs.some(j=>!j || typeof j.id!=="string" || !(members.includes(j.member)||(["comment-like","fan-comment"].includes(j.type)&&fans?.[j.member])) || !Number.isFinite(j.dueAt) || !["incoming","welcome-reply","dialogue","post-comment","fan-comment","comment-like","photo-dm","photo-post","photo-follow-up","photo-observer"].includes(j.type) || (["incoming","welcome-reply"].includes(j.type)&&(!["kakao","instagram"].includes(j.channel)||typeof j.text!=="string")) || (j.type==="dialogue"&&(!["kakao","instagram"].includes(j.channel)||typeof j.nodeId!=="string")) || (["post-comment","fan-comment"].includes(j.type)&&(typeof j.postId!=="string"||typeof j.text!=="string")) || (j.type==="comment-like"&&(typeof j.postId!=="string"||typeof j.commentId!=="string")))) throw new Error("存檔的排程資料不完整");
+  if(value.jobs.some(j=>j.afterPosts!==undefined&&(!["post-comment","fan-comment"].includes(j.type)||!Array.isArray(j.afterPosts)||!j.afterPosts.length||j.afterPosts.some(id=>!members.includes(id))||!Number.isFinite(j.delayAfterPosts)||j.delayAfterPosts<0)))throw new Error("存檔的留言順序資料不完整");
   if(Object.entries(value.events).some(([id,e])=>!members.includes(id) || !e || !["queued","asked","posted","done"].includes(e.phase) || typeof e.userShareId!=="string" || !["post","story"].includes(e.userShareType))) throw new Error("存檔的照片事件不完整");
   if(value.photoDetails&&members.some(id=>!value.photoDetails[id]||!Number.isInteger(value.photoDetails[id].daysAgo)||value.photoDetails[id].daysAgo<1||value.photoDetails[id].daysAgo>7||typeof value.photoDetails[id].description!=="string"))throw new Error("存檔的照片資訊不完整");
+  if(value.dialogueSessions){
+    for(const channel of ["kakao","instagram"]){
+      const sessions=value.dialogueSessions[channel];
+      if(!sessions||typeof sessions!=="object"||Array.isArray(sessions)||Object.entries(sessions).some(([id,s])=>!members.includes(id)||!s||(s.nodeId!==null&&typeof s.nodeId!=="string")||(s.pending!==null&&typeof s.pending!=="string")||typeof s.finished!=="boolean"))throw new Error("存檔的分支對話資料不完整");
+    }
+  }
   return upgradeState(value,config);
 }
 
 const KEY="itzy-phone-save-v1";
+const RESET_KEY="itzy-phone-reset-v1";
 let database;
 let queue=Promise.resolve();
+let storageEpoch=null,writeGeneration=0;
+function readEpoch() {try{return localStorage.getItem(RESET_KEY);}catch{return null;}}
+function currentSave(value) {return value&&(!storageEpoch||value.storageEpoch===storageEpoch)?value:null;}
+function readFallback() {try{return currentSave(JSON.parse(localStorage.getItem(KEY)));}catch{return null;}}
+function connectDatabase() {
+  return new Promise((resolve,reject)=>{
+    const request=indexedDB.open("itzy-phone",1);
+    request.onupgradeneeded=()=>request.result.createObjectStore("saves");
+    request.onsuccess=()=>resolve(request.result);
+    request.onerror=()=>reject(request.error);
+  });
+}
+function writeDatabase(snapshot) {
+  return new Promise((resolve,reject)=>{
+    const transaction=database.transaction("saves","readwrite");
+    transaction.objectStore("saves").put(snapshot,KEY);
+    transaction.oncomplete=resolve;transaction.onerror=()=>reject(transaction.error);transaction.onabort=()=>reject(transaction.error);
+  });
+}
 async function openStorage() {
+  storageEpoch=readEpoch();
   try {
-    database=await new Promise((resolve,reject)=>{
-      const request=indexedDB.open("itzy-phone",1);
-      request.onupgradeneeded=()=>request.result.createObjectStore("saves");
-      request.onsuccess=()=>resolve(request.result);
-      request.onerror=()=>reject(request.error);
-    });
-    return await new Promise((resolve,reject)=>{
+    database=await connectDatabase();
+    const value=await new Promise((resolve,reject)=>{
       const request=database.transaction("saves").objectStore("saves").get(KEY);
-      request.onsuccess=()=>resolve(request.result ?? null); request.onerror=()=>reject(request.error);
+      request.onsuccess=()=>resolve(request.result??null);request.onerror=()=>reject(request.error);
     });
-  } catch { database=null; try {return JSON.parse(localStorage.getItem(KEY));} catch{return null;} }
+    return currentSave(value)||readFallback();
+  } catch {database=null;return readFallback();}
 }
 function saveState(state) {
-  const snapshot=structuredClone(state);
+  const snapshot={...structuredClone(state),storageEpoch},generation=writeGeneration;
   const action=queue.catch(()=>{}).then(()=>{
-    if (!database) {localStorage.setItem(KEY,JSON.stringify(snapshot));return;}
-    return new Promise((resolve,reject)=>{
-      const transaction=database.transaction("saves","readwrite");
-      transaction.objectStore("saves").put(snapshot,KEY);
-      transaction.oncomplete=resolve; transaction.onerror=()=>reject(transaction.error); transaction.onabort=()=>reject(transaction.error);
-    });
+    // A queued save or another tab from before the reset must not restore old progress.
+    const epoch=readEpoch();
+    if(generation!==writeGeneration||(epoch&&epoch!==storageEpoch))return;
+    if(!database){localStorage.setItem(KEY,JSON.stringify(snapshot));return;}
+    return writeDatabase(snapshot);
   });
-  queue=action; return action;
+  queue=action;return action;
+}
+function resetStorage(state) {
+  const previousEpoch=storageEpoch;
+  const epoch=globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random()}`;
+  const snapshot={...structuredClone(state),storageEpoch:epoch};
+  ++writeGeneration;storageEpoch=epoch;
+  let fallbackSaved=false;
+  try {
+    // The marker also rejects an old IndexedDB save if that backend is temporarily unavailable.
+    localStorage.setItem(RESET_KEY,epoch);
+    localStorage.setItem(KEY,JSON.stringify(snapshot));
+    fallbackSaved=true;
+  }catch{}
+  const action=queue.catch(()=>{}).then(async()=>{
+    try {
+      database??=await connectDatabase();
+      await writeDatabase(snapshot);
+    }catch(error){
+      database=null;
+      if(!fallbackSaved){
+        storageEpoch=previousEpoch;
+        try{if(readEpoch()===epoch){if(previousEpoch)localStorage.setItem(RESET_KEY,previousEpoch);else localStorage.removeItem(RESET_KEY);}}catch{}
+        throw error;
+      }
+    }
+  });
+  queue=action;return action;
 }
 
 const paths = {
@@ -277,17 +1033,19 @@ const $=selector=>document.querySelector(selector);
 const root=$('#app'), overlay=$('#overlay'), screen=$('#screen');
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const member=id=>C.members.find(m=>m.id===id);
-const personName=id=>id==='me'?state.profile.name:member(id)?.name||id;
-const username=id=>id==='me'?state.profile.username:member(id)?.username||id;
-const shortTime=time=>new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',hour12:false}).format(time);
-const longDate=time=>new Intl.DateTimeFormat('zh-TW',{timeZone:'Asia/Seoul',month:'long',day:'numeric',weekday:'long'}).format(time);
+const personName=id=>id==='me'?state.profile.name:member(id)?.name||state.fans?.[id]?.username||id;
+const username=id=>id==='me'?state.profile.username:member(id)?.username||state.fans?.[id]?.username||id;
+const shortTime=time=>new Intl.DateTimeFormat('zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false}).format(time);
+const longDate=time=>new Intl.DateTimeFormat('zh-TW',{month:'long',day:'numeric',weekday:'long'}).format(time);
 const age=time=>{const mins=Math.max(0,Math.floor((Date.now()-time)/60000));return mins<1?'剛剛':mins<60?`${mins} 分鐘前`:mins<1440?`${Math.floor(mins/60)} 小時前`:`${Math.floor(mins/1440)} 天前`;};
 const safeSrc=src=>typeof src==='string' && (/^(assets|photo|ins)\/[a-zA-Z0-9_/.\-]+$/.test(src)&&!src.includes('..') || /^data:image\/(jpeg|png|webp|gif);base64,/.test(src))?src:'assets/moment-yeji.svg';
 function image(src,fallback,alt,classes='',alternates=[]) {return `<img src="${esc(safeSrc(src))}" alt="${esc(alt)}" class="${classes}" data-fallback="${esc(fallback)}" data-alternates="${esc(JSON.stringify(alternates))}" draggable="false">`;}
-function avatar(id,classes='',phone=false) {
+function avatar(id,classes='',phone=false,label=personName(id)) {
+  const fan=state.fans?.[id];
+  if(fan)return `<span class="avatar fan-avatar ${classes}" role="img" aria-label="${esc(fan.username)}" style="background:${esc(fan.color)}">${esc(fan.username[0].toUpperCase())}</span>`;
   const src=id==='me'?state.profile.avatar:(phone?C.assets.phoneAvatar(id):C.assets.instagramAvatar(id));
   const alternatives=phone?[`${src}.jpeg`,`${src}.jpg`,`${src}.png`]:[];
-  return image(src||'photo/ins/profile/me.jpeg',`assets/avatar-${id==='me'?'me':id}.svg`,personName(id),`avatar ${classes}`,alternatives);
+  return image(src||'photo/ins/profile/me.jpeg',`assets/avatar-${id==='me'?'me':id}.svg`,label,`avatar ${classes}`,alternatives);
 }
 function photoImage(photo,classes='') {return image(photo.src,`assets/moment-${photo.member||'yeji'}.svg`,photo.member?`與 ${personName(photo.member)} 的${photo.side==='her'?'對應':'回憶'}照片`:'選擇的照片',classes);}
 let photos=[];
@@ -297,7 +1055,7 @@ let route={app:'lock'};
 let modal=null, storyTimer, toastTimer, clockTimer, pointerStart=null;
 let toastAction=null, previousRoute={app:'home'};
 const drafts={};
-let storageWarningShown=false, saveBroken=false, inFlightUpload=false;
+let storageWarningShown=false, saveBroken=false, inFlightUpload=false, resetting=false;
 
 document.addEventListener('error',event=>{
   const img=event.target;
@@ -320,9 +1078,10 @@ function restoreFocus(focus) {
 function captureDraft() {
   const input=$('#chat-input');if(input && route.member)drafts[`${route.app}:${route.member}`]=input.value;
   const caption=$('#compose-caption');if(caption && modal?.kind==='compose')modal.caption=caption.value;
+  const comment=$('#comment-input');if(comment&&modal?.kind==='comments')modal.draft=comment.value;
 }
 async function persist() {
-  if(saveBroken)return;
+  if(saveBroken||resetting)return;
   try {await saveState(state);}
   catch {if(!storageWarningShown){storageWarningShown=true;toast('瀏覽器無法儲存進度，請確認儲存空間與網站資料權限。');}}
 }
@@ -331,13 +1090,16 @@ function go(next) {
   captureDraft();
   if (modal) closeModal(false);
   route=state.onboardingComplete?{...next}:{app:'setup'};
-  if(route.page==='chat') markRead(route.app==='kakao'?'kakao':'instagram',route.member);
+  if(route.app==='instagram'&&advancePostLikes(state,C))persist();
+  if(route.page==='chat'&&['kakao','instagram'].includes(route.app)){
+    startDialogue(state,C,route.app,route.member);markRead(route.app,route.member);
+  }
   refresh(true);
 }
 function markRead(channel,id){if(!state.chats[channel]?.[id])return;state.chats[channel][id].forEach(x=>x.read=true);persist();}
 function unlock(){go({app:'home'});}
 function refresh(navigating=false) {
-  captureDraft();
+  if(!navigating)captureDraft();
   photos=photoLibrary(state,C);
   const focus=snapshotFocus(root), oldScroll=root.querySelector('.scroll'), scrollTop=oldScroll?.scrollTop||0;
   screen.className=`screen app-${route.app}${route.page==='chat'?' is-chat':''}${modal?.kind==='story'?' has-story':''}`;
@@ -362,13 +1124,15 @@ function refresh(navigating=false) {
 }
 function wallpaper(kind) {return `<div class="wallpaper" style="background-image:url('${esc(C.wallpapers[kind])}'),url('assets/${kind}screen.svg')"></div>`;}
 function renderSetup() {
-  return `<section class="setup-screen"><div class="setup-heading">${icon('user')}<h1>設定你的手機</h1></div><form id="setup-form"><label class="field-label" for="setup-username">Instagram ID</label><div class="username-field"><span>@</span><input id="setup-username" value="${esc(state.profile.username)}" maxlength="31" autocomplete="username" autocapitalize="none" spellcheck="false" required aria-describedby="setup-error"></div><label class="field-label" for="setup-nickname">成員對你的稱呼</label><input class="text-field" id="setup-nickname" value="${esc(state.profile.nickname)}" placeholder="輸入稱呼" maxlength="40" autocomplete="nickname" required><p class="form-error" id="setup-error" role="alert"></p><button class="primary-button">開始</button></form></section>`;
+  return `<section class="setup-screen"><div class="setup-heading">${icon('user')}<h1>設定你的手機</h1></div><form id="setup-form"><label class="field-label" for="setup-username">Instagram ID</label><div class="username-field"><span>@</span><input id="setup-username" value="${esc(state.profile.username)}" maxlength="31" autocomplete="username" autocapitalize="none" spellcheck="false" required aria-describedby="setup-error"></div><label class="field-label" for="setup-nickname">成員對你的稱呼</label><input class="text-field" id="setup-nickname" value="${esc(state.profile.nickname)}" placeholder="輸入稱呼" maxlength="40" autocomplete="nickname" required><p class="form-error" id="setup-error" role="alert"></p><button class="primary-button">開始</button></form><p class="setup-disclaimer">照片素材皆來自 ITZY 官方和成員帳號<br>部分對話與互動使用 AI 生成</p></section>`;
 }
 function renderLock() {
-  const latest=[];
-  for(const channel of ['kakao','instagram'])for(const m of C.members){const list=state.chats[channel][m.id].filter(x=>!x.read&&x.sender!=='me');if(list.length)latest.push({channel,member:m.id,message:list.at(-1)});}
-  latest.sort((a,b)=>b.message.time-a.message.time);
-  return `<section class="lock-screen" id="lock-swipe" aria-label="鎖定畫面，往上滑或按 Enter 解鎖">${wallpaper('lock')}<button class="lock-open" data-action="unlock" aria-label="點一下解鎖"></button><div class="lock-icon">${icon('unlock')}</div><div class="lock-date" id="lock-date">${longDate(Date.now())}</div><div class="lock-time" id="lock-time">${shortTime(Date.now())}</div><div class="lock-subtitle">${icon('cloud')} 首爾 · ${C.weather.temperature}° · ${C.weather.condition}</div><div class="lock-notifications">${latest.slice(0,2).map(x=>`<button class="lock-notice" data-action="open-chat" data-channel="${x.channel}" data-member="${x.member}"><span class="notice-app ${x.channel}">${icon(x.channel==='kakao'?'chat':'instagram','',x.channel==='kakao')}</span><div><strong>${personName(x.member)} <span class="notice-channel">· ${x.channel==='kakao'?'KakaoTalk':'Instagram'}</span></strong><p>${esc(dialogue(x.message.text||'傳送了一則貼文'))}</p></div></button>`).join('')}</div></section>`;
+  const notifications=['kakao','instagram'].map(channel=>({channel,count:unreadCount(state,channel)})).filter(x=>x.count>0);
+  const notices=notifications.map(({channel,count})=>{
+    const kakao=channel==='kakao',name=kakao?'KakaoTalk':'Instagram';
+    return `<button class="lock-notice" data-action="${kakao?'kakao-tab':'ig-tab'}" data-tab="${kakao?'chats':'dm'}" aria-label="${name} ${count} 則通知"><span class="notice-app ${channel}">${icon(kakao?'chat':'instagram','',kakao)}</span><div><strong>${name}</strong><p>${count} 則通知</p></div></button>`;
+  }).join('');
+  return `<section class="lock-screen" id="lock-swipe" aria-label="鎖定畫面，往上滑或按 Enter 解鎖">${wallpaper('lock')}<button class="lock-open" data-action="unlock" aria-label="點一下解鎖"></button><div class="lock-icon">${icon('unlock')}</div><div class="lock-date" id="lock-date">${longDate(Date.now())}</div><div class="lock-time" id="lock-time">${shortTime(Date.now())}</div><div class="lock-subtitle">${icon('cloud')} 首爾 · ${C.weather.temperature}° · ${C.weather.condition}</div>${notices?`<div class="lock-notifications">${notices}</div>`:''}</section>`;
 }
 function appIcon(name) {
   if(name==='kakao')return '<span class="app-icon icon-kakao"><span class="kakao-mark">TALK</span></span>';
@@ -393,16 +1157,32 @@ function kakaoNav(){return `<nav class="bottom-nav" aria-label="KakaoTalk 導覽
 function renderKakao() {
   if(route.page==='chat')return renderChat('kakao',route.member);
   const friends=route.tab==='friends';
-  return `<header class="app-topbar"><h2 class="app-title">${friends?'好友':'聊天'}</h2><button class="top-button" data-action="search" data-channel="kakao" aria-label="搜尋好友">${icon('search')}</button><button class="top-button" data-action="settings" aria-label="編輯遊戲訊息">${icon('more')}</button></header><div class="scroll">${friends?`<button class="list-row self-row" data-action="settings">${avatar('me','kakao-avatar')}<div class="list-row-copy"><strong>${esc(state.profile.name)}</strong></div></button><div class="section-label"><span>好友 ${C.members.length}</span><span>⌃</span></div>`:''}${C.members.map(m=>renderChatRow('kakao',m,friends)).join('')}</div>${kakaoNav()}`;
+  return `<header class="app-topbar"><h2 class="app-title">${friends?'好友':'聊天'}</h2><button class="top-button" data-action="search" data-channel="kakao" aria-label="搜尋好友">${icon('search')}</button><button class="top-button" data-action="settings" aria-label="設定">${icon('more')}</button></header><div class="scroll">${friends?`<button class="list-row self-row" data-action="settings">${avatar('me','kakao-avatar')}<div class="list-row-copy"><strong>${esc(state.profile.name)}</strong></div></button><div class="section-label"><span>好友 ${C.members.length}</span><span>⌃</span></div>`:''}${C.members.map(m=>renderChatRow('kakao',m,friends)).join('')}</div>${kakaoNav()}`;
+}
+function chatMembers(channel) {
+  return [...C.members].sort((a,b)=>(state.chats[channel][b.id].at(-1)?.time??0)-(state.chats[channel][a.id].at(-1)?.time??0));
 }
 function renderChatRow(channel,m,friends=false) {
   const messages=state.chats[channel][m.id],latest=messages.at(-1),unread=unreadCount(state,channel,m.id);
   return `<button class="list-row" data-action="open-chat" data-channel="${channel}" data-member="${m.id}">${avatar(m.id,channel==='kakao'?'kakao-avatar':'')}<div class="list-row-copy"><strong>${channel==='instagram'?esc(m.username):m.name}</strong><p>${friends?m.korean:esc(latest?(latest.kind==='post'?'傳送了一則貼文':latest.sender==='me'?latest.text:dialogue(latest.text)):(channel==='instagram'?`${m.displayName} · 傳送訊息`:'尚無訊息'))}</p></div>${!friends?`<div class="list-row-meta"><span>${latest?shortTime(latest.time):''}</span>${unread?`<span class="unread-pill">${unread}</span>`:''}</div>`:'<span class="friend-status">♡</span>'}</button>`;
 }
+function renderDialogueChoices(channel,id) {
+  const welcome=renderWelcomeChoice(channel,id);if(welcome)return welcome;
+  const session=state.dialogueSessions[channel]?.[id];
+  const choices=dialogueChoices(state,C,channel,id);
+  if(!choices.length||C.dialogues[id]?.nodes[session?.nodeId]?.initial)return '';
+  return `<div class="dialogue-choices" role="group" aria-label="選擇回覆">${choices.map(c=>`<button data-action="dialogue-choice" data-channel="${channel}" data-member="${id}" data-node="${esc(session.nodeId)}" data-choice="${esc(c.id)}">${esc(dialogue(c.text))}</button>`).join('')}</div>`;
+}
+function renderWelcomeChoice(channel,id) {
+  const script=C.dialogues[id],node=script?.nodes[script.start];
+  if(channel!=='kakao'||!C.dialogueChannels.includes(channel)||!node?.initial||state.welcomeDone?.[id]||state.welcomePending?.[id])return '';
+  return `<div class="dialogue-choices welcome-choices" role="group" aria-label="回覆歡迎訊息">${node.choices.map(choice=>`<button data-action="dialogue-choice" data-channel="kakao" data-member="${id}" data-node="${script.start}" data-choice="${choice.id}">${esc(dialogue(choice.text))}</button>`).join('')}</div>`;
+}
 function renderChat(channel,id) {
   const m=member(id),messages=state.chats[channel][id];
+  const quickHeart=channel==='kakao';
   const inputValue=drafts[`${channel==='kakao'?'kakao':'instagram'}:${id}`]||'';
-  return `<header class="app-topbar"><button class="top-button header-back" data-action="${channel==='kakao'?'kakao-back':'dm-back'}" aria-label="返回聊天室列表">${icon('back')}</button>${channel==='instagram'?avatar(id,'small'):''}<div class="header-name"><strong>${channel==='kakao'?m.name:esc(m.username)}</strong>${channel==='instagram'?`<small>${esc(m.displayName)}</small>`:''}</div><button class="top-button" data-action="chat-info" data-member="${id}" aria-label="聊天資訊">${icon('info')}</button></header><div class="scroll chat-log"><div class="chat-date">${longDate(messages[0]?.time||Date.now())}</div>${messages.length?messages.map(message=>renderMessage(message,channel,id)).join(''):`<div class="no-messages">${icon('chat')}<br>尚無訊息</div>`}</div><form class="chat-compose" id="chat-form"><button type="button" data-action="${channel==='instagram'?'chat-share':'chat-emoji'}" aria-label="${channel==='instagram'?'分享貼文':'加入表情符號'}">${icon(channel==='instagram'?'image':'smile')}</button><label class="sr-only" for="chat-input">傳送訊息</label><input id="chat-input" placeholder="${channel==='kakao'?'輸入訊息':'傳送訊息…'}" autocomplete="off" maxlength="2000" value="${esc(inputValue)}"><button class="send-button" aria-label="傳送">${channel==='kakao'?icon('arrowUp'):'傳送'}</button></form>`;
+  return `<header class="app-topbar"><button class="top-button header-back" data-action="${channel==='kakao'?'kakao-back':'dm-back'}" aria-label="返回聊天室列表">${icon('back')}</button>${channel==='instagram'?avatar(id,'small'):''}<div class="header-name"><strong>${channel==='kakao'?m.name:esc(m.username)}</strong>${channel==='instagram'?`<small>${esc(m.displayName)}</small>`:''}</div><button class="top-button" data-action="chat-info" data-member="${id}" aria-label="聊天資訊">${icon('info')}</button></header><div class="scroll chat-log"><div class="chat-date">${longDate(messages[0]?.time||Date.now())}</div>${messages.length?messages.map(message=>renderMessage(message,channel,id)).join(''):`<div class="no-messages">${icon('chat')}<br>尚無訊息</div>`}${(state.dialogueSessions[channel]?.[id]?.pending||(channel==='kakao'&&state.welcomePending?.[id]))?`<div class="typing-indicator" aria-label="${m.name} 正在輸入"><i></i><i></i><i></i></div>`:''}</div>${renderDialogueChoices(channel,id)}<form class="chat-compose" id="chat-form">${channel==='instagram'?`<button type="button" data-action="chat-share" aria-label="分享貼文">${icon('image')}</button>`:''}<label class="sr-only" for="chat-input">傳送訊息</label><input id="chat-input" placeholder="${channel==='kakao'?'輸入訊息':'傳送訊息…'}" autocomplete="off" maxlength="2000" value="${esc(inputValue)}">${quickHeart?`<button type="button" class="quick-emoji" data-action="chat-heart" aria-label="傳送紅色愛心">${esc(C.kakaoEmoji.value)}</button>`:''}<button class="send-button" aria-label="傳送">${channel==='kakao'?icon('arrowUp'):'傳送'}</button></form>`;
 }
 function renderMessage(message,channel,id) {
   const mine=message.sender==='me';
@@ -416,7 +1196,7 @@ function renderMessage(message,channel,id) {
 function instagramNav() {return `<nav class="bottom-nav" aria-label="Instagram 導覽"><button data-action="ig-tab" data-tab="feed" class="${!route.page||route.page==='feed'?'active':''}" aria-label="Instagram 首頁">${icon('home','',!route.page||route.page==='feed')}</button><button data-action="compose" aria-label="建立貼文">${icon('plus')}</button><button data-action="ig-tab" data-tab="profile" class="${route.page==='profile'?'active':''}" aria-label="我的個人檔案">${avatar('me','tiny')}</button></nav>`;}
 function renderInstagram() {
   if(route.page==='chat')return renderChat('instagram',route.member);
-  if(route.page==='dm')return `<header class="app-topbar"><button class="top-button header-back" data-action="ig-tab" data-tab="feed" aria-label="返回 Instagram 首頁">${icon('back')}</button><h2 class="app-title" style="font-size:17px">${esc(state.profile.username)}</h2><button class="top-button" data-action="search" data-channel="instagram" aria-label="搜尋訊息">${icon('search')}</button></header><div class="section-label"><span style="color:#222;font-weight:600">訊息</span><span>好友 ${C.members.length}</span></div><div class="scroll">${C.members.map(m=>renderChatRow('instagram',m)).join('')}</div>`;
+  if(route.page==='dm')return `<header class="app-topbar"><button class="top-button header-back" data-action="ig-tab" data-tab="feed" aria-label="返回 Instagram 首頁">${icon('back')}</button><h2 class="app-title" style="font-size:17px">${esc(state.profile.username)}</h2><button class="top-button" data-action="search" data-channel="instagram" aria-label="搜尋訊息">${icon('search')}</button></header><div class="section-label"><span style="color:#222;font-weight:600">訊息</span><span>好友 ${C.members.length}</span></div><div class="scroll">${chatMembers('instagram').map(m=>renderChatRow('instagram',m)).join('')}</div>`;
   if(route.page==='profile')return renderProfile();
   if(route.page==='post') {
     const post=state.posts.find(p=>p.id===route.postId);
@@ -427,7 +1207,7 @@ function renderInstagram() {
 function activeStories(id){return state.stories.filter(s=>s.author===id&&(Date.now()-s.createdAt<86400000));}
 function renderStoryTray() {
   const own=activeStories('me');
-  return `<div class="story-avatar"><button data-action="${own.length?'story':'compose-story'}" data-member="me" style="padding:0" aria-label="${own.length?'觀看你的限時動態':'發佈限時動態'}"><span class="story-ring ${!own.length?'empty':own.every(s=>s.seen)?'seen':''}">${avatar('me')}</span></button><button class="story-add" data-action="compose-story" aria-label="新增限時動態">${icon('plus')}</button><span>你的限時動態</span></div>${C.members.map(m=>{const stories=activeStories(m.id);return `<button class="story-avatar" data-action="story" data-member="${m.id}" aria-label="觀看 ${m.name} 的限時動態"><span class="story-ring ${!stories.length?'empty':stories.every(s=>s.seen)?'seen':''}">${avatar(m.id)}</span><span>${m.name}</span></button>`;}).join('')}`;
+  return `<div class="story-avatar"><div class="story-avatar-photo"><button class="story-open" data-action="${own.length?'story':'compose-story'}" data-member="me" aria-label="${own.length?'觀看你的限時動態':'發佈限時動態'}"><span class="story-ring ${!own.length?'empty':own.every(s=>s.seen)?'seen':''}">${avatar('me')}</span></button><button class="story-add" data-action="compose-story" aria-label="新增限時動態">${icon('plus')}</button></div><span>你的限時動態</span></div>${C.members.map(m=>{const stories=activeStories(m.id);return `<button class="story-avatar" data-action="story" data-member="${m.id}" aria-label="觀看 ${m.name} 的限時動態"><span class="story-ring ${!stories.length?'empty':stories.every(s=>s.seen)?'seen':''}">${avatar(m.id)}</span><span>${m.name}</span></button>`;}).join('')}`;
 }
 function renderPost(post) {
   const count=post.images.length,slide=Math.max(0,Math.min(post.slide||0,count-1));
@@ -466,7 +1246,23 @@ function renderSMS() {
   return `<h2 class="sms-title">訊息</h2><div class="scroll">${C.sms.map(t=>`<button class="list-row sms-row" data-action="sms-thread" data-id="${t.id}"><div class="sms-icon">${icon('user')}</div><div class="list-row-copy"><strong>${esc(t.name)}</strong><p>${esc(t.messages[0])}</p></div><div class="list-row-meta"><span>${t.time}</span>${icon('chevron')}</div></button>`).join('')}</div>`;
 }
 
-function sheet(title,body,footer='',className='') {return `<section class="sheet ${className}" role="dialog" aria-modal="true" aria-label="${esc(title)}"><span class="sheet-handle"></span><header class="sheet-header"><button data-action="close-modal" aria-label="關閉">${icon('close')}</button><h2>${esc(title)}</h2><span style="width:20px"></span></header><div class="sheet-scroll">${body}</div>${footer}</section>`;}
+function sheet(title,body,footer='',className='',backAction='close-modal') {return `<section class="sheet ${className}" role="dialog" aria-modal="true" aria-label="${esc(title)}"><span class="sheet-handle"></span><header class="sheet-header"><button data-action="${backAction}" aria-label="${backAction==='close-modal'?'關閉':'返回'}">${icon(backAction==='close-modal'?'close':'back')}</button><h2>${esc(title)}</h2><span style="width:20px"></span></header><div class="sheet-scroll">${body}</div>${footer}</section>`;}
+function renderComment(post,c) {
+  const likers=c.likedBy||[],liked=likers.includes('me'),target=post.comments.find(x=>x.id===c.replyTo);
+  const mention=target?`@${username(target.author)}`:'';
+  return `<div class="comment-row" data-comment-id="${c.id}">${avatar(c.author,'small',false,username(c.author))}<div class="comment-content"><div class="comment-text"><strong>${esc(username(c.author))}</strong>${mention&&!c.text.startsWith(mention)?`<span class="comment-mention">${esc(mention)}</span> `:''}${esc(c.text)}</div><div class="comment-meta"><time>${age(c.time)}</time>${likers.length?`<span class="comment-like-count">${likers.length} 個讚</span>`:''}<button data-action="reply-comment" data-id="${post.id}" data-comment="${c.id}">回覆</button></div></div><button class="comment-heart ${liked?'liked':''}" data-action="like-comment" data-id="${post.id}" data-comment="${c.id}" aria-pressed="${liked}" aria-label="${liked?'取消對':'對'} ${esc(username(c.author))} 的留言按讚">${icon('heart','',liked)}</button></div>`;
+}
+function renderCommentThreads(post) {
+  return post.comments.filter(c=>!c.parentId).map(c=>{
+    const replies=post.comments.filter(r=>r.parentId===c.id),expanded=modal.expandedThreads?.includes(c.id);
+    return `<div class="comment-thread">${renderComment(post,c)}${replies.length?`<button class="thread-toggle" data-action="toggle-replies" data-comment="${c.id}" aria-expanded="${!!expanded}"><span></span>${expanded?'隱藏回覆':`查看 ${replies.length} 則回覆`}</button>${expanded?`<div class="comment-replies">${replies.map(r=>renderComment(post,r)).join('')}</div>`:''}`:''}</div>`;
+  }).join('')||'<p class="comments-empty">尚無留言</p>';
+}
+function renderCommentsModal() {
+  const post=state.posts.find(p=>p.id===modal.postId),target=post.comments.find(c=>c.id===modal.replyTo);
+  const footer=`${target?`<div class="comment-replying"><span>正在回覆 @${esc(username(target.author))}</span><button data-action="cancel-comment-reply" aria-label="取消回覆">${icon('close')}</button></div>`:''}<form class="chat-compose" id="comment-form">${avatar('me','tiny',false,username('me'))}<input id="comment-input" placeholder="${target?`回覆 @${esc(username(target.author))}…`:'新增留言…'}" maxlength="1000" autocomplete="off" aria-label="留言內容"><button style="color:#6f89b2;font-size:11px">發佈</button></form>`;
+  overlay.innerHTML=sheet('留言',`<div class="comment-row post-caption-row">${avatar(post.author,'small',false,username(post.author))}<div class="comment-content"><strong>${esc(username(post.author))}</strong>${esc(post.caption)}<small>${age(post.time)}</small></div></div><div class="comment-divider"></div>${renderCommentThreads(post)}`,footer,'comments-sheet');
+}
 function openModal(value) {
   captureDraft();clearTimeout(storyTimer);
   modal=value;renderModal();
@@ -477,15 +1273,15 @@ function renderModal() {
   if (!modal){overlay.innerHTML='';return;}
   const focus=snapshotFocus(overlay),scrollTop=overlay.querySelector('.sheet-scroll')?.scrollTop||0;
   const type=modal.kind;
+  const commentDraft=type==='comments'?($('#comment-input')?.value??modal.draft??''):undefined;
   screen.classList.toggle('has-story',type==='story');
   if(type==='compose') {
     const isStory=modal.type==='story',selected=modal.images;
-    overlay.innerHTML=sheet(isStory?'新增限時動態':'新增貼文',`<span class="sheet-section-label">最近項目</span><div class="sheet-photo-grid">${photos.map(p=>{const index=selected.findIndex(x=>x.id===p.id);return `<button class="sheet-photo-choice ${index>=0?'selected':''}" data-action="select-photo" data-member="${p.member}" aria-label="${index>=0?'取消選擇':'選擇'} ${personName(p.member)} 的照片">${photoImage(p)}<span class="selection-number">${index>=0?index+1:''}</span></button>`;}).join('')}</div><button class="upload-button" data-action="upload-images" ${inFlightUpload?'disabled':''}>${icon('plus')}${inFlightUpload?'正在處理照片…':'從裝置選擇照片'}</button>${selected.length?`<div class="compose-preview">${selected.map((p,i)=>`<button data-action="remove-photo" data-index="${i}" aria-label="移除第 ${i+1} 張照片">${photoImage(p)}<span class="remove-image">×</span></button>`).join('')}</div>`:''}<p class="compose-count">已選 ${selected.length} / ${isStory?1:10} 張${isStory?' · 顯示 24 小時':''}</p>${!isStory?`<label class="field-label" for="compose-caption">說明</label><textarea class="text-field" id="compose-caption" rows="3" maxlength="2200" placeholder="撰寫說明…">${esc(modal.caption||'')}</textarea>`:''}<button class="primary-button" data-action="publish" ${!selected.length||inFlightUpload?'disabled':''}>${icon(isStory?'plus':'share')} ${isStory?'分享到限時動態':'分享貼文'}</button>`);
+    overlay.innerHTML=sheet(isStory?'新增限時動態':'新增貼文',`<span class="sheet-section-label">最近項目</span><div class="sheet-photo-grid">${photos.map(p=>{const index=selected.findIndex(x=>x.id===p.id);return `<button class="sheet-photo-choice ${index>=0?'selected':''}" data-action="select-photo" data-member="${p.member}" aria-label="${index>=0?'取消選擇':'選擇'} ${personName(p.member)} 的照片">${photoImage(p)}<span class="selection-number">${index>=0?index+1:''}</span></button>`;}).join('')}</div><button class="upload-button" data-action="upload-images" ${inFlightUpload?'disabled':''}>${icon('plus')}${inFlightUpload?'正在處理照片…':'從裝置選擇照片'}</button>${selected.length?`<div class="compose-preview">${selected.map((p,i)=>`<button data-action="remove-photo" data-index="${i}" aria-label="移除第 ${i+1} 張照片">${photoImage(p)}<span class="remove-image">×</span></button>`).join('')}</div>`:''}<p class="compose-count">已選 ${selected.length} / 1 張${isStory?' · 顯示 24 小時':''}</p>${!isStory?`<label class="field-label" for="compose-caption">說明</label><textarea class="text-field" id="compose-caption" rows="3" maxlength="2200" placeholder="撰寫說明…">${esc(modal.caption||'')}</textarea>`:''}<button class="primary-button" data-action="publish" ${!selected.length||inFlightUpload?'disabled':''}>${icon(isStory?'plus':'share')} ${isStory?'分享到限時動態':'分享貼文'}</button>`);
   } else if(type==='photo-share'){
     overlay.innerHTML=sheet('分享照片',`<div style="width:64px;height:64px;margin:0 auto 15px">${photoImage(photos.find(p=>p.member===modal.member),'post-image')}</div>${[['post','Instagram 貼文',''],['story','限時動態','']].map(([type,title,note])=>`<button class="share-choice" data-action="photo-to-compose" data-type="${type}" data-member="${modal.member}">${icon(type==='post'?'instagram':'plus')}<div><strong>${title}</strong><small>${note}</small></div>${icon('chevron')}</button>`).join('')}`);
   } else if(type==='comments') {
-    const post=state.posts.find(p=>p.id===modal.postId);
-    overlay.innerHTML=sheet('留言',`<div class="comment-row">${avatar(post.author,'small')}<div class="comment-content"><strong>${esc(username(post.author))}</strong>${esc(post.caption)}<small>${age(post.time)}</small></div></div><div style="height:1px;background:#eee;margin:5px 0 18px"></div>${post.comments.map(c=>`<div class="comment-row">${avatar(c.author,'small')}<div class="comment-content"><strong>${esc(username(c.author))}</strong>${esc(c.text)}<small>${age(c.time)}</small></div></div>`).join('')||'<p class="comments-empty">尚無留言</p>'}`,`<form class="chat-compose" id="comment-form">${avatar('me','tiny')}<input id="comment-input" placeholder="新增留言…" maxlength="1000" autocomplete="off" aria-label="留言內容"><button style="color:#6f89b2;font-size:11px">發佈</button></form>`,'comments-sheet');
+    renderCommentsModal();
   } else if(type==='share-post') {
     const post=state.posts.find(p=>p.id===modal.postId);
     overlay.innerHTML=sheet('傳送貼文',`${C.members.map(m=>`<button class="share-recipient" data-action="send-post" data-member="${m.id}" data-id="${post.id}">${avatar(m.id)}<div><strong>${m.name}</strong><small>${esc(m.username)}</small></div><span class="share-send">傳送</span></button>`).join('')}`);
@@ -495,7 +1291,7 @@ function renderModal() {
     const w=C.weather;
     overlay.innerHTML=sheet('首爾天氣',`<div class="weather-detail"><h3>首爾 서울</h3>${icon('cloud')}<div class="weather-temp">${w.temperature}°</div><p>${w.condition} · 最高 ${w.high}° 最低 ${w.low}°<br>${w.note}</p></div><p class="settings-note">固定天氣快照：${w.checkedAt}<br>此為製作當天保存的預報，不會自動更新。</p><a class="link-source" href="${esc(w.source)}" target="_blank" rel="noreferrer">查看天氣資料來源 ↗</a>`);
   } else if(type==='search') {
-    overlay.innerHTML=sheet(modal.channel==='kakao'?'搜尋好友':'搜尋訊息',`<div class="search-box" style="margin:0 0 8px">${icon('search')}<input id="chat-search" placeholder="輸入好友名稱或帳號" aria-label="搜尋好友"></div><div id="chat-search-results">${C.members.map(m=>`<div data-search-name="${esc(`${m.name} ${m.username} ${m.korean}`.toLowerCase())}">${renderChatRow(modal.channel,m)}</div>`).join('')}</div>`);
+    overlay.innerHTML=sheet(modal.channel==='kakao'?'搜尋好友':'搜尋訊息',`<div class="search-box" style="margin:0 0 8px">${icon('search')}<input id="chat-search" placeholder="輸入好友名稱或帳號" aria-label="搜尋好友"></div><div id="chat-search-results">${(modal.channel==='instagram'?chatMembers('instagram'):C.members).map(m=>`<div data-search-name="${esc(`${m.name} ${m.username} ${m.korean}`.toLowerCase())}">${renderChatRow(modal.channel,m)}</div>`).join('')}</div>`);
   } else if(type==='chat-info') {
     const m=member(modal.member);
     overlay.innerHTML=sheet('聊天資訊',`<div style="text-align:center">${avatar(m.id,'large')}<h3 style="font-size:15px">${m.name} · ${m.korean}</h3><p style="font-size:11px;color:#999">@${esc(m.username)}</p></div>`);
@@ -506,7 +1302,7 @@ function renderModal() {
   else if(type==='reset')overlay.innerHTML=sheet('重新開始？',`<p class="sheet-description">將清除這個瀏覽器的聊天、貼文、限動與照片事件進度，並重新設定你的手機。</p><button class="secondary-button" data-action="close-modal">取消</button><button class="primary-button danger" data-action="confirm-reset">重新開始</button>`);
   else if(type==='post-options')overlay.innerHTML=sheet('貼文選項',`<button class="share-choice" data-action="share-post" data-id="${modal.postId}">${icon('send')}<strong>傳送到聊天室</strong></button>`);
   else if(type==='pick-post')overlay.innerHTML=sheet('選擇要分享的貼文',`${state.posts.map(p=>`<button class="share-choice" data-action="send-post" data-id="${p.id}" data-member="${route.member}"><span style="width:47px;height:47px">${photoImage(p.images[0],'post-image')}</span><div><strong>${esc(username(p.author))}</strong><small>${esc(p.caption).slice(0,50)||'照片貼文'}</small></div>${icon('send')}</button>`).join('')||'<p class="sheet-description">尚無貼文</p>'}`);
-  if(type!=='story'){const scroll=overlay.querySelector('.sheet-scroll');if(scroll)scroll.scrollTop=scrollTop;restoreFocus(focus);}
+  if(type!=='story'){if(commentDraft!==undefined&&$('#comment-input'))$('#comment-input').value=commentDraft;const scroll=overlay.querySelector('.sheet-scroll');if(scroll)scroll.scrollTop=scrollTop;restoreFocus(focus);}
 }
 
 function renderSettings() {
@@ -527,7 +1323,7 @@ function toast(text,notice=null) {
   $('#toast').innerHTML=notice?`<button class="toast" data-action="toast-open">${avatar(notice.member,'small')}<div><strong>${personName(notice.member)} · ${notice.postId?'Instagram':notice.channel==='kakao'?'KakaoTalk':'Instagram'}</strong><p>${esc(dialogue(text))}</p></div></button>`:`<div class="toast toast-simple">${esc(text)}</div>`;
   toastTimer=setTimeout(()=>{$('#toast').innerHTML='';toastAction=null;},notice?5200:3000);
 }
-function showCompose(type='post',selected=[]) {openModal({kind:'compose',type,images:selected.map(p=>({...p})),caption:selected.length===1?(state.photoDetails[selected[0].id]?.description||''):''});}
+function showCompose(type='post',selected=[]) {openModal({kind:'compose',type,images:selected.slice(0,1).map(p=>({...p})),caption:selected.length?(state.photoDetails[selected[0].id]?.description||''):''});}
 function slidePost(id,dir){const p=state.posts.find(p=>p.id===id);if(!p)return;p.slide=Math.max(0,Math.min((p.slide||0)+dir,p.images.length-1));commit();}
 function sendSharedPost(id,recipient) {
   const post=state.posts.find(p=>p.id===id);if(!post)return;
@@ -535,9 +1331,35 @@ function sendSharedPost(id,recipient) {
   commit(false);go({app:'instagram',page:'chat',member:recipient});toast(`已將貼文傳送給 ${personName(recipient)}`);
 }
 function updateClock(){const now=Date.now();$('#status-time').textContent=shortTime(now);const time=$('#lock-time');if(time)time.textContent=shortTime(now);const date=$('#lock-date');if(date)date.textContent=longDate(now);}
+function updatePostEngagement(now=Date.now()) {
+  if(!state||saveBroken||resetting||!advancePostLikes(state,C,now))return;
+  persist();
+  if(route.app==='instagram'&&(!route.page||['feed','post'].includes(route.page)))refresh();
+}
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&state){updateClock();updatePostEngagement();processJobs();}
+});
 
+async function restartGame(button) {
+  if(resetting)return;
+  resetting=true;button.disabled=true;button.textContent='正在重新開始…';
+  const fresh=createState(C);
+  try {
+    await resetStorage(fresh);
+    closeModal(false);
+    for(const key of Object.keys(drafts))delete drafts[key];
+    clearTimeout(toastTimer);$('#toast').innerHTML='';toastAction=null;
+    pointerStart=null;homeGesture=null;inFlightUpload=false;
+    $('#image-upload').value='';
+    state=fresh;saveBroken=false;storageWarningShown=false;
+    previousRoute={app:'home'};route={app:'setup'};refresh(true);
+  }catch{
+    button.disabled=false;button.textContent='重新開始';
+    toast('無法儲存重置結果，請確認瀏覽器允許儲存網站資料後再試。');
+  }finally{resetting=false;}
+}
 document.addEventListener('click',event=>{
-  const button=event.target.closest('[data-action]');if(!button||button.disabled||!state)return;
+  const button=event.target.closest('[data-action]');if(!button||button.disabled||!state||resetting)return;
   if(!state.onboardingComplete)return;
   const action=button.dataset.action,d=button.dataset;
   if(action==='unlock')unlock();
@@ -549,6 +1371,10 @@ document.addEventListener('click',event=>{
   else if(action==='close-modal')closeModal();
   else if(action==='weather')openModal({kind:'weather'});
   else if(action==='open-chat')go({app:d.channel==='kakao'?'kakao':'instagram',page:'chat',member:d.member});
+  else if(action==='dialogue-choice'){
+    if(route.app!==d.channel||route.member!==d.member||route.page!=='chat')return;
+    try{if(chooseDialogue(state,C,d.channel,d.member,d.node,d.choice))commit();}catch(error){toast(error.message);}
+  }
   else if(action==='kakao-tab')go({app:'kakao',tab:d.tab});
   else if(action==='kakao-back')go({app:'kakao',tab:'chats'});
   else if(action==='dm-back')go({app:'instagram',page:'dm'});
@@ -560,11 +1386,10 @@ document.addEventListener('click',event=>{
     if(modal?.kind!=='compose')return;captureDraft();
     const index=modal.images.findIndex(x=>x.id===d.member);
     if(index>=0)modal.images.splice(index,1);
-    else if(modal.type==='story')modal.images=[{...photos.find(p=>p.id===d.member)}];
-    else if(modal.images.length<10)modal.images.push({...photos.find(p=>p.id===d.member)});
-    else toast('一則貼文最多 10 張照片');renderModal();
+    else modal.images=[{...photos.find(p=>p.id===d.member)}];
+    renderModal();
   } else if(action==='remove-photo') {captureDraft();modal.images.splice(Number(d.index),1);renderModal();}
-  else if(action==='upload-images') {$('#image-upload').value='';$('#image-upload').multiple=modal?.type!=='story';$('#image-upload').dataset.mode='compose';$('#image-upload').click();}
+  else if(action==='upload-images') {$('#image-upload').value='';$('#image-upload').multiple=false;$('#image-upload').dataset.mode='compose';$('#image-upload').click();}
   else if(action==='upload-avatar') {$('#image-upload').value='';$('#image-upload').multiple=false;$('#image-upload').dataset.mode='avatar';$('#image-upload').click();}
   else if(action==='publish') {
     if(modal?.kind!=='compose'||!modal.images.length||inFlightUpload)return;
@@ -575,6 +1400,18 @@ document.addEventListener('click',event=>{
     const i=state.bookmarked.indexOf(d.id);if(i<0)state.bookmarked.push(d.id);else state.bookmarked.splice(i,1);commit();
   } else if(action==='slide')slidePost(d.id,Number(d.dir));
   else if(action==='comments')openModal({kind:'comments',postId:d.id});
+  else if(action==='like-comment'){
+    if(toggleCommentLike(state,d.id,d.comment)){commit();renderModal();}
+  }
+  else if(action==='reply-comment'){
+    if(modal?.kind!=='comments'||modal.postId!==d.id)return;
+    const comment=state.posts.find(p=>p.id===d.id)?.comments.find(c=>c.id===d.comment);if(!comment)return;
+    modal.replyTo=comment.id;modal.expandedThreads=[...new Set([...(modal.expandedThreads||[]),comment.parentId||comment.id])];renderModal();$('#comment-input')?.focus();
+  }
+  else if(action==='cancel-comment-reply'){modal.replyTo=null;renderModal();$('#comment-input')?.focus();}
+  else if(action==='toggle-replies'){
+    const expanded=new Set(modal.expandedThreads||[]);if(expanded.has(d.comment))expanded.delete(d.comment);else expanded.add(d.comment);modal.expandedThreads=[...expanded];renderModal();
+  }
   else if(action==='share-post')openModal({kind:'share-post',postId:d.id});
   else if(action==='send-post')sendSharedPost(d.id,d.member);
   else if(action==='view-post') {previousRoute={...route};go({app:'instagram',page:'post',postId:d.id,from:d.from});}
@@ -599,38 +1436,46 @@ document.addEventListener('click',event=>{
   else if(action==='sms-back')go({app:'sms'});
   else if(action==='search')openModal({kind:'search',channel:d.channel});
   else if(action==='chat-info')openModal({kind:'chat-info',member:d.member});
-  else if(action==='chat-emoji'){const el=$('#chat-input');el.value+=' 🤍';el.focus();captureDraft();}
+  else if(action==='chat-heart'){
+    if(route.app!=='kakao'||route.page!=='chat')return;
+    sendChatMessage('kakao',route.member,C.kakaoEmoji.value);commit();
+  }
   else if(action==='chat-share')openModal({kind:'pick-post'});
   else if(action==='toast-open'){
     if(!toastAction)return;const n=toastAction;$('#toast').innerHTML='';clearTimeout(toastTimer);toastAction=null;
-    if(n.postId){previousRoute={app:'instagram',page:'feed'};go({app:'instagram',page:'post',postId:n.postId});}else go({app:n.channel==='kakao'?'kakao':'instagram',page:'chat',member:n.member});
+    if(n.postId){previousRoute={app:'instagram',page:'feed'};go({app:'instagram',page:'post',postId:n.postId});if(['comment','comment-like'].includes(n.kind)){const comment=state.posts.find(p=>p.id===n.postId)?.comments.find(c=>c.id===n.commentId);openModal({kind:'comments',postId:n.postId,expandedThreads:comment?.parentId?[comment.parentId]:[]});}}else go({app:n.channel==='kakao'?'kakao':'instagram',page:'chat',member:n.member});
   } else if(action==='reset')openModal({kind:'reset'});
-  else if(action==='confirm-reset'){
-    closeModal(false);
-    for(const key of Object.keys(drafts))delete drafts[key];
-    clearTimeout(toastTimer);$('#toast').innerHTML='';toastAction=null;
-    state=createState(C);saveBroken=false;previousRoute={app:'home'};route={app:'setup'};commit();
-  }
+  else if(action==='confirm-reset')return restartGame(button);
 });
 
+function sendChatMessage(channel,id,text) {
+  addMessage(state,channel,id,text,'me');
+  queueKeywordReplies(state,C,channel,id,text);
+  queueEmojiReplies(state,C,channel,id,text);
+}
 document.addEventListener('submit',event=>{
   const id=event.target.id;
   if(!['setup-form','chat-form','comment-form','profile-form'].includes(id))return;
   event.preventDefault();
+  if(resetting)return;
   if(id==='setup-form') {
-    try{completeOnboarding(state,$('#setup-username').value,$('#setup-nickname').value);commit(false);go({app:'lock'});}
+    try{completeOnboarding(state,$('#setup-username').value,$('#setup-nickname').value,Date.now(),C);commit(false);go({app:'lock'});}
     catch(error){$('#setup-error').textContent=error.message;}
     return;
   }
   if(!state.onboardingComplete)return;
   if(id==='chat-form') {
     const input=$('#chat-input'),text=input.value.trim();if(!text)return;
-    const channel=route.app==='kakao'?'kakao':'instagram';addMessage(state,channel,route.member,text,'me');queueKeywordReplies(state,C,channel,route.member,text);input.value='';drafts[`${route.app}:${route.member}`]='';commit();
+    const channel=route.app==='kakao'?'kakao':'instagram';sendChatMessage(channel,route.member,text);input.value='';drafts[`${route.app}:${route.member}`]='';commit();
   } else if(id==='comment-form') {
-    const text=$('#comment-input').value.trim();if(!text)return;const post=state.posts.find(p=>p.id===modal.postId);post.comments.push({id:uid(),author:'me',text,time:Date.now()});commit();renderModal();$('#comment-input')?.focus();
+    const text=$('#comment-input').value.trim();if(!text)return;
+    const comment=addComment(state,C,modal.postId,text,modal.replyTo||null);if(!comment)return;
+    $('#comment-input').value='';modal.draft='';modal.replyTo=null;
+    if(comment.parentId)modal.expandedThreads=[...new Set([...(modal.expandedThreads||[]),comment.parentId])];
+    commit();renderModal();$('#comment-input')?.focus();
   } else if(id==='profile-form') {
     const name=$('#player-name').value.trim(),handle=$('#player-username').value.trim();if(!name||!handle)return;
-    try{completeOnboarding(state,handle,$('#player-nickname').value);}catch(error){toast(error.message);return;}
+    try{completeOnboarding(state,handle,$('#player-nickname').value,Date.now(),C);}catch(error){toast(error.message);return;}
     state.profile.name=name;state.profile.bio=$('#player-bio').value;commit();closeModal();toast('已儲存');
   }
 });
@@ -674,36 +1519,40 @@ async function readImage(file) {
 }
 $('#image-upload').addEventListener('change',async event=>{
   const files=[...event.target.files];if(!files.length)return;
-  const mode=event.target.dataset.mode,activeModal=modal;
+  const mode=event.target.dataset.mode,activeModal=modal,uploadState=state;
   if(mode==='compose'&&activeModal?.kind!=='compose')return;
   inFlightUpload=true;if(mode==='compose'){captureDraft();renderModal();}
   try {
-    const capacity=mode==='avatar'?1:activeModal.type==='story'?1:10-activeModal.images.length;
-    if(capacity<1){toast('一則貼文最多 10 張照片');return;}
     const processed=[];
-    for(const file of files.slice(0,capacity))processed.push({id:uid(),src:await readImage(file),filename:file.name});
+    for(const file of files.slice(0,1))processed.push({id:uid(),src:await readImage(file),filename:file.name});
+    if(resetting||state!==uploadState)return;
     if(mode==='avatar'){state.profile.avatar=processed[0].src;commit();toast('已更換你的頭貼');}
-    else if(modal===activeModal){if(activeModal.type==='story')activeModal.images=processed.slice(0,1);else activeModal.images.push(...processed);}
-    if(files.length>capacity)toast(`已選取前 ${capacity} 張照片`);
-  } catch(error){toast(error.message);}
-  finally{inFlightUpload=false;if(modal===activeModal)renderModal();}
+    else if(modal===activeModal)activeModal.images=processed;
+    if(files.length>1)toast('已選取第一張照片');
+  } catch(error){if(state===uploadState&&!resetting)toast(error.message);}
+  finally{if(state===uploadState){inFlightUpload=false;if(modal===activeModal)renderModal();}}
 });
+function processJobs(now=Date.now()) {
+  if(!state||saveBroken||resetting||!state.onboardingComplete)return;
+  const notices=runDueJobs(state,C,now);
+  if(!notices.length)return;
+  for(const n of notices)if(route.page==='chat'&&route.member===n.member&&((route.app==='kakao'&&n.channel==='kakao')||(route.app==='instagram'&&n.channel==='instagram')))markRead(n.channel,n.member);
+  const updateComments=modal?.kind==='comments'&&notices.some(n=>['comment','comment-like'].includes(n.kind)&&n.postId===modal.postId);
+  commit();
+  if(updateComments)renderModal();
+  const n=notices.filter(n=>n.text&&!n.quiet).at(-1);if(n)toast(n.text,n);
+}
 async function boot() {
   $('#signal').innerHTML=icon('signal');$('#wifi').innerHTML=icon('wifi');
   const loaded=await openStorage();
   try{state=loaded?validateSave(loaded,C):createState(C);}
   catch{state=createState(C);saveBroken=true;}
-  route={app:state.onboardingComplete?'lock':'setup'};refresh();if(!loaded)persist();
+  advancePostLikes(state,C);scheduleRandomDialogue(state,C);
+  route={app:state.onboardingComplete?'lock':'setup'};refresh();persist();
   if(saveBroken)toast('原存檔無法讀取，可在設定中重新開始。');
-  clockTimer=setInterval(updateClock,15000);
-  setInterval(()=>{
-    if(!state||saveBroken||!state.onboardingComplete)return;
-    const notices=runDueJobs(state,C);
-    if(!notices.length)return;
-    for(const n of notices)if(route.page==='chat'&&route.member===n.member&&((route.app==='kakao'&&n.channel==='kakao')||(route.app==='instagram'&&n.channel==='instagram')))markRead(n.channel,n.member);
-    commit();
-    const n=notices.at(-1);toast(n.text,n);
-  },400);
+  clockTimer=setInterval(updateClock,1000);
+  setInterval(updatePostEngagement,C.memberAudience?.refreshMs||5000);
+  setInterval(processJobs,400);
 }
 boot();
 
@@ -723,6 +1572,6 @@ boot();
         </div>
       </section>
     </main>
-    <input type="file" id="image-upload" accept="image/jpeg,image/png,image/webp,image/gif" multiple hidden>
+    <input type="file" id="image-upload" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
   </body>
 </html>

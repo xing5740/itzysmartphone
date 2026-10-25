@@ -53,12 +53,13 @@ window.PHONE_CONFIG = {
 
   // 4. 開場訊息：每位成員的陣列依序放入聊天室，只在建立新存檔時套用。
   // KKT 歡迎訊息的回覆選項設在下方 dialogues → 成員 → nodes.welcome。
-  // 聊天台詞中的句號會自動拆成多則訊息，不顯示句號；問號、驚嘆號及 emoji 保留。
+  // 每個陣列元素代表一則訊息；台詞已依句號拆開，問號、驚嘆號及 emoji 保留。
+  // 之後新增台詞時仍支援自動拆句，避免單一訊息含有句號。
   // Instagram 目前沒有開場訊息，私訊由照片劇情觸發。
   initialMessages: {
     kakao: {
       yeji: ["{{nickname}}，今天也要記得吃飯 🖤"], lia: ["下次一起去上次說的那間咖啡廳？"],
-      ryujin: ["{{nickname}}，你在幹嘛？"], chaeryeong: ["回家了嗎？外面有點涼。"], yuna: ["看到好看的天空就想到你"]
+      ryujin: ["{{nickname}}，你在幹嘛？"], chaeryeong: ["回家了嗎？外面有點涼"], yuna: ["看到好看的天空就想到你"]
     },
     instagram: { yeji: [], lia: [], ryujin: [], chaeryeong: [], yuna: [] }
   },
@@ -72,11 +73,11 @@ window.PHONE_CONFIG = {
       yeji:[
         ["❤️","這顆愛心我收下了"],
         ["突然傳這個，是在想我嗎？","那我也回你一顆 🖤"],
-        ["這顆我先收好。","你本人什麼時候出現？"]
+        ["這顆我先收好","你本人什麼時候出現？"]
       ],
       lia:[
         ["收到你的愛心了☺️","今天有發生什麼開心的事嗎？"],
-        ["在撒嬌嗎？","好啦，我有看到。再陪我聊一下？"],
+        ["在撒嬌嗎？","好啦，我有看到","再陪我聊一下？"],
         ["❤️","今天也要好好吃飯，吃飽了再來找我"]
       ],
       ryujin:[
@@ -86,7 +87,7 @@ window.PHONE_CONFIG = {
       ],
       chaeryeong:[
         ["突然這樣……","害我盯著手機笑了好久"],
-        ["收到啦，{{nickname}}。","我也想你❤️"],
+        ["收到啦，{{nickname}}","我也想你❤️"],
         ["你是不是有事情想跟我說？","我會一直聽你講的"]
       ],
       yuna:[
@@ -100,7 +101,8 @@ window.PHONE_CONFIG = {
   // 6. 選項式對話：目前只在 KKT 啟用，Instagram 使用下方照片劇情。
   // start 指定歡迎節點，randomStart 指定隨機日常對話的起點；next 必須對應到已有節點。
   // welcome.initial: true 沿用原有歡迎訊息，直接顯示一個選項，不再傳送一次開場文字。
-  // message 是成員台詞；choices[].text 是玩家點選後送出的文字。
+  // message / response 是成員台詞；單則用字串，多則用陣列，例如 ["好，晚上見","到時候傳訊息給我"]。
+  // choices[].text 是玩家點選後送出的文字，同樣可用字串或陣列。
   // choices[].next 指定下一個節點，choices[].delay 可調整回覆延遲（預設 900 毫秒）。
   // 沒有 choices 的節點代表對話結束；選項 id 在同一節點內不可重複。
   dialogueChannels: ["kakao"],
@@ -114,17 +116,17 @@ window.PHONE_CONFIG = {
       start:"welcome",randomStart:"invite",
       nodes:{
         welcome:{initial:true,response:"那就好，別又忙到忘記吃飯 🖤",choices:[{id:"reply",text:"我有好好吃飯，你也是 🖤"}]},
-        invite:{message:"{{nickname}}，今天有空嗎？想找你一起出去。",choices:[
+        invite:{message:"{{nickname}}，今天有空嗎？想找你一起出去",choices:[
           {id:"coffee",text:"一起去喝咖啡？",next:"coffee"},
           {id:"later",text:"今天有點忙，改天好嗎？",next:"later"}
         ]},
         coffee:{message:"好啊！你想下午去，還是晚上？",choices:[
-          {id:"afternoon",text:"下午吧，我想坐窗邊。",next:"afternoon"},
-          {id:"evening",text:"晚上見，吃完飯再去。",next:"evening"}
+          {id:"afternoon",text:"下午吧，我想坐窗邊",next:"afternoon"},
+          {id:"evening",text:"晚上見，吃完飯再去",next:"evening"}
         ]},
         afternoon:{message:"那就下午，我先去找間有窗邊座位的店🖤"},
-        evening:{message:"好，晚上見。到時候傳訊息給我。"},
-        later:{message:"沒關係，先忙你的。等你有空再約。"}
+        evening:{message:["好，晚上見","到時候傳訊息給我"]},
+        later:{message:["沒關係，先忙你的","等你有空再約"]}
       }
     },
     lia: {
@@ -132,47 +134,47 @@ window.PHONE_CONFIG = {
       nodes:{
         welcome:{initial:true,response:"說好了喔，我先把那間店存起來 ☺️",choices:[{id:"reply",text:"好啊，下次一起去！"}]},
         invite:{message:"{{nickname}}，我看到一家新開的甜點店，要不要一起去？",choices:[
-          {id:"yes",text:"好啊，想和你一起吃甜點。",next:"yes"},
+          {id:"yes",text:"好啊，想和你一起吃甜點",next:"yes"},
           {id:"takeout",text:"買回來一起吃好不好？",next:"takeout"}
         ]},
         yes:{message:"那我把地址傳給你，我們在店門口見 ☺️"},
-        takeout:{message:"好主意。你想吃什麼？我順路帶過去。"}
+        takeout:{message:["好主意","你想吃什麼？我順路帶過去"]}
       }
     },
     ryujin: {
       start:"welcome",randomStart:"invite",
       nodes:{
-        welcome:{initial:true,response:"剛忙完就先休息一下，晚點再找你。",choices:[{id:"reply",text:"剛忙完，在想要不要找你出去。"}]},
+        welcome:{initial:true,response:"剛忙完就先休息一下，晚點再找你",choices:[{id:"reply",text:"剛忙完，在想要不要找你出去"}]},
         invite:{message:"{{nickname}}，晚上要不要一起看電影？",choices:[
-          {id:"choose",text:"好啊，這次讓我選片。",next:"choose"},
-          {id:"walk",text:"比起電影，我比較想和你出去走走。",next:"walk"}
+          {id:"choose",text:"好啊，這次讓我選片",next:"choose"},
+          {id:"walk",text:"比起電影，我比較想和你出去走走",next:"walk"}
         ]},
-        choose:{message:"可以。那爆米花我選。"},
-        walk:{message:"也行。我們一起想想要去哪。"}
+        choose:{message:["可以","那爆米花我選"]},
+        walk:{message:["也行","我們一起想想要去哪"]}
       }
     },
     chaeryeong: {
       start:"welcome",randomStart:"invite",
       nodes:{
-        welcome:{initial:true,response:"那我就放心了，你也先休息一下 🤍",choices:[{id:"reply",text:"到家了，你也記得穿暖一點。"}]},
+        welcome:{initial:true,response:"那我就放心了，你也先休息一下 🤍",choices:[{id:"reply",text:"到家了，你也記得穿暖一點"}]},
         invite:{message:"{{nickname}}，吃晚餐了嗎？",choices:[
           {id:"together",text:"還沒，要一起吃嗎？",next:"together"},
-          {id:"dessert",text:"吃過了，但可以陪你吃。",next:"dessert"}
+          {id:"dessert",text:"吃過了，但可以陪你吃",next:"dessert"}
         ]},
-        together:{message:"好啊，我也還沒吃。我們找間近一點的吧。"},
-        dessert:{message:"那我請你吃飯後甜點。"}
+        together:{message:["好啊，我也還沒吃","我們找間近一點的吧"]},
+        dessert:{message:"那我請你吃飯後甜點"}
       }
     },
     yuna: {
       start:"welcome",randomStart:"invite",
       nodes:{
-        welcome:{initial:true,response:"約好了！看到漂亮的天空也要傳給我喔。",choices:[{id:"reply",text:"好漂亮！下次一起看天空。"}]},
+        welcome:{initial:true,response:"約好了！看到漂亮的天空也要傳給我喔",choices:[{id:"reply",text:"好漂亮！下次一起看天空"}]},
         invite:{message:"{{nickname}}！我想出去拍照，你陪我好不好？",choices:[
-          {id:"photos",text:"好，我幫你拍。",next:"photos"},
-          {id:"together",text:"可以，但你也要跟我一起入鏡。",next:"together"}
+          {id:"photos",text:"好，我幫你拍",next:"photos"},
+          {id:"together",text:"可以，但你也要跟我一起入鏡",next:"together"}
         ]},
-        photos:{message:"那我要把今天拍得最好看的那張留給你🎀"},
-        together:{message:"當然！我連合照的姿勢都想好了。"}
+        photos:{message:"那我要把今天拍得最好看的那張留給你"},
+        together:{message:"當然！我連合照的姿勢都想好了"}
       }
     }
   },
@@ -194,13 +196,14 @@ window.PHONE_CONFIG = {
     dmDelay: 8000,        // 玩家分享後，等待第一則私訊：8 秒。
     postDelay: 30000,     // 第一則私訊出現後，等待成員發貼文：30 秒。
     followUpDelay: 8000,  // 最後一則預定成員留言出現後，等待本人再次追問：8 秒。
-    // question 是第一則私訊，caption 是成員貼文說明，followUp 是本人再次追問的私訊。
+    // question 是第一段私訊，followUp 是本人再次私訊；單則用字串，多則用陣列並依 messageSpacing 傳送。
+    // caption 是成員貼文說明，不會當作聊天訊息拆分。
     scripts: {
-      yeji: { followUp:"{{nickname}}，我的貼文你看到了嗎？你還沒跟我說，怎麼突然想發那張照片 🖤", question:"{{nickname}}，怎麼突然把這張放上來了？", caption:"美好的夜晚🖤" },
-      lia: { followUp:"我也把那天的照片放上去了。{{nickname}}，所以是突然想起那天了嗎？", question:"{{nickname}}，你上傳了那天的照片？為什麼突然想到這張 ☺️", caption:"🤎" },
-      ryujin: { followUp:"看到我剛發的了吧？所以，怎麼突然挑了那張？", question:"{{nickname}}，這張你居然還留著。怎麼突然發了？", caption:"" },
-      chaeryeong: { followUp:"我也發了那天的照片。{{nickname}}，你是不是也有點想再一起出去了？", question:"{{nickname}}，是我們那天拍的……你怎麼選了這張？", caption:"想把那天再留久一點" },
-      yuna: { followUp:"{{nickname}}，看到我發的照片了嗎！所以你今天怎麼突然想放那張呀？", question:"{{nickname}}！這張！你怎麼突然發上來了 🥺", caption:"❤️🖤" }
+      yeji: { followUp:"{{nickname}}，我的貼文你看到了嗎？", question:"{{nickname}}，怎麼突然把這張放上來了？", caption:"美好的夜晚🖤" },
+      lia: { followUp:["我也把那天的照片放上去了","我也很喜歡那天 ❤️"], question:"{{nickname}}，你上傳了一起出去玩的照片？為什麼突然想到這張☺️", caption:"🤎" },
+      ryujin: { followUp:"看到我剛發的了吧？", question:["{{nickname}}，這張你居然還留著","怎麼突然發了？"], caption:"" },
+      chaeryeong: { followUp:["我也發了那天的照片","{{nickname}}，你是不是也有點想再一起出去了？"], question:"{{nickname}}，是我們那天拍的……你怎麼選了這張？", caption:"想把那天再留久一點" },
+      yuna: { followUp:"{{nickname}}，看到我發的照片了嗎！你發的話我也要發出去", question:"{{nickname}}！這張！你怎麼突然發上來了 🥺", caption:"❤️🖤" }
     }
   },
 
@@ -242,17 +245,17 @@ window.PHONE_CONFIG = {
     ],
     // 未符合任何情境時，依成員抽選中性留言，避免假設拍攝者或行程。
     memberReplies:{
-      yeji:["這張我喜歡 🖤","這張我想存起來。","原來你選了這張，眼光很好欸。"],
-      lia:["這張好溫柔，喜歡 ☺️","謝謝 {{nickname}} 分享這張照片。","好喜歡這張的感覺 🤍"],
-      ryujin:["可以，這張選得很好。","這張看起來不錯。","這張我收走了。"],
-      chaeryeong:["這張好喜歡，謝謝你 🤍","這張的感覺好好看。","好開心你分享了這張照片。"],
+      yeji:["這張我喜歡 🖤","這張我想存起來","原來你選了這張，眼光很好欸"],
+      lia:["這張好溫柔，喜歡 ☺️","多發一點像是這樣的照片吧","好喜歡這張的感覺 🤍"],
+      ryujin:["可以，這張選得很好","這張看起來不錯","這張我收走了"],
+      chaeryeong:["這張好喜歡，謝謝你 🤍","這張的感覺好好看","看起來好開心"],
       yuna:["哇！這張我喜歡 ❤️","這張我要存起來！","我喜歡這張，你好會選！"]
     },
     otherReplies:{
-      yeji:["這張真好看，很有氛圍。","這個角度好好看。","這張的感覺很自然。"],
-      lia:["這張真的好漂亮 🤍","好喜歡這個光線。","這張看起來好舒服。"],
-      ryujin:["這張不錯。","這張有水準。","這個構圖很好看。"],
-      chaeryeong:["拍得真好，看起來好溫柔。","這張好自然，我喜歡。","好喜歡這張的顏色，好漂亮。"],
+      yeji:["這張真好看，很有氛圍","這個角度好好看","這張的感覺很自然"],
+      lia:["這張真的好漂亮 🤍","好喜歡這個光線","這張看起來好舒服"],
+      ryujin:["這張不錯","誰拍的這麼好看","這個構圖很好看"],
+      chaeryeong:["拍得真好，看起來好溫柔","這張好自然，我喜歡","好喜歡這張的顏色，好漂亮。"],
       yuna:["這張也太好看了吧！","這張超好看！❤️","這張照片好有氛圍！"]
     }
   },
@@ -342,9 +345,9 @@ window.PHONE_CONFIG = {
   seedStories: false,
   // 唯讀的生活情境簡訊；name 是寄件者，time 是顯示文字，messages 按順序排列。
   sms: [
-    { id:"delivery", name:"CJ 大韓通運", time:"10:12", messages:["[配送通知] 您的包裹已送達，放置於家門口。訂單尾碼 0423。", "如有配送問題，請透過購物平台聯絡客服。"] },
-    { id:"bank", name:"新韓銀行", time:"昨天", messages:["[刷卡通知] 10/23 14:28，咖啡廳消費 5,500 韓元。", "若非本人交易，請透過銀行 App 查詢。"] },
-    { id:"carrier", name:"SK Telecom", time:"星期四", messages:["[用量提醒] 本月行動數據已使用 80%。連上 Wi-Fi 後可繼續使用網路服務。"] },
-    { id:"verification", name:"驗證碼", time:"星期三", messages:["[登入驗證] 您的驗證碼是 482619。請勿將驗證碼提供給任何人。"] }
+    { id:"delivery", name:"CJ 大韓通運", time:"10:12", messages:["[配送通知] 您的包裹已送達，放置於家門口","訂單尾碼 0423", "如有配送問題，請透過購物平台聯絡客服"] },
+    { id:"bank", name:"新韓銀行", time:"昨天", messages:["[刷卡通知] 10/23 14:28，咖啡廳消費 5,500 韓元", "若非本人交易，請透過銀行 App 查詢"] },
+    { id:"carrier", name:"SK Telecom", time:"星期四", messages:["[用量提醒] 本月行動數據已使用 80%","連上 Wi-Fi 後可繼續使用網路服務"] },
+    { id:"verification", name:"驗證碼", time:"星期三", messages:["[登入驗證] 您的驗證碼是 482619","請勿將驗證碼提供給任何人"] }
   ]
 };

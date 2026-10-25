@@ -11,6 +11,15 @@ export function photoLibrary(state, config) {
 export function personalize(state,text) {
   return String(text??"").replaceAll("{{nickname}}",state.profile.nickname||state.profile.name).replaceAll("{{name}}",state.profile.name);
 }
+// 句號代表下一則訊息；保留問號、驚嘆號、刪節號與帳號／網址／小數中的點。
+export function splitChatText(text){
+  return String(text??"").split(/[。．]+|(?<!\.)\.(?![.A-Za-z0-9_/])/u).map(part=>part.trim()).filter(Boolean);
+}
+function splitChatMessage(message){
+  if(message.kind==="post")return [message];
+  return splitChatText(message.text).map((text,index)=>({...message,id:index?uid():message.id,text}));
+}
+const chatNoticeText=text=>splitChatText(text).at(-1)||"";
 export function completeOnboarding(state, username, nickname, now=Date.now(),config=null) {
   const handle=String(username).trim().replace(/^@/,""),name=String(nickname).trim();
   if(!/^[A-Za-z0-9_.]{1,30}$/.test(handle))throw new Error("Instagram ID 請使用 1–30 個英文字母、數字、底線或句點。");
@@ -42,14 +51,22 @@ function upgradeState(state, config) {
   if(state.profile.bio==="서울의 작은 일상 ☁️\n和喜歡的人，收集一些日常。")state.profile.bio="";
   state.stories=state.stories.filter(story=>!story.demo||story.author==="me");
   upgradePhotoSequence(state,config);
-  for(const post of state.posts){initializePostAudience(state,config,post,Date.now());if(post.author==="me")queuePlayerFanComments(state,config,post,Date.now(),Math.random);}
+  // 已有存檔的待發私訊也套用較短等待；成員發文和留言排程保持原樣。
+  for(const job of state.jobs){
+    const delay=job.type==="photo-dm"?config.photoEvents.dmDelay:job.type==="photo-follow-up"?config.photoEvents.followUpDelay:null;
+    if(delay!==null)job.dueAt=Math.min(job.dueAt,Date.now()+delay);
+  }
+  for(const post of state.posts){initializePostAudience(state,config,post,Date.now());repairAutomaticComments(state,config,post);if(post.author==="me")queuePlayerFanComments(state,config,post,Date.now(),Math.random);}
+  for(const channel of ["kakao","instagram"])for(const m of config.members){
+    state.chats[channel][m.id]=state.chats[channel][m.id].flatMap(splitChatMessage);
+  }
   scheduleRandomDialogue(state,config,Date.now());
   return state;
 }
 export function createState(config, now = Date.now()) {
   const chats = { kakao: {}, instagram: {} };
   for (const channel of Object.keys(chats)) for (const member of config.members) {
-    chats[channel][member.id] = (config.initialMessages[channel]?.[member.id] || []).map((text, i) => ({ id:uid(),sender:member.id,text,time:now - (5-i)*60000,read:false,kind:"text" }));
+    chats[channel][member.id] = (config.initialMessages[channel]?.[member.id] || []).flatMap((text, i) => splitChatMessage({ id:uid(),sender:member.id,text,time:now - (5-i)*60000,read:false,kind:"text" }));
   }
   return {
     version:1, profile:{...config.player,nickname:config.player.nickname||""}, onboardingComplete:false,setupStartedAt:now,photoDetails:createPhotoDetails(config),photoDescriptionVersion:1,chats,posts:[],
@@ -60,8 +77,9 @@ export function createState(config, now = Date.now()) {
 export function addMessage(state, channel, member, text, sender=member, now=Date.now(), extra={}) {
   if (!state.chats[channel]?.[member]) throw new Error("無效的聊天室");
   const message = {id:uid(),sender,text,time:now,read:sender==="me",kind:"text",...extra};
-  state.chats[channel][member].push(message);
-  return message;
+  const messages=splitChatMessage(message);
+  state.chats[channel][member].push(...messages);
+  return messages.at(-1)||null;
 }
 export function queueKeywordReplies(state, config, channel, member, text, now=Date.now()) {
   for (const rule of config.keywordRules[channel] || []) {
@@ -212,15 +230,54 @@ function commentContext(state,config,post,memberId) {
   const text=normalize(description||fallback);
   return config.postComments.contexts?.find(rule=>rule.keywords.some(word=>text.includes(normalize(word)))&&!(rule.exclude||[]).some(word=>text.includes(normalize(word))))||null;
 }
+// 同一篇貼文的自動留言不可只換標點或 emoji 重複出現。
+function commentKey(text){return String(text).normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]/gu,"");}
+function chooseComment(state,options,used,random=Math.random){
+  const values=[...new Set(options.filter(t=>typeof t==="string"&&t.trim()).map(t=>personalize(state,t)))].filter(t=>!used.has(commentKey(t)));
+  if(!values.length)return null;
+  const text=values[Math.floor(random()*values.length)];used.add(commentKey(text));return text;
+}
+function memberCommentOptions(state,config,post,id){
+  const settings=config.postComments;
+  const owners=[...new Set(post.images.filter(p=>p.side==="me").map(p=>p.member))];
+  const owner=owners.includes(id),context=settings?commentContext(state,config,post,owner?id:owners[0]):null;
+  return [...(context?.[owner?"memberReplies":"otherReplies"]||settings?.[owner?"memberReplies":"otherReplies"]?.[id]||[]),
+    ...(owner?["這張我很喜歡 ❤️","這張我先存起來了","謝謝你留下這個瞬間"]:["這張真好看！","照片看起來好舒服","這個畫面我喜歡"])];
+}
+function automaticCommentOptions(state,config,post,id){
+  if(config.members.some(m=>m.id===id))return memberCommentOptions(state,config,post,id);
+  const pictured=config.members.find(m=>post.author===m.id||post.images.some(image=>image.member===m.id));
+  const audience=config.memberAudience;
+  const lines=post.author!=="me"?audience?.compliments:pictured?audience?.playerCompliments:audience?.playerPhotoCompliments;
+  return (lines||[]).map(text=>text.replaceAll("{{member}}",pictured?.name||""));
+}
+function repairAutomaticComments(state,config,post){
+  const used=new Set();
+  // 玩家寫的留言與回覆保留原文，只替自動產生的根留言避開重複。
+  for(const comment of post.comments.filter(c=>c.author==="me"||c.parentId))used.add(commentKey(comment.text));
+  for(const comment of post.comments.filter(c=>c.author!=="me"&&!c.parentId)){
+    if(used.has(commentKey(comment.text))){
+      const replacement=chooseComment(state,automaticCommentOptions(state,config,post,comment.author),used);
+      if(replacement)comment.text=replacement;
+    }
+    used.add(commentKey(comment.text));
+  }
+}
+function addMemberPostLike(post,id){
+  post.memberLikes??=[];
+  if(post.memberLikes.includes(id))return false;
+  post.memberLikes.push(id);post.likes++;return true;
+}
 function queuePostComments(state,config,post,now,random) {
   const settings=config.postComments;
   if(!settings)return;
   const owners=[...new Set(post.images.filter(p=>p.side==="me"&&config.members.some(m=>m.id===p.member)).map(p=>p.member))];
   if(!owners.length)return;
-  const choose=(texts,fallback)=>{const values=(texts||[]).filter(t=>typeof t==="string"&&t.trim());return values.length?values[Math.floor(random()*values.length)]:fallback;};
+  const used=new Set([...post.comments.map(c=>c.text),...state.jobs.filter(j=>["post-comment","fan-comment"].includes(j.type)&&j.postId===post.id).map(j=>j.text)].map(text=>commentKey(personalize(state,text))));
+  const choose=(texts,fallback)=>chooseComment(state,texts||[],used,random)||chooseComment(state,[fallback],used,random);
   const afterPosts=owners.filter(id=>state.events[id]?.userShareId===post.id&&state.events[id].phase!=="done");
   const anchor=now+(afterPosts.length?config.photoEvents.dmDelay+config.photoEvents.postDelay:0);
-  const queue=(member,text,dueAt)=>state.jobs.push({id:uid(),type:"post-comment",member,postId:post.id,text,dueAt:anchor+dueAt-now,...(afterPosts.length?{afterPosts,delayAfterPosts:dueAt-now}:{})});
+  const queue=(member,text,dueAt)=>text&&state.jobs.push({id:uid(),type:"post-comment",member,postId:post.id,text,dueAt:anchor+dueAt-now,...(afterPosts.length?{afterPosts,delayAfterPosts:dueAt-now}:{})});
   const contexts=owners.map(id=>commentContext(state,config,post,id));
   const sharedContext=contexts.every(c=>c?.id===contexts[0]?.id)?contexts[0]:null;
   owners.forEach((id,i)=>queue(id,choose(contexts[i]?.memberReplies||settings.memberReplies?.[id],"這張我很喜歡 ❤️"),now+(settings.memberDelay??15000)+i*(settings.spacing??3000)));
@@ -318,11 +375,11 @@ function seedFans(state,settings,random) {
   }
   state.fanUsernameVersion=2;
 }
-function fanCommentPool(settings,lines,member,count,random) {
-  const bare=shuffled([...new Set(lines.map(text=>text.replaceAll("{{member}}",member)))],random);
-  const decorated=shuffled(bare.flatMap(text=>settings.emojis.filter(Boolean).map(emoji=>text+emoji)),random);
-  const chance=settings.emojiChance??0.22;
-  return shuffled([...bare,...decorated.slice(0,Math.max(count-bare.length,Math.ceil(bare.length*chance/Math.max(0.01,1-chance))))],random);
+function fanCommentPool(settings,lines,member,count,random,excluded=[]) {
+  const used=new Set(excluded.map(commentKey)),bare=[];
+  for(const line of lines){const text=line.replaceAll("{{member}}",member),key=commentKey(text);if(!used.has(key)){used.add(key);bare.push(text);}}
+  const emojis=settings.emojis.filter(Boolean);
+  return shuffled(bare,random).map(text=>random()<(settings.emojiChance??0.22)&&emojis.length?text+emojis[Math.floor(random()*emojis.length)]:text);
 }
 function queuePlayerFanComments(state,config,post,now,random) {
   const settings=config.memberAudience;
@@ -331,7 +388,8 @@ function queuePlayerFanComments(state,config,post,now,random) {
   post.playerFanCommentsQueued=true;if(!count)return;
   seedFans(state,settings,random);
   const member=config.members.find(m=>post.images.some(image=>image.member===m.id));
-  const texts=fanCommentPool(settings,member?settings.playerCompliments:settings.playerPhotoCompliments,member?.name||"",count,random);
+  const excluded=[...post.comments.map(c=>c.text),...state.jobs.filter(j=>j.postId===post.id&&["post-comment","fan-comment"].includes(j.type)).map(j=>personalize(state,j.text))];
+  const texts=fanCommentPool(settings,member?settings.playerCompliments:settings.playerPhotoCompliments,member?.name||"",count,random,excluded);
   const members=state.jobs.filter(j=>j.type==="post-comment"&&j.postId===post.id);
   const afterPosts=config.members.filter(m=>state.events[m.id]?.userShareId===post.id&&["queued","asked"].includes(state.events[m.id].phase)).map(m=>m.id);
   const anchor=now+(afterPosts.length?config.photoEvents.dmDelay+config.photoEvents.postDelay:0);
@@ -343,13 +401,14 @@ function queuePlayerFanComments(state,config,post,now,random) {
   }
 }
 export function initializePostAudience(state,config,post,now=Date.now(),random=Math.random) {
+  post.memberLikes??=[];
   const settings=config.memberAudience;if(!settings)return;
   const m=config.members.find(m=>m.id===post.author),ownLike=post.liked?1:0;
   if(!post.engagement){
-    const base=m?Math.max(post.likes-ownLike,randomInteger(settings.initialLikes,random)):Math.max(0,post.likes-ownLike);
+    const base=m?Math.max(post.likes-ownLike-post.memberLikes.length,randomInteger(settings.initialLikes,random)):Math.max(0,post.likes-ownLike-post.memberLikes.length);
     const playerRate=Array.isArray(settings.playerLikesPerMinute)?randomInteger(settings.playerLikesPerMinute,random):settings.playerLikesPerMinute;
     post.engagement={baseLikes:base,organicLikes:base,likesPerMinute:m?randomInteger(settings.likesPerMinute,random):playerRate,startedAt:post.time,maxLikes:m?null:Math.max(base,settings.playerMaxLikes),audienceVersion:2};
-    post.likes=base+ownLike;
+    post.likes=base+ownLike+post.memberLikes.length;
   }
   if(!m&&post.engagement.audienceVersion!==2){
     const e=post.engagement;e.baseLikes=e.organicLikes;e.startedAt=now;
@@ -358,21 +417,21 @@ export function initializePostAudience(state,config,post,now=Date.now(),random=M
   }
   if(!m)return;
   if(post.fanCommentsSeeded){
-    if(post.fanCommentStyle!==2){
+    if(post.fanCommentStyle!==3){
       const comments=post.comments.filter(c=>state.fans?.[c.author]&&!c.parentId);
-      const texts=fanCommentPool(settings,settings.compliments,m.name,comments.length,random);
-      comments.forEach((comment,index)=>comment.text=texts[index]);post.fanCommentStyle=2;
+      const texts=fanCommentPool(settings,settings.compliments,m.name,comments.length,random,post.comments.filter(c=>!comments.includes(c)).map(c=>c.text));
+      comments.forEach((comment,index)=>{if(texts[index])comment.text=texts[index];});post.fanCommentStyle=3;
     }
     return;
   }
   seedFans(state,settings,random);
   const existing=post.comments.filter(c=>state.fans[c.author]).length;
   const count=Math.max(0,randomInteger(settings.commentCount,random)-existing);
-  const texts=fanCommentPool(settings,settings.compliments,m.name,count,random);
-  const accounts=shuffled(Object.values(state.fans).filter(fan=>!post.comments.some(c=>c.author===fan.id)),random).slice(0,count);
+  const texts=fanCommentPool(settings,settings.compliments,m.name,count,random,post.comments.map(c=>c.text));
+  const accounts=shuffled(Object.values(state.fans).filter(fan=>!post.comments.some(c=>c.author===fan.id)),random).slice(0,Math.min(count,texts.length));
   accounts.forEach((fan,i)=>post.comments.push({id:uid(),author:fan.id,text:texts[i],time:post.time+Math.floor(Math.min(Math.max(0,now-post.time),600000)*i/Math.max(1,accounts.length)),parentId:null,replyTo:null,likedBy:[]}));
   post.fanCommentsSeeded=true;
-  post.fanCommentStyle=2;
+  post.fanCommentStyle=3;
 }
 export function advancePostLikes(state,config,now=Date.now()) {
   let changed=false;
@@ -441,7 +500,7 @@ export function runDueJobs(state, config, now=Date.now()) {
       const session=state.dialogueSessions.kakao[m.id];
       if(session&&!session.random&&config.dialogues[m.id].nodes[session.nodeId]?.initial)session.finished=true;
       scheduleRandomDialogue(state,config,now);
-      notices.push({channel:"kakao",member:m.id,text:message.text});
+      notices.push({channel:"kakao",member:m.id,text:message?.text||""});
     }else if(job.type==="comment-like"){
       const post=state.posts.find(p=>p.id===job.postId),comment=post?.comments.find(c=>c.id===job.commentId);
       const target=post?.comments.find(c=>c.id===comment?.replyTo);
@@ -453,7 +512,13 @@ export function runDueJobs(state, config, now=Date.now()) {
     } else if(["post-comment","fan-comment"].includes(job.type)){
       const post=state.posts.find(p=>p.id===job.postId);
       if(!post||post.author!=="me"||post.comments.some(c=>c.id===job.id))continue;
-      const text=personalize(state,job.text);
+      const used=new Set(post.comments.map(c=>commentKey(c.text)));
+      let text=personalize(state,job.text);
+      if(used.has(commentKey(text))){
+        const options=automaticCommentOptions(state,config,post,m.id);
+        text=chooseComment(state,options,used);if(!text)continue;
+      }
+      if(job.type==="post-comment")addMemberPostLike(post,m.id);
       post.comments.push({id:job.id,author:m.id,text,time:now,parentId:null,replyTo:null,likedBy:[]});
       if(job.type==="post-comment")for(const followUp of state.jobs.filter(j=>j.type==="photo-follow-up"&&state.events[j.member]?.userShareId===post.id))followUp.dueAt=Math.max(followUp.dueAt,now+config.photoEvents.followUpDelay);
       notices.push({kind:"comment",postId:post.id,commentId:job.id,member:m.id,text:`在你的貼文留言：${text}`,quiet:job.type==="fan-comment"});
@@ -464,18 +529,18 @@ export function runDueJobs(state, config, now=Date.now()) {
       session.pending=null;
       if(!node){session.nodeId=null;session.finished=true;if(job.channel==="kakao")finishRandomDialogue(state,config,m.id,now);notices.push({channel:job.channel,member:m.id,text:""});continue;}
       session.nodeId=job.nodeId;session.finished=!(node.choices?.length);
-      if(node.message){addMessage(state,job.channel,m.id,node.message,m.id,now);notices.push({channel:job.channel,member:m.id,text:node.message});}
+      if(node.message){addMessage(state,job.channel,m.id,node.message,m.id,now);notices.push({channel:job.channel,member:m.id,text:chatNoticeText(node.message)});}
       else notices.push({channel:job.channel,member:m.id,text:""});
       if(job.channel==="kakao")finishRandomDialogue(state,config,m.id,now);
     } else if (job.type==="incoming") {
       if (!state.chats[job.channel]?.[job.member] || !job.text) continue;
       addMessage(state,job.channel,m.id,job.text,m.id,now);
-      notices.push({channel:job.channel,member:m.id,text:job.text});
+      notices.push({channel:job.channel,member:m.id,text:chatNoticeText(job.text)});
     } else if (job.type==="photo-dm" && state.events[m.id]?.phase==="queued") {
       addMessage(state,"instagram",m.id,script.question,m.id,now);
       state.events[m.id].phase="asked";
       state.jobs.push({id:uid(),type:"photo-post",member:m.id,dueAt:now+config.photoEvents.postDelay});
-      notices.push({channel:"instagram",member:m.id,text:script.question});
+      notices.push({channel:"instagram",member:m.id,text:chatNoticeText(script.question)});
     } else if (job.type==="photo-post" && state.events[m.id]?.phase==="asked") {
       const post={id:uid(),author:m.id,images:[{src:config.assets.pairedPhoto(m.id,"her"),member:m.id,side:"her"}],caption:script.caption,time:now,likes:0,liked:false,comments:[],slide:0};
       initializePostAudience(state,config,post,now);
@@ -495,7 +560,7 @@ export function runDueJobs(state, config, now=Date.now()) {
       const userExists=event.userShareType==="story" ? state.stories.some(s=>s.id===event.userShareId) : state.posts.some(p=>p.id===event.userShareId);
       if (userExists && state.posts.some(p=>p.id===event.counterpartId)) {
         addMessage(state,"instagram",m.id,script.followUp,m.id,now);
-        notices.push({channel:"instagram",member:m.id,text:script.followUp});
+        notices.push({channel:"instagram",member:m.id,text:chatNoticeText(script.followUp)});
       }
       event.phase="done";
     }
@@ -516,6 +581,7 @@ export function validateSave(value, config) {
   }
   if(value.posts.some(p=>!p || typeof p.id!=="string" || !authors.includes(p.author) || !Number.isFinite(p.time) || !Number.isFinite(p.likes) || !Array.isArray(p.images) || !p.images.length || p.images.length>10 || !Array.isArray(p.comments) || typeof p.caption!=="string" || p.images.some(i=>!i || typeof i.src!=="string") || p.comments.some(c=>!c || !authors.includes(c.author) || typeof c.text!=="string" || !Number.isFinite(c.time)))) throw new Error("存檔的貼文資料不完整");
   if(value.posts.some(p=>p.engagement!==undefined&&(!p.engagement||["baseLikes","organicLikes","likesPerMinute","startedAt"].some(key=>!Number.isFinite(p.engagement[key])||(key!=="startedAt"&&p.engagement[key]<0))||(p.engagement.maxLikes!==null&&(!Number.isFinite(p.engagement.maxLikes)||p.engagement.maxLikes<0)))))throw new Error("存檔的貼文讚數資料不完整");
+  if(value.posts.some(p=>p.memberLikes!==undefined&&(!Array.isArray(p.memberLikes)||p.memberLikes.some(id=>!members.includes(id)||id===p.author)||new Set(p.memberLikes).size!==p.memberLikes.length)))throw new Error("存檔的成員按讚資料不完整");
   if(value.posts.some(p=>p.fanLikes!==undefined&&(!Array.isArray(p.fanLikes)||p.fanLikes.some(id=>!fans?.[id])||new Set(p.fanLikes).size!==p.fanLikes.length)))throw new Error("存檔的粉絲按讚資料不完整");
   if(value.welcomeDone&&(typeof value.welcomeDone!=="object"||Array.isArray(value.welcomeDone)||Object.entries(value.welcomeDone).some(([id,done])=>!members.includes(id)||typeof done!=="boolean")))throw new Error("存檔的歡迎對話資料不完整");
   if(value.welcomePending&&(typeof value.welcomePending!=="object"||Array.isArray(value.welcomePending)||Object.entries(value.welcomePending).some(([member,id])=>!members.includes(member)||typeof id!=="string"||!value.jobs.some(j=>j.id===id&&j.type==="welcome-reply"&&j.member===member))))throw new Error("存檔的歡迎回應排程不完整");

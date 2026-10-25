@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
 import {webcrypto} from 'node:crypto';
+import {splitChatText} from '../js/core.js';
 
 const read=path=>readFileSync(new URL(`../${path}`,import.meta.url),'utf8');
 const decode=s=>s.replaceAll('&quot;','"').replaceAll('&lt;','<').replaceAll('&gt;','>').replaceAll('&#39;',"'").replaceAll('&amp;','&');
@@ -177,7 +178,7 @@ test('Instagram has no choice dialogue or heart shortcut and still delivers post
     if(type==='photo-follow-up')for(const comment of a.fixture.state.jobs.filter(j=>j.type==='post-comment').sort((a,b)=>a.dueAt-b.dueAt))a.fixture.runDueJobs(a.fixture.state,a.fixture.C,comment.dueAt);
     const job=a.fixture.state.jobs.find(j=>j.type===type);assert.ok(job);a.fixture.runDueJobs(a.fixture.state,a.fixture.C,job.dueAt);
   }
-  assert.equal(a.fixture.state.events.yeji.phase,'done');assert.equal(a.fixture.state.chats.instagram.yeji.at(-1).text,a.fixture.C.photoEvents.scripts.yeji.followUp);assert.equal(a.fixture.state.chats.instagram.ryujin.length,0);
+  assert.equal(a.fixture.state.events.yeji.phase,'done');assert.equal(a.fixture.state.chats.instagram.yeji.at(-1).text,splitChatText(a.fixture.C.photoEvents.scripts.yeji.followUp).at(-1));assert.equal(a.fixture.state.chats.instagram.ryujin.length,0);
   a.click('open-chat',{channel:'instagram',member:'yeji'});assert.doesNotMatch(a.root.innerHTML,/data-action="dialogue-choice"/);
 });
 
@@ -285,14 +286,14 @@ test('welcome chats show the greeting, wait for the choice, then deliver a singl
     a.click('open-chat',{channel:'kakao',member:member.id});
     assert.equal(messages.length,count);assert.equal((a.root.innerHTML.match(/data-action="dialogue-choice"/g)||[]).length,1);
     assert.doesNotMatch(a.root.innerHTML,/正在輸入/);
-    const node=a.fixture.C.dialogues[member.id].nodes.welcome;assert.ok(!a.root.innerHTML.includes(node.response));
+    const node=a.fixture.C.dialogues[member.id].nodes.welcome,choiceCount=splitChatText(node.choices[0].text).length,responseCount=splitChatText(node.response).length;assert.ok(!a.root.innerHTML.includes(node.response));
     a.click('dialogue-choice',{channel:'kakao',member:member.id,node:'welcome',choice:'reply'});
-    assert.equal(messages.at(-1).text,node.choices[0].text);assert.equal(messages.length,count+1);
+    assert.equal(messages.at(-1).text,splitChatText(node.choices[0].text).at(-1));assert.equal(messages.length,count+choiceCount);
     assert.match(a.root.innerHTML,/正在輸入/);assert.doesNotMatch(a.root.innerHTML,/data-action="dialogue-choice"/);
-    a.click('dialogue-choice',{channel:'kakao',member:member.id,node:'welcome',choice:'reply'});assert.equal(messages.length,count+1);
+    a.click('dialogue-choice',{channel:'kakao',member:member.id,node:'welcome',choice:'reply'});assert.equal(messages.length,count+choiceCount);
     const pending=a.fixture.state.jobs.find(j=>j.type==='welcome-reply'&&j.member===member.id);a.fixture.processJobs(pending.dueAt);
-    assert.equal(messages.at(-1).text,node.response);assert.equal(messages.length,count+2);assert.doesNotMatch(a.root.innerHTML,/正在輸入|data-action="dialogue-choice"/);
-    a.click('kakao-back');a.click('open-chat',{channel:'kakao',member:member.id});assert.equal(messages.length,count+2);
+    assert.equal(messages.at(-1).text,splitChatText(node.response).at(-1));assert.equal(messages.length,count+choiceCount+responseCount);assert.doesNotMatch(a.root.innerHTML,/正在輸入|data-action="dialogue-choice"/);
+    a.click('kakao-back');a.click('open-chat',{channel:'kakao',member:member.id});assert.equal(messages.length,count+choiceCount+responseCount);
   }
 });
 
@@ -324,4 +325,57 @@ test('setup screen includes the photo and AI statements and the default avatar r
   const a=await appFixture({onboard:false});assert.match(a.root.innerHTML,/照片素材皆來自 ITZY 官方和成員帳號/);assert.match(a.root.innerHTML,/部分對話與互動使用 AI 生成/);
   assert.ok(a.root.innerHTML.indexOf('開始</button>')<a.root.innerHTML.indexOf('setup-disclaimer'));
   assert.match(read('assets/avatar-me.svg'),/>MIDZY<\/text>/);assert.equal(a.fixture.state.profile.avatar,'assets/avatar-me.svg');
+});
+
+test('post likes show member IDs while fans remain a numeric count across reload',async()=>{
+  const a=await appFixture();a.fixture.C.postComments.otherChance=0;
+  a.click('compose');a.click('select-photo',{member:'yeji'});a.click('publish');const post=a.fixture.state.posts[0];
+  deliverPhotoPosts(a);const comment=a.fixture.state.jobs.find(j=>j.type==='post-comment');a.fixture.processJobs(comment.dueAt);
+  const ownMarkup=a.root.innerHTML.split(`data-post="${post.id}"`)[1].split('</article>')[0];
+  assert.match(ownMarkup,/class="post-member-likes">yezyizhere 說讚/);assert.match(ownMarkup,/1 個讚/);
+  assert.doesNotMatch(ownMarkup,/data-action="[^"]*likes"/);
+  a.fixture.updatePostEngagement(post.time+60000);const total=post.likes;
+  a.click('like',{id:post.id});assert.equal(post.likes,total+1);a.click('like',{id:post.id});assert.equal(post.likes,total);
+  const b=await appFixture({stored:a.fixture.state});b.click('ig-tab',{tab:'profile'});b.click('view-post',{id:post.id});
+  assert.match(b.root.innerHTML,/post-member-likes">yezyizhere 說讚/);assert.match(b.root.innerHTML,new RegExp(`${total} 個讚`));
+});
+
+test('multi-sentence choices and replies render separate bubbles while welcome and random locks stay intact',async()=>{
+  const a=await appFixture(),script=a.fixture.C.dialogues.yeji;
+  script.nodes.welcome.choices[0].text='我也想你了。週末見！';script.nodes.welcome.response='好呀。那就週末見！';
+  script.nodes.invite.message='我想你了。什麼時候一起出去玩？';
+  a.click('open-chat',{channel:'kakao',member:'yeji'});
+  assert.match(a.root.innerHTML,/>我也想你了 週末見！<\/button>/);assert.equal((a.root.innerHTML.match(/data-action="dialogue-choice"/g)||[]).length,1);
+  a.click('dialogue-choice',{channel:'kakao',member:'yeji',node:'welcome',choice:'reply'});
+  assert.match(a.root.innerHTML,/<div class="bubble\s*">我也想你了<\/div>/);assert.match(a.root.innerHTML,/<div class="bubble\s*">週末見！<\/div>/);
+  assert.equal(a.fixture.state.welcomeDone.yeji,undefined);assert.equal(a.fixture.state.randomDialogue.nextAt,null);
+  const pending=a.fixture.state.jobs.find(j=>j.type==='welcome-reply');a.fixture.processJobs(pending.dueAt);
+  assert.equal(a.fixture.state.welcomeDone.yeji,true);assert.match(a.root.innerHTML,/<div class="bubble\s*">好呀<\/div>/);
+  a.fixture.processJobs(a.fixture.state.randomDialogue.nextAt);assert.equal(a.fixture.state.randomDialogue.activeMember,'yeji');
+  assert.match(a.root.innerHTML,/<div class="bubble\s*">我想你了<\/div>/);assert.match(a.root.innerHTML,/<div class="bubble\s*">什麼時候一起出去玩？<\/div>/);
+  a.input('chat-input','我也想你了。今天有空嗎？');a.submit('chat-form');
+  assert.deepEqual(Array.from(a.fixture.state.chats.kakao.yeji.slice(-2),m=>m.text),['我也想你了','今天有空嗎？']);
+  const bubbles=[...a.root.innerHTML.matchAll(/class="bubble[^\"]*">([^<]*)<\/div>/g)].map(m=>m[1]);assert.ok(bubbles.every(text=>!text.includes('。')));
+  a.click('sms-thread',{id:'delivery'});const sms=[...a.root.innerHTML.matchAll(/class="bubble\s*">([^<]*)<\/div>/g)].map(m=>m[1]);
+  assert.ok(sms.length>2);assert.ok(sms.every(text=>!text.includes('。')));
+});
+
+test('KakaoTalk starts in age order and new incoming or outgoing messages reorder chats and search',async()=>{
+  const a=await appFixture(),members=Array.from(a.fixture.C.members,m=>m.id);
+  const order=(markup,channel)=>Array.from(markup.matchAll(new RegExp(`data-action="open-chat" data-channel="${channel}" data-member="([^"]+)"`,'g')),m=>m[1]);
+  a.click('kakao-tab',{tab:'chats'});assert.deepEqual(order(a.root.innerHTML,'kakao'),members);
+  const now=Date.now();
+  for(const [i,id] of ['yuna','lia','chaeryeong'].entries()){
+    a.fixture.state.jobs.push({id:`kakao-sort-${id}`,type:'incoming',channel:'kakao',member:id,text:`${id} 的新訊息`,dueAt:now-3000+i*1000});
+    a.fixture.processJobs(now-3000+i*1000);
+  }
+  assert.deepEqual(order(a.root.innerHTML,'kakao'),['chaeryeong','lia','yuna','yeji','ryujin']);
+  a.click('open-chat',{channel:'kakao',member:'yeji'});a.click('kakao-back');
+  assert.deepEqual(order(a.root.innerHTML,'kakao'),['chaeryeong','lia','yuna','yeji','ryujin']);
+  a.click('open-chat',{channel:'kakao',member:'ryujin'});a.input('chat-input','換我傳訊息。週末一起出去玩？');a.submit('chat-form');a.click('kakao-back');
+  const expected=['ryujin','chaeryeong','lia','yuna','yeji'];assert.deepEqual(order(a.root.innerHTML,'kakao'),expected);
+  a.click('search',{channel:'kakao'});assert.deepEqual(order(a.overlay.innerHTML,'kakao'),expected);a.click('close-modal');
+  a.click('kakao-tab',{tab:'friends'});assert.deepEqual(order(a.root.innerHTML,'kakao'),members);
+  const restored=await appFixture({stored:a.fixture.state});restored.click('kakao-tab',{tab:'chats'});assert.deepEqual(order(restored.root.innerHTML,'kakao'),expected);
+  restored.click('ig-tab',{tab:'dm'});assert.deepEqual(order(restored.root.innerHTML,'instagram'),members);
 });

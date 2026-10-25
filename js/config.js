@@ -22,7 +22,7 @@ window.PHONE_CONFIG = {
   // 鎖定畫面與主畫面的桌布路徑。
   wallpapers: { lock: "photo/lockscreen.jpg", home: "photo/homescreen.jpg" },
 
-  // 2. 成員資料與圖片路徑。
+  // 2. 成員資料與圖片路徑（依年齡由大到小排列，作為歡迎訊息與同時間聊天的排序）。
   // id 是聊天室、劇本與照片的共用識別碼；username 是 Instagram 帳號。
   // name / displayName / korean 分別為一般顯示名稱、Instagram 名稱、韓文名稱。
   members: [
@@ -34,6 +34,7 @@ window.PHONE_CONFIG = {
   ],
   // pairedPhoto 的 side：me 是玩家上傳的照片，her 是成員接著發佈的對應照片。
   assets: {
+    kakaoAvatar: id => `photo/kkt/profile/${id}_kkt.jpg`,
     instagramAvatar: id => `photo/ins/profile/${id}.jpg`,
     phoneAvatar: id => `photo/ins/profile/${id}.jpg`, // 電話聯絡人目前共用 Instagram 頭貼，可自行換成其他路徑。
     pairedPhoto: (id, side) => `photo/ins/${id}/${side}.jpg`
@@ -52,6 +53,7 @@ window.PHONE_CONFIG = {
 
   // 4. 開場訊息：每位成員的陣列依序放入聊天室，只在建立新存檔時套用。
   // KKT 歡迎訊息的回覆選項設在下方 dialogues → 成員 → nodes.welcome。
+  // 聊天台詞中的句號會自動拆成多則訊息，不顯示句號；問號、驚嘆號及 emoji 保留。
   // Instagram 目前沒有開場訊息，私訊由照片劇情觸發。
   initialMessages: {
     kakao: {
@@ -188,9 +190,9 @@ window.PHONE_CONFIG = {
   // 順序：本人私訊 → 本人發貼文 → 本人在玩家貼文留言 → 其他成員留言 → 本人再次私訊。
   // 分享限動也可觸發私訊與對應貼文，但不產生公開留言；成員的對應照片會發成貼文。
   photoEvents: {
-    dmDelay: 30000,       // 玩家分享後，等待第一則私訊：30 秒。
+    dmDelay: 8000,        // 玩家分享後，等待第一則私訊：8 秒。
     postDelay: 30000,     // 第一則私訊出現後，等待成員發貼文：30 秒。
-    followUpDelay: 30000, // 最後一則預定留言出現後，等待本人再次追問：30 秒。
+    followUpDelay: 8000,  // 最後一則預定成員留言出現後，等待本人再次追問：8 秒。
     // question 是第一則私訊，caption 是成員貼文說明，followUp 是本人再次追問的私訊。
     scripts: {
       yeji: { followUp:"{{nickname}}，我的貼文你看到了嗎？你還沒跟我說，怎麼突然想發那張照片 🖤", question:"{{nickname}}，怎麼突然把這張放上來了？", caption:"美好的夜晚🖤" },
@@ -281,7 +283,7 @@ window.PHONE_CONFIG = {
     // 頭貼底色與留言結尾的 emoji。
     colors:["#e8cdd4","#cddce8","#d9d4eb","#d6e3cc","#f0d8bf","#d0e4df","#e8d0db","#d7dbe5"],
     emojis:[""," 🤍"," ❤️"," ✨"," 🥹"," 😍"," 💖"," 🌷"],
-    // 每則留言隨機組合台詞與 emoji；{{member}} 會代入成員名稱。
+    // 每句台詞可隨機加上 emoji；同篇貼文只使用一次，{{member}} 會代入成員名稱。
     compliments:[
       "好好看","這張真的漂亮","救命 好美","這張我先存了",
       "怎麼這麼好看啦","這個光好漂亮","好喜歡這張","看了好幾次才滑走",
@@ -307,7 +309,11 @@ window.PHONE_CONFIG = {
       "너무 예뻐","so pretty","love this photo","this one is so cute",
       "pretty as always","這張也太可愛了吧","{{member}} 這張好漂亮","{{member}} 笑起來真的好好看",
       "{{member}} 今天也好可愛","{{member}} 這張我存了","{{member}} 拜託多發一點","看到 {{member}} 就忍不住按讚",
-      "這種感覺很適合 {{member}}","{{member}} 這個表情太可愛","喜歡 {{member}} 這樣自然的樣子","{{member}} 的照片我真的看不膩"
+      "這種感覺很適合 {{member}}","{{member}} 這個表情太可愛","喜歡 {{member}} 這樣自然的樣子","{{member}} 的照片我真的看不膩",
+      "捨不得滑走的一張", "首頁突然變漂亮了", "這個瞬間抓得太好了", "照片好有溫度",
+      "這張光影好喜歡", "今天的收藏又加一張", "怎麼連隨手拍都這麼美", "每次看到都忍不住笑",
+      "這個眼神我可以看一天", "好像電影停格的畫面", "這張有讓我心動", "好喜歡這次的色調",
+      "這張真的值得放大看", "看完照片心情變好了", "這個表情真的好靈"
     ],
     // 玩家配對照片：稱讚拍攝與照片中的成員；任意裝置照片只使用一般攝影稱讚。
     playerCompliments:[

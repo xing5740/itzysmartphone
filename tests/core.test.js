@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
-import {createState,publish,runDueJobs,queueKeywordReplies,queueEmojiReplies,addMessage,unreadCount,validateSave,createPhotoDetails,photoLibrary,completeOnboarding,personalize,startDialogue,dialogueChoices,chooseDialogue,addComment,toggleCommentLike,initializePostAudience,advancePostLikes,scheduleRandomDialogue} from '../js/core.js';
+import {splitChatText,createState,publish,runDueJobs,queueKeywordReplies,queueEmojiReplies,addMessage,unreadCount,validateSave,createPhotoDetails,photoLibrary,completeOnboarding,personalize,startDialogue,dialogueChoices,chooseDialogue,addComment,toggleCommentLike,initializePostAudience,advancePostLikes,scheduleRandomDialogue} from '../js/core.js';
 const context={window:{}};
 vm.runInNewContext(readFileSync(new URL('../js/config.js',import.meta.url),'utf8'),context);
 const fullConfig=context.window.PHONE_CONFIG;
@@ -21,7 +21,7 @@ test('all five photo branches publish posts and the pictured member follows up',
     let notices=runDueJobs(s,c,dmAt);assert.equal(notices[0].member,a);assert.equal(s.events[a].phase,'asked');assert.equal(s.posts.length,1);
     runDueJobs(s,c,postAt-1);assert.equal(s.posts.length,1);
     notices=runDueJobs(s,c,postAt);assert.equal(s.posts.length,2);assert.equal(s.posts[0].author,a);assert.equal(s.posts[0].images[0].src,`photo/ins/${a}/her.jpg`);assert.equal(s.events[a].phase,'posted');assert.ok(notices[0].postId);
-    notices=runDueJobs(s,c,followUpAt);assert.equal(notices[0].member,a);assert.equal(s.chats.instagram[a].at(-1).text,config.photoEvents.scripts[a].followUp);assert.equal(s.events[a].phase,'done');assert.equal(s.jobs.length,0);
+    notices=runDueJobs(s,c,followUpAt);assert.equal(notices[0].member,a);assert.equal(s.chats.instagram[a].at(-1).text,splitChatText(config.photoEvents.scripts[a].followUp).at(-1));assert.equal(s.events[a].phase,'done');assert.equal(s.jobs.length,0);
   }
 });
 test('separate single-photo posts trigger each member once; repeat shares do not replay',()=>{
@@ -40,7 +40,7 @@ test('unrelated image uploads do not trigger a member',()=>{
   const s=createState(config,start);publish(s,config,{images:[{src:'data:image/jpeg;base64,YQ=='}]},start);assert.equal(s.jobs.length,0);
 });
 test('member follows up only when both player and counterpart posts still exist',()=>{
-  const s=createState(config,start);const p=publish(s,config,{images:[photo('ryujin')]},start);runDueJobs(s,config,dmAt);runDueJobs(s,config,postAt);s.posts=s.posts.filter(x=>x.id!==p.id);runDueJobs(s,config,followUpAt);const notices=runDueJobs(s,config,s.jobs.find(j=>j.type==='photo-follow-up').dueAt);assert.equal(notices.length,0);assert.equal(s.chats.instagram.ryujin.length,1);assert.equal(s.events.ryujin.phase,'done');
+  const s=createState(config,start);const p=publish(s,config,{images:[photo('ryujin')]},start);runDueJobs(s,config,dmAt);runDueJobs(s,config,postAt);s.posts=s.posts.filter(x=>x.id!==p.id);runDueJobs(s,config,followUpAt);const notices=runDueJobs(s,config,s.jobs.find(j=>j.type==='photo-follow-up').dueAt);assert.equal(notices.length,0);assert.equal(s.chats.instagram.ryujin.length,splitChatText(config.photoEvents.scripts.ryujin.question).length);assert.equal(s.events.ryujin.phase,'done');
 });
 test('keyword rules are blank by default and do not invent replies',()=>{
   const s=createState(config,start);queueKeywordReplies(s,config,'kakao','yeji','晚餐一起吃飯',start);assert.equal(s.jobs.length,0);
@@ -112,9 +112,9 @@ test('each member has a valid branching script and choices reach the selected br
     const selected=choices[1],node=state.dialogueSessions.kakao[m.id].nodeId;
     assert.equal(chooseDialogue(state,branchConfig,'kakao',m.id,node,selected.id,start+700),true);
     assert.equal(chooseDialogue(state,branchConfig,'kakao',m.id,node,selected.id,start+701),false);
-    assert.equal(state.chats.kakao[m.id].at(-1).text,selected.text);runDueJobs(state,branchConfig,start+1600);
+    assert.equal(state.chats.kakao[m.id].at(-1).text,splitChatText(selected.text).at(-1));runDueJobs(state,branchConfig,start+1600);
     assert.equal(state.dialogueSessions.kakao[m.id].nodeId,selected.next);
-    assert.equal(state.chats.kakao[m.id].at(-1).text,branchConfig.dialogues[m.id].nodes[selected.next].message);
+    assert.equal(state.chats.kakao[m.id].at(-1).text,splitChatText(branchConfig.dialogues[m.id].nodes[selected.next].message).at(-1));
   }
 });
 
@@ -143,9 +143,9 @@ test('each member has three emoji response variants that restore in order',()=>{
       let state=createState(config,start);state.profile.nickname='小雨';
       assert.equal(queueEmojiReplies(state,config,'kakao',m.id,'❤️',start,()=>rng),true);
       assert.equal(runDueJobs(state,config,start+899).length,0);
-      const first=runDueJobs(state,config,start+900)[0];assert.equal(first.text,config.kakaoEmoji.replies[m.id][index][0]);assert.equal(first.member,m.id);
+      const first=runDueJobs(state,config,start+900)[0];assert.equal(first.text,splitChatText(config.kakaoEmoji.replies[m.id][index][0]).at(-1));assert.equal(first.member,m.id);
       state=validateSave(JSON.parse(JSON.stringify(state)),config);
-      const second=runDueJobs(state,config,start+1800)[0];assert.equal(second.text,config.kakaoEmoji.replies[m.id][index][1]);assert.equal(second.member,m.id);
+      const second=runDueJobs(state,config,start+1800)[0];assert.equal(second.text,splitChatText(config.kakaoEmoji.replies[m.id][index][1]).at(-1));assert.equal(second.member,m.id);
       assert.equal(state.chats.kakao[m.id].at(-1).sender,m.id);
       assert.equal(runDueJobs(state,config,start+2500).length,0);
     }
@@ -374,9 +374,10 @@ test('photo sequence strictly orders DM, post, owner comment, other comments and
   const c={...config,postComments:{...config.postComments,otherChance:1,maxOthers:2}};
   for(const member of c.members){
     let state=createState(c,start);const playerPost=publish(state,c,{images:[photo(member.id)],caption:'出去玩'},start);
+    const questionCount=splitChatText(c.photoEvents.scripts[member.id].question).length,followUpCount=splitChatText(c.photoEvents.scripts[member.id].followUp).length;
     assert.equal(state.stories.length,0);
     runDueJobs(state,c,dmAt-1);assert.equal(state.chats.instagram[member.id].length,0);assert.equal(playerPost.comments.length,0);
-    runDueJobs(state,c,dmAt);assert.equal(state.chats.instagram[member.id].length,1);
+    runDueJobs(state,c,dmAt);assert.equal(state.chats.instagram[member.id].length,questionCount);
     assert.equal(state.jobs.find(j=>j.type==='photo-post').dueAt,dmAt+30000);
     runDueJobs(state,c,postAt-1);assert.equal(state.posts.length,1);assert.equal(playerPost.comments.length,0);
     state=validateSave(JSON.parse(JSON.stringify(state)),c);
@@ -385,14 +386,14 @@ test('photo sequence strictly orders DM, post, owner comment, other comments and
     assert.equal(ownerJob.dueAt,postAt+15000);
     runDueJobs(state,c,ownerJob.dueAt-1);assert.equal(own.comments.length,0);
     const notices=runDueJobs(state,c,ownerJob.dueAt);assert.equal(notices[0].member,member.id);assert.equal(own.comments.length,1);
-    assert.equal(state.chats.instagram[member.id].length,1);
+    assert.equal(state.chats.instagram[member.id].length,questionCount);
     const otherJobs=state.jobs.filter(j=>j.type==='post-comment');assert.equal(otherJobs.length,2);
     assert.ok(otherJobs.every(j=>j.dueAt>ownerJob.dueAt));
     for(const job of otherJobs)runDueJobs(state,c,job.dueAt);
     assert.equal(own.comments.length,3);
     const followUp=state.jobs.find(j=>j.type==='photo-follow-up');assert.ok(followUp.dueAt>Math.max(...otherJobs.map(j=>j.dueAt)));
-    state=validateSave(JSON.parse(JSON.stringify(state)),c);runDueJobs(state,c,followUp.dueAt-1);assert.equal(state.chats.instagram[member.id].length,1);
-    runDueJobs(state,c,followUp.dueAt);assert.equal(state.chats.instagram[member.id].length,2);assert.equal(state.chats.instagram[member.id].at(-1).text,c.photoEvents.scripts[member.id].followUp);
+    state=validateSave(JSON.parse(JSON.stringify(state)),c);runDueJobs(state,c,followUp.dueAt-1);assert.equal(state.chats.instagram[member.id].length,questionCount);
+    runDueJobs(state,c,followUp.dueAt);assert.equal(state.chats.instagram[member.id].length,questionCount+followUpCount);assert.equal(state.chats.instagram[member.id].at(-1).text,splitChatText(c.photoEvents.scripts[member.id].followUp).at(-1));
     for(const other of c.members.filter(m=>m.id!==member.id))assert.equal(state.chats.instagram[other.id].length,0);assert.equal(state.events[member.id].phase,'done');
   }
 });
@@ -413,7 +414,7 @@ test('delayed tab processing preserves the 30-second post and 15-second comment 
   runDueJobs(state,config,ownComment.dueAt-1);assert.equal(post.comments.length,0);
   runDueJobs(state,config,ownComment.dueAt);assert.equal(post.comments[0].author,'yeji');assert.equal(state.stories.length,0);
   const final=state.jobs.find(j=>j.type==='photo-follow-up'),lateComments=final.dueAt+3600000;
-  runDueJobs(state,config,lateComments);assert.equal(state.chats.instagram.yeji.length,1);assert.equal(final.dueAt,lateComments+30000);
+  runDueJobs(state,config,lateComments);assert.equal(state.chats.instagram.yeji.length,1);assert.equal(final.dueAt,lateComments+config.photoEvents.followUpDelay);
   runDueJobs(state,config,final.dueAt);assert.equal(state.chats.instagram.yeji.length,2);
 });
 
@@ -446,6 +447,7 @@ test('legacy demo stories are removed while player stories and ongoing plot surv
 test('each welcome dialogue waits for the player choice, then a final member response before completing',()=>{
   for(const member of config.members){
     let state=createState(config,start);completeOnboarding(state,'rain.zip','小雨',start,config);
+    const node=config.dialogues[member.id].nodes.welcome,choiceCount=splitChatText(node.choices[0].text).length,responseCount=splitChatText(node.response).length;
     const opening=Array.from(state.chats.kakao[member.id],m=>m.text);
     startDialogue(state,config,'kakao',member.id,start);
     assert.equal(state.jobs.filter(j=>j.type==='welcome-reply').length,0);
@@ -454,17 +456,17 @@ test('each welcome dialogue waits for the player choice, then a final member res
     assert.equal(chooseDialogue(state,config,'kakao',member.id,'welcome','reply',start+1),true);
     assert.equal(chooseDialogue(state,config,'kakao',member.id,'welcome','reply',start+2),false);
     assert.equal(state.welcomeDone[member.id],undefined);assert.equal(state.randomDialogue.nextAt,null);
-    assert.equal(state.chats.kakao[member.id].length,opening.length+1);
+    assert.equal(state.chats.kakao[member.id].length,opening.length+choiceCount);
     const reply=state.jobs.find(j=>j.type==='welcome-reply');
     state=validateSave(JSON.parse(JSON.stringify(state)),config);
     runDueJobs(state,config,reply.dueAt-1);assert.equal(state.welcomeDone[member.id],undefined);
-    runDueJobs(state,config,reply.dueAt);assert.equal(state.chats.kakao[member.id].length,opening.length+2);
-    assert.equal(state.chats.kakao[member.id].at(-1).text,config.dialogues[member.id].nodes.welcome.response);
+    runDueJobs(state,config,reply.dueAt);assert.equal(state.chats.kakao[member.id].length,opening.length+choiceCount+responseCount);
+    assert.equal(state.chats.kakao[member.id].at(-1).text,splitChatText(config.dialogues[member.id].nodes.welcome.response).at(-1));
     assert.equal(state.welcomeDone[member.id],true);assert.equal(state.welcomePending[member.id],undefined);
     assert.ok(state.randomDialogue.nextAt>=reply.dueAt+45000);
     assert.equal(dialogueChoices(state,config,'kakao',member.id).length,0);
     assert.equal(startDialogue(state,config,'kakao',member.id,reply.dueAt+1),false);
-    runDueJobs(state,config,reply.dueAt+1);assert.equal(state.chats.kakao[member.id].length,opening.length+2);
+    runDueJobs(state,config,reply.dueAt+1);assert.equal(state.chats.kakao[member.id].length,opening.length+choiceCount+responseCount);
   }
 });
 
@@ -533,7 +535,7 @@ test('current owner follow-up jobs with the former name migrate without replayin
   const restored=validateSave(JSON.parse(JSON.stringify(state)),c),migrated=restored.jobs.find(j=>j.type==='photo-follow-up');
   assert.equal(migrated.dueAt,followUp.dueAt);assert.ok(!restored.jobs.some(j=>j.type==='photo-observer'));
   runDueJobs(restored,c,migrated.dueAt);
-  assert.equal(restored.chats.instagram.lia.at(-1).text,c.photoEvents.scripts.lia.followUp);
+  assert.equal(restored.chats.instagram.lia.at(-1).text,splitChatText(c.photoEvents.scripts.lia.followUp).at(-1));
   assert.equal(restored.posts.find(p=>p.id===post.id).comments.length,3);
   for(const other of c.members.filter(m=>m.id!=='lia'))assert.equal(restored.chats.instagram[other.id].length,0);
 });
@@ -616,4 +618,121 @@ test('fan comments on arbitrary device uploads praise the photography without as
   const jobs=state.jobs.filter(j=>j.type==='fan-comment'),allowed=new Set(fullConfig.memberAudience.playerPhotoCompliments.flatMap(t=>fullConfig.memberAudience.emojis.map(e=>t+e)));
   assert.ok(jobs.length>=5);assert.ok(jobs.every(j=>allowed.has(j.text)&&!j.text.includes('{{member}}')));
   assert.equal(state.jobs.filter(j=>j.type.startsWith('photo-')).length,0);assert.equal(post.comments.length,0);
+});
+
+test('photo DMs wait eight seconds and restored pending DMs are shortened without changing comment schedules',()=>{
+  assert.equal(config.photoEvents.dmDelay,8000);assert.equal(config.photoEvents.followUpDelay,8000);
+  assert.equal(config.photoEvents.postDelay,30000);assert.equal(config.postComments.memberDelay,15000);assert.equal(config.postComments.otherDelay,20000);
+  const now=Date.now(),state=createState(config,now);publish(state,config,{images:[photo('yeji')]},now);
+  const dm=state.jobs.find(j=>j.type==='photo-dm');dm.dueAt=now+30000;
+  const comments=state.jobs.filter(j=>j.type==='post-comment').map(j=>[j.id,j.dueAt,j.delayAfterPosts]);
+  const restored=validateSave(JSON.parse(JSON.stringify(state)),config),pending=restored.jobs.find(j=>j.type==='photo-dm');
+  assert.ok(pending.dueAt<=Date.now()+8000);assert.ok(pending.dueAt<dm.dueAt);
+  assert.equal(JSON.stringify(restored.jobs.filter(j=>j.type==='post-comment').map(j=>[j.id,j.dueAt,j.delayAfterPosts])),JSON.stringify(comments));
+  runDueJobs(restored,config,pending.dueAt-1);assert.equal(restored.chats.instagram.yeji.length,0);
+  runDueJobs(restored,config,pending.dueAt);assert.equal(restored.chats.instagram.yeji.length,1);
+  runDueJobs(restored,config,pending.dueAt+30000);
+  for(const job of restored.jobs.filter(j=>j.type==='post-comment').sort((a,b)=>a.dueAt-b.dueAt))runDueJobs(restored,config,job.dueAt);
+  const follow=restored.jobs.find(j=>j.type==='photo-follow-up'),post=restored.posts.find(p=>p.author==='me');
+  assert.equal(follow.dueAt,Math.max(...post.comments.map(c=>c.time))+8000);
+});
+
+const commentFingerprint=text=>text.normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');
+test('automatic comments never repeat a phrase on the same post, even with identical random choices',()=>{
+  const c={...fullConfig,postComments:{...fullConfig.postComments,otherChance:1,maxOthers:4}};
+  const state=createState(c,start),post=publish(state,c,{images:[photo('yeji')],caption:'自拍'},start,()=>0);
+  const scheduled=state.jobs.filter(j=>['post-comment','fan-comment'].includes(j.type)&&j.postId===post.id);
+  assert.equal(new Set(scheduled.map(j=>commentFingerprint(j.text))).size,scheduled.length);
+  runDueJobs(state,c,dmAt);runDueJobs(state,c,postAt);
+  for(const job of state.jobs.filter(j=>['post-comment','fan-comment'].includes(j.type)).sort((a,b)=>a.dueAt-b.dueAt))runDueJobs(state,c,job.dueAt);
+  assert.equal(new Set(post.comments.map(c=>commentFingerprint(c.text))).size,post.comments.length);
+  const member=memberPost(state,'lia',start,()=>0);
+  assert.ok(member.comments.length>=95);assert.equal(new Set(member.comments.map(c=>commentFingerprint(c.text))).size,member.comments.length);
+});
+
+test('legacy duplicate comments and waiting comments get distinct text while keeping replies and timing',()=>{
+  const state=createState(fullConfig,start),post=publish(state,fullConfig,{images:[photo('yeji')],caption:'自拍'},start);
+  post.comments.push({id:'original',author:'lia',text:'這張自拍可愛',time:start,parentId:null,replyTo:null,likedBy:['me']},
+    {id:'duplicate',author:'yuna',text:'這張自拍可愛 ❤️',time:start,parentId:null,replyTo:null,likedBy:[]},
+    {id:'player-reply',author:'me',text:'謝謝你！',time:start,parentId:'duplicate',replyTo:'duplicate',likedBy:[]});
+  const restored=validateSave(JSON.parse(JSON.stringify(state)),fullConfig),saved=restored.posts.find(p=>p.id===post.id);
+  assert.notEqual(commentFingerprint(saved.comments[0].text),commentFingerprint(saved.comments[1].text));
+  assert.equal(saved.comments[2].parentId,'duplicate');assert.deepEqual(saved.comments[0].likedBy,['me']);
+  const pending=restored.jobs.find(j=>j.type==='post-comment');pending.text=saved.comments[0].text;const due=pending.dueAt;
+  runDueJobs(restored,fullConfig,dmAt);runDueJobs(restored,fullConfig,postAt);runDueJobs(restored,fullConfig,pending.dueAt);
+  assert.equal(pending.dueAt,due);assert.equal(saved.comments.find(c=>c.id===pending.id).time,due);
+  assert.equal(new Set(saved.comments.map(c=>commentFingerprint(c.text))).size,saved.comments.length);
+});
+
+test('member post likes remain separate from fan growth and own likes, and are saved only once',()=>{
+  const c={...config,postComments:{...config.postComments,otherChance:1,maxOthers:2}},state=createState(c,start);
+  const post=publish(state,c,{images:[photo('yeji')]},start);deliverPhotoPosts(state,c);
+  const jobs=state.jobs.filter(j=>j.type==='post-comment').sort((a,b)=>a.dueAt-b.dueAt);
+  for(const job of jobs)runDueJobs(state,c,job.dueAt);
+  assert.equal(post.memberLikes.length,3);assert.equal(new Set(post.memberLikes).size,3);assert.equal(post.likes,3);
+  post.liked=true;post.likes++;advancePostLikes(state,c,start+60000);
+  assert.equal(post.likes,post.engagement.organicLikes+post.memberLikes.length+1);
+  const restored=validateSave(JSON.parse(JSON.stringify(state)),c),saved=restored.posts.find(p=>p.id===post.id);
+  assert.deepEqual(saved.memberLikes,post.memberLikes);assert.equal(saved.likes,post.likes);
+  restored.jobs.push({...jobs[0],id:'repeat-member-like',dueAt:start+60001});runDueJobs(restored,c,start+60001);
+  assert.equal(saved.memberLikes.length,3);assert.equal(saved.likes,post.likes);
+  const invalid=JSON.parse(JSON.stringify(restored));invalid.posts.find(p=>p.id===post.id).memberLikes=['fan-1'];
+  assert.throws(()=>validateSave(invalid,c),/成員按讚/);
+});
+
+test('chat sentence splitting removes full stops and preserves other punctuation and identifiers',()=>{
+  assert.deepEqual(splitChatText('我想你了。什麼時候一起出去玩？'),['我想你了','什麼時候一起出去玩？']);
+  assert.deepEqual(splitChatText('。 第一則。。第二則！．第三則 ❤️。 '),['第一則','第二則！','第三則 ❤️']);
+  assert.deepEqual(splitChatText('Miss you. See you soon!'),['Miss you','See you soon!']);
+  assert.deepEqual(splitChatText('rain.zip，https://example.com/photo.jpg，1.5 小時……真的嗎？'),['rain.zip，https://example.com/photo.jpg，1.5 小時……真的嗎？']);
+  assert.deepEqual(splitChatText('。。．.  '),[]);
+});
+
+test('both chat channels store separate bubbles with correct unread counts and no empty messages',()=>{
+  const state=createState(config,start);
+  for(const channel of ['kakao','instagram']){
+    const before=state.chats[channel].yeji.length,unread=unreadCount(state,channel,'yeji');
+    const last=addMessage(state,channel,'yeji','我想你了。什麼時候一起出去玩？','yeji',start,{welcomeReply:true});
+    const bubbles=state.chats[channel].yeji.slice(before);
+    assert.deepEqual(Array.from(bubbles,m=>m.text),['我想你了','什麼時候一起出去玩？']);
+    assert.equal(new Set(bubbles.map(m=>m.id)).size,2);assert.equal(last,bubbles[1]);
+    assert.ok(bubbles.every(m=>m.time===start&&!m.read&&m.welcomeReply));assert.equal(unreadCount(state,channel,'yeji'),unread+2);
+    addMessage(state,channel,'yeji','我也是。週末見！','me',start+1);
+    assert.ok(state.chats[channel].yeji.slice(-2).every(m=>m.read&&m.sender==='me'));assert.equal(unreadCount(state,channel,'yeji'),unread+2);
+    const length=state.chats[channel].yeji.length;assert.equal(addMessage(state,channel,'yeji','。。。'),null);assert.equal(state.chats[channel].yeji.length,length);
+  }
+});
+
+test('initial and delayed emoji, keyword and photo messages all split into ordered bubbles',()=>{
+  const c={...config,initialMessages:{...config.initialMessages,kakao:{...config.initialMessages.kakao,yeji:['嗨。吃飯了嗎？']}},
+    incomingMessages:[{id:'split-incoming',channel:'kakao',member:'yeji',text:'忙完了。來聊天！',delay:1000}],
+    kakaoEmoji:{value:'❤️',delay:900,replies:{yeji:[['愛心收到了。好開心！']]}},
+    keywordRules:{kakao:[{id:'split-keyword',member:'yeji',keywords:['出去玩'],replies:['好呀。什麼時候？'],delay:1200}],instagram:[]},
+    photoEvents:{...config.photoEvents,scripts:{...config.photoEvents.scripts,yeji:{question:'我想你了。什麼時候一起出去玩？',caption:'照片說明。保留原文',followUp:'我發文了。你看到了嗎？'}}},postComments:null};
+  let state=createState(c,start);assert.deepEqual(Array.from(state.chats.kakao.yeji,m=>m.text),['嗨','吃飯了嗎？']);
+  queueEmojiReplies(state,c,'kakao','yeji','❤️',start,()=>0);queueKeywordReplies(state,c,'kakao','yeji','出去玩',start);
+  state=validateSave(JSON.parse(JSON.stringify(state)),c);
+  runDueJobs(state,c,start+900);assert.deepEqual(state.chats.kakao.yeji.slice(-2).map(m=>m.text),['愛心收到了','好開心！']);
+  runDueJobs(state,c,start+1000);assert.deepEqual(state.chats.kakao.yeji.slice(-2).map(m=>m.text),['忙完了','來聊天！']);
+  runDueJobs(state,c,start+1200);assert.deepEqual(state.chats.kakao.yeji.slice(-2).map(m=>m.text),['好呀','什麼時候？']);
+  publish(state,c,{images:[photo('yeji')]},start);runDueJobs(state,c,dmAt);
+  assert.deepEqual(state.chats.instagram.yeji.map(m=>m.text),['我想你了','什麼時候一起出去玩？']);
+  runDueJobs(state,c,postAt);assert.equal(state.posts[0].caption,'照片說明。保留原文');
+  runDueJobs(state,c,followUpAt);assert.deepEqual(state.chats.instagram.yeji.slice(-2).map(m=>m.text),['我發文了','你看到了嗎？']);
+});
+
+test('legacy chat splitting preserves IDs, read flags, attachments and progress and does not repeat on reload',()=>{
+  const state=createState(config,start);completeOnboarding(state,'rain.zip','小雨',start,config);
+  state.chats.kakao.yeji=[{id:'original-chat',sender:'yeji',text:'我想你了。什麼時候一起出去玩？',time:start,read:true,kind:'text',welcomeReply:true}];
+  state.chats.instagram.yeji=[{id:'old-dm',sender:'yeji',text:'看到照片了。拍得好看！',time:start,read:false,kind:'text'},
+    {id:'shared-post',sender:'me',text:'傳送了一則貼文',kind:'post',postId:'photo-id',time:start+1,read:true}];
+  state.welcomeDone.yeji=true;state.randomDialogue={activeMember:'yeji',completed:[],nextAt:null};
+  state.dialogueSessions.kakao.yeji={nodeId:'invite',pending:null,finished:false,random:true};
+  const restored=validateSave(JSON.parse(JSON.stringify(state)),config);
+  assert.equal(restored.chats.kakao.yeji[0].id,'original-chat');assert.equal(restored.chats.kakao.yeji.length,2);
+  assert.ok(restored.chats.kakao.yeji.every(m=>m.read&&m.time===start&&m.welcomeReply));
+  assert.equal(restored.chats.instagram.yeji.length,3);assert.equal(restored.chats.instagram.yeji.at(-1).postId,'photo-id');
+  assert.equal(unreadCount(restored,'instagram','yeji'),2);assert.equal(restored.randomDialogue.activeMember,'yeji');
+  assert.equal(restored.dialogueSessions.kakao.yeji.nodeId,'invite');assert.equal(restored.welcomeDone.yeji,true);
+  const again=validateSave(JSON.parse(JSON.stringify(restored)),config);assert.deepEqual(again.chats,restored.chats);assert.equal(again.jobs.length,0);
 });

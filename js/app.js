@@ -1,4 +1,4 @@
-import {uid,createState,addMessage,queueKeywordReplies,queueEmojiReplies,publish,runDueJobs,unreadCount,validateSave,photoLibrary,personalize,completeOnboarding,startDialogue,dialogueChoices,chooseDialogue,addComment,toggleCommentLike,advancePostLikes,scheduleRandomDialogue} from './core.js';
+import {uid,splitChatText,createState,addMessage,queueKeywordReplies,queueEmojiReplies,publish,runDueJobs,unreadCount,validateSave,photoLibrary,personalize,completeOnboarding,startDialogue,dialogueChoices,chooseDialogue,addComment,toggleCommentLike,advancePostLikes,scheduleRandomDialogue} from './core.js';
 import {openStorage,saveState,resetStorage} from './storage.js';
 import {icon} from './icons.js';
 
@@ -14,10 +14,10 @@ const longDate=time=>new Intl.DateTimeFormat('zh-TW',{month:'long',day:'numeric'
 const age=time=>{const mins=Math.max(0,Math.floor((Date.now()-time)/60000));return mins<1?'剛剛':mins<60?`${mins} 分鐘前`:mins<1440?`${Math.floor(mins/60)} 小時前`:`${Math.floor(mins/1440)} 天前`;};
 const safeSrc=src=>typeof src==='string' && (/^(assets|photo|ins)\/[a-zA-Z0-9_/.\-]+$/.test(src)&&!src.includes('..') || /^data:image\/(jpeg|png|webp|gif);base64,/.test(src))?src:'assets/moment-yeji.svg';
 function image(src,fallback,alt,classes='',alternates=[]) {return `<img src="${esc(safeSrc(src))}" alt="${esc(alt)}" class="${classes}" data-fallback="${esc(fallback)}" data-alternates="${esc(JSON.stringify(alternates))}" draggable="false">`;}
-function avatar(id,classes='',phone=false,label=personName(id)) {
+function avatar(id,classes='',phone=false,label=personName(id),channel='instagram') {
   const fan=state.fans?.[id];
   if(fan)return `<span class="avatar fan-avatar ${classes}" role="img" aria-label="${esc(fan.username)}" style="background:${esc(fan.color)}">${esc(fan.username[0].toUpperCase())}</span>`;
-  const src=id==='me'?state.profile.avatar:(phone?C.assets.phoneAvatar(id):C.assets.instagramAvatar(id));
+  const src=id==='me'?state.profile.avatar:(phone?C.assets.phoneAvatar(id):channel==='kakao'?C.assets.kakaoAvatar(id):C.assets.instagramAvatar(id));
   const alternatives=phone?[`${src}.jpeg`,`${src}.jpg`,`${src}.png`]:[];
   return image(src||'photo/ins/profile/me.jpeg',`assets/avatar-${id==='me'?'me':id}.svg`,label,`avatar ${classes}`,alternatives);
 }
@@ -131,26 +131,27 @@ function kakaoNav(){return `<nav class="bottom-nav" aria-label="KakaoTalk 導覽
 function renderKakao() {
   if(route.page==='chat')return renderChat('kakao',route.member);
   const friends=route.tab==='friends';
-  return `<header class="app-topbar"><h2 class="app-title">${friends?'好友':'聊天'}</h2><button class="top-button" data-action="search" data-channel="kakao" aria-label="搜尋好友">${icon('search')}</button><button class="top-button" data-action="settings" aria-label="設定">${icon('more')}</button></header><div class="scroll">${friends?`<button class="list-row self-row" data-action="settings">${avatar('me','kakao-avatar')}<div class="list-row-copy"><strong>${esc(state.profile.name)}</strong></div></button><div class="section-label"><span>好友 ${C.members.length}</span><span>⌃</span></div>`:''}${C.members.map(m=>renderChatRow('kakao',m,friends)).join('')}</div>${kakaoNav()}`;
+  return `<header class="app-topbar"><h2 class="app-title">${friends?'好友':'聊天'}</h2><button class="top-button" data-action="search" data-channel="kakao" aria-label="搜尋好友">${icon('search')}</button><button class="top-button" data-action="settings" aria-label="設定">${icon('more')}</button></header><div class="scroll">${friends?`<button class="list-row self-row" data-action="settings">${avatar('me','kakao-avatar')}<div class="list-row-copy"><strong>${esc(state.profile.name)}</strong></div></button><div class="section-label"><span>好友 ${C.members.length}</span><span>⌃</span></div>`:''}${(friends?C.members:chatMembers('kakao')).map(m=>renderChatRow('kakao',m,friends)).join('')}</div>${kakaoNav()}`;
 }
 function chatMembers(channel) {
+  // 開場訊息時間相同時，沿用成員年齡順序；有收發訊息後依最後訊息時間排列。
   return [...C.members].sort((a,b)=>(state.chats[channel][b.id].at(-1)?.time??0)-(state.chats[channel][a.id].at(-1)?.time??0));
 }
 function renderChatRow(channel,m,friends=false) {
   const messages=state.chats[channel][m.id],latest=messages.at(-1),unread=unreadCount(state,channel,m.id);
-  return `<button class="list-row" data-action="open-chat" data-channel="${channel}" data-member="${m.id}">${avatar(m.id,channel==='kakao'?'kakao-avatar':'')}<div class="list-row-copy"><strong>${channel==='instagram'?esc(m.username):m.name}</strong><p>${friends?m.korean:esc(latest?(latest.kind==='post'?'傳送了一則貼文':latest.sender==='me'?latest.text:dialogue(latest.text)):(channel==='instagram'?`${m.displayName} · 傳送訊息`:'尚無訊息'))}</p></div>${!friends?`<div class="list-row-meta"><span>${latest?shortTime(latest.time):''}</span>${unread?`<span class="unread-pill">${unread}</span>`:''}</div>`:'<span class="friend-status">♡</span>'}</button>`;
+  return `<button class="list-row" data-action="open-chat" data-channel="${channel}" data-member="${m.id}">${avatar(m.id,channel==='kakao'?'kakao-avatar':'',false,personName(m.id),channel)}<div class="list-row-copy"><strong>${channel==='instagram'?esc(m.username):m.name}</strong><p>${friends?m.korean:esc(latest?(latest.kind==='post'?'傳送了一則貼文':latest.sender==='me'?latest.text:dialogue(latest.text)):(channel==='instagram'?`${m.displayName} · 傳送訊息`:'尚無訊息'))}</p></div>${!friends?`<div class="list-row-meta"><span>${latest?shortTime(latest.time):''}</span>${unread?`<span class="unread-pill">${unread}</span>`:''}</div>`:'<span class="friend-status">♡</span>'}</button>`;
 }
 function renderDialogueChoices(channel,id) {
   const welcome=renderWelcomeChoice(channel,id);if(welcome)return welcome;
   const session=state.dialogueSessions[channel]?.[id];
   const choices=dialogueChoices(state,C,channel,id);
   if(!choices.length||C.dialogues[id]?.nodes[session?.nodeId]?.initial)return '';
-  return `<div class="dialogue-choices" role="group" aria-label="選擇回覆">${choices.map(c=>`<button data-action="dialogue-choice" data-channel="${channel}" data-member="${id}" data-node="${esc(session.nodeId)}" data-choice="${esc(c.id)}">${esc(dialogue(c.text))}</button>`).join('')}</div>`;
+  return `<div class="dialogue-choices" role="group" aria-label="選擇回覆">${choices.map(c=>`<button data-action="dialogue-choice" data-channel="${channel}" data-member="${id}" data-node="${esc(session.nodeId)}" data-choice="${esc(c.id)}">${esc(splitChatText(dialogue(c.text)).join(' '))}</button>`).join('')}</div>`;
 }
 function renderWelcomeChoice(channel,id) {
   const script=C.dialogues[id],node=script?.nodes[script.start];
   if(channel!=='kakao'||!C.dialogueChannels.includes(channel)||!node?.initial||state.welcomeDone?.[id]||state.welcomePending?.[id])return '';
-  return `<div class="dialogue-choices welcome-choices" role="group" aria-label="回覆歡迎訊息">${node.choices.map(choice=>`<button data-action="dialogue-choice" data-channel="kakao" data-member="${id}" data-node="${script.start}" data-choice="${choice.id}">${esc(dialogue(choice.text))}</button>`).join('')}</div>`;
+  return `<div class="dialogue-choices welcome-choices" role="group" aria-label="回覆歡迎訊息">${node.choices.map(choice=>`<button data-action="dialogue-choice" data-channel="kakao" data-member="${id}" data-node="${script.start}" data-choice="${choice.id}">${esc(splitChatText(dialogue(choice.text)).join(' '))}</button>`).join('')}</div>`;
 }
 function renderChat(channel,id) {
   const m=member(id),messages=state.chats[channel][id];
@@ -163,9 +164,9 @@ function renderMessage(message,channel,id) {
   let body=esc(mine?message.text:dialogue(message.text));
   if(message.kind==='post') {
     const post=state.posts.find(p=>p.id===message.postId);
-    body=post?`<button class="dm-shared-post" data-action="view-post" data-id="${post.id}">${photoImage(post.images[0])}<strong>${esc(username(post.author))}</strong><p>${esc(post.caption).slice(0,90)}</p></button>`:'這則貼文已不存在。';
+    body=post?`<button class="dm-shared-post" data-action="view-post" data-id="${post.id}">${photoImage(post.images[0])}<strong>${esc(username(post.author))}</strong><p>${esc(post.caption).slice(0,90)}</p></button>`:'這則貼文已不存在';
   }
-  return `<div class="message-row ${mine?'mine':''}">${!mine?avatar(id,`small ${channel==='kakao'?'kakao-avatar':''}`):''}<div class="message-content">${!mine&&channel==='kakao'?`<div class="message-author">${personName(id)}</div>`:''}<div class="bubble-with-time"><div class="bubble ${message.kind==='post'?'dm-shared-post':''}">${body}</div><span class="message-time">${mine&&channel==='kakao'?'<span class="read">1</span>':''}${shortTime(message.time)}</span></div></div></div>`;
+  return `<div class="message-row ${mine?'mine':''}">${!mine?avatar(id,`small ${channel==='kakao'?'kakao-avatar':''}`,false,personName(id),channel):''}<div class="message-content">${!mine&&channel==='kakao'?`<div class="message-author">${personName(id)}</div>`:''}<div class="bubble-with-time"><div class="bubble ${message.kind==='post'?'dm-shared-post':''}">${body}</div><span class="message-time">${mine&&channel==='kakao'?'<span class="read">1</span>':''}${shortTime(message.time)}</span></div></div></div>`;
 }
 function instagramNav() {return `<nav class="bottom-nav" aria-label="Instagram 導覽"><button data-action="ig-tab" data-tab="feed" class="${!route.page||route.page==='feed'?'active':''}" aria-label="Instagram 首頁">${icon('home','',!route.page||route.page==='feed')}</button><button data-action="compose" aria-label="建立貼文">${icon('plus')}</button><button data-action="ig-tab" data-tab="profile" class="${route.page==='profile'?'active':''}" aria-label="我的個人檔案">${avatar('me','tiny')}</button></nav>`;}
 function renderInstagram() {
@@ -183,9 +184,14 @@ function renderStoryTray() {
   const own=activeStories('me');
   return `<div class="story-avatar"><div class="story-avatar-photo"><button class="story-open" data-action="${own.length?'story':'compose-story'}" data-member="me" aria-label="${own.length?'觀看你的限時動態':'發佈限時動態'}"><span class="story-ring ${!own.length?'empty':own.every(s=>s.seen)?'seen':''}">${avatar('me')}</span></button><button class="story-add" data-action="compose-story" aria-label="新增限時動態">${icon('plus')}</button></div><span>你的限時動態</span></div>${C.members.map(m=>{const stories=activeStories(m.id);return `<button class="story-avatar" data-action="story" data-member="${m.id}" aria-label="觀看 ${m.name} 的限時動態"><span class="story-ring ${!stories.length?'empty':stories.every(s=>s.seen)?'seen':''}">${avatar(m.id)}</span><span>${m.name}</span></button>`;}).join('')}`;
 }
+function renderPostLikes(post){
+  if(!post.likes)return '';
+  const likers=(post.memberLikes||[]).filter(id=>member(id));
+  return `<div class="post-likes">${likers.length?`<span class="post-member-likes">${likers.map(id=>esc(username(id))).join('、')} 說讚</span> · `:''}${post.likes.toLocaleString()} 個讚</div>`;
+}
 function renderPost(post) {
   const count=post.images.length,slide=Math.max(0,Math.min(post.slide||0,count-1));
-  return `<article class="post" data-post="${post.id}"><header class="post-header">${avatar(post.author)}<div class="post-username">${esc(username(post.author))}<small>서울, 대한민국</small></div><button class="top-button" data-action="post-options" data-id="${post.id}" aria-label="貼文選項">${icon('more')}</button></header><div class="post-image-wrap" data-swipe-post="${post.id}">${photoImage(post.images[slide],'post-image')}${count>1?`<span class="slide-count">${slide+1}/${count}</span>${slide>0?`<button class="slide-arrow prev" data-action="slide" data-id="${post.id}" data-dir="-1" aria-label="上一張">${icon('back')}</button>`:''}${slide<count-1?`<button class="slide-arrow next" data-action="slide" data-id="${post.id}" data-dir="1" aria-label="下一張">${icon('chevron')}</button>`:''}`:''}</div><div class="post-actions"><button data-action="like" data-id="${post.id}" class="${post.liked?'liked':''}" aria-label="${post.liked?'取消按讚':'按讚'}">${icon('heart','',post.liked)}</button><button data-action="comments" data-id="${post.id}" aria-label="留言">${icon('chat')}</button><button data-action="share-post" data-id="${post.id}" aria-label="傳送貼文到聊天室">${icon('send')}</button>${count>1?`<span class="slide-dots">${post.images.map((_,i)=>`<i class="${i===slide?'active':''}"></i>`).join('')}</span>`:''}<button data-action="bookmark" data-id="${post.id}" aria-label="${state.bookmarked.includes(post.id)?'取消珍藏':'珍藏貼文'}">${icon('bookmark','',state.bookmarked.includes(post.id))}</button></div><div class="post-details">${post.likes?`<div class="post-likes">${post.likes.toLocaleString()} 個讚</div>`:''}<div class="post-caption"><strong>${esc(username(post.author))}</strong>${esc(post.caption).replaceAll('\n','<br>')}</div><button class="comment-preview" data-action="comments" data-id="${post.id}">${post.comments.length?`查看全部 ${post.comments.length} 則留言`:'新增留言…'}</button><div class="post-date">${age(post.time)}</div></div></article>`;
+  return `<article class="post" data-post="${post.id}"><header class="post-header">${avatar(post.author)}<div class="post-username">${esc(username(post.author))}<small>서울, 대한민국</small></div><button class="top-button" data-action="post-options" data-id="${post.id}" aria-label="貼文選項">${icon('more')}</button></header><div class="post-image-wrap" data-swipe-post="${post.id}">${photoImage(post.images[slide],'post-image')}${count>1?`<span class="slide-count">${slide+1}/${count}</span>${slide>0?`<button class="slide-arrow prev" data-action="slide" data-id="${post.id}" data-dir="-1" aria-label="上一張">${icon('back')}</button>`:''}${slide<count-1?`<button class="slide-arrow next" data-action="slide" data-id="${post.id}" data-dir="1" aria-label="下一張">${icon('chevron')}</button>`:''}`:''}</div><div class="post-actions"><button data-action="like" data-id="${post.id}" class="${post.liked?'liked':''}" aria-label="${post.liked?'取消按讚':'按讚'}">${icon('heart','',post.liked)}</button><button data-action="comments" data-id="${post.id}" aria-label="留言">${icon('chat')}</button><button data-action="share-post" data-id="${post.id}" aria-label="傳送貼文到聊天室">${icon('send')}</button>${count>1?`<span class="slide-dots">${post.images.map((_,i)=>`<i class="${i===slide?'active':''}"></i>`).join('')}</span>`:''}<button data-action="bookmark" data-id="${post.id}" aria-label="${state.bookmarked.includes(post.id)?'取消珍藏':'珍藏貼文'}">${icon('bookmark','',state.bookmarked.includes(post.id))}</button></div><div class="post-details">${renderPostLikes(post)}<div class="post-caption"><strong>${esc(username(post.author))}</strong>${esc(post.caption).replaceAll('\n','<br>')}</div><button class="comment-preview" data-action="comments" data-id="${post.id}">${post.comments.length?`查看全部 ${post.comments.length} 則留言`:'新增留言…'}</button><div class="post-date">${age(post.time)}</div></div></article>`;
 }
 function renderProfile() {
   const posts=state.posts.filter(p=>p.author==='me');
@@ -215,9 +221,9 @@ function renderPhone() {
 function renderSMS() {
   if(route.page==='chat'){
     const thread=C.sms.find(x=>x.id===route.thread);
-    return `${topbar(thread.name,'','sms-back')}<div class="scroll chat-log"><div class="chat-date">${thread.time}</div>${thread.messages.map(text=>`<div class="message-row"><div class="message-content"><div class="bubble">${esc(text)}</div></div></div>`).join('')}</div><div class="sms-readonly">系統通知簡訊 · 無法回覆</div>`;
+    return `${topbar(thread.name,'','sms-back')}<div class="scroll chat-log"><div class="chat-date">${thread.time}</div>${thread.messages.flatMap(splitChatText).map(text=>`<div class="message-row"><div class="message-content"><div class="bubble">${esc(text)}</div></div></div>`).join('')}</div><div class="sms-readonly">系統通知簡訊 · 無法回覆</div>`;
   }
-  return `<h2 class="sms-title">訊息</h2><div class="scroll">${C.sms.map(t=>`<button class="list-row sms-row" data-action="sms-thread" data-id="${t.id}"><div class="sms-icon">${icon('user')}</div><div class="list-row-copy"><strong>${esc(t.name)}</strong><p>${esc(t.messages[0])}</p></div><div class="list-row-meta"><span>${t.time}</span>${icon('chevron')}</div></button>`).join('')}</div>`;
+  return `<h2 class="sms-title">訊息</h2><div class="scroll">${C.sms.map(t=>`<button class="list-row sms-row" data-action="sms-thread" data-id="${t.id}"><div class="sms-icon">${icon('user')}</div><div class="list-row-copy"><strong>${esc(t.name)}</strong><p>${esc(splitChatText(t.messages[0])[0]||'')}</p></div><div class="list-row-meta"><span>${t.time}</span>${icon('chevron')}</div></button>`).join('')}</div>`;
 }
 
 function sheet(title,body,footer='',className='',backAction='close-modal') {return `<section class="sheet ${className}" role="dialog" aria-modal="true" aria-label="${esc(title)}"><span class="sheet-handle"></span><header class="sheet-header"><button data-action="${backAction}" aria-label="${backAction==='close-modal'?'關閉':'返回'}">${icon(backAction==='close-modal'?'close':'back')}</button><h2>${esc(title)}</h2><span style="width:20px"></span></header><div class="sheet-scroll">${body}</div>${footer}</section>`;}
@@ -265,10 +271,10 @@ function renderModal() {
     const w=C.weather;
     overlay.innerHTML=sheet('首爾天氣',`<div class="weather-detail"><h3>首爾 서울</h3>${icon('cloud')}<div class="weather-temp">${w.temperature}°</div><p>${w.condition} · 最高 ${w.high}° 最低 ${w.low}°<br>${w.note}</p></div><p class="settings-note">固定天氣快照：${w.checkedAt}<br>此為製作當天保存的預報，不會自動更新。</p><a class="link-source" href="${esc(w.source)}" target="_blank" rel="noreferrer">查看天氣資料來源 ↗</a>`);
   } else if(type==='search') {
-    overlay.innerHTML=sheet(modal.channel==='kakao'?'搜尋好友':'搜尋訊息',`<div class="search-box" style="margin:0 0 8px">${icon('search')}<input id="chat-search" placeholder="輸入好友名稱或帳號" aria-label="搜尋好友"></div><div id="chat-search-results">${(modal.channel==='instagram'?chatMembers('instagram'):C.members).map(m=>`<div data-search-name="${esc(`${m.name} ${m.username} ${m.korean}`.toLowerCase())}">${renderChatRow(modal.channel,m)}</div>`).join('')}</div>`);
+    overlay.innerHTML=sheet(modal.channel==='kakao'?'搜尋好友':'搜尋訊息',`<div class="search-box" style="margin:0 0 8px">${icon('search')}<input id="chat-search" placeholder="輸入好友名稱或帳號" aria-label="搜尋好友"></div><div id="chat-search-results">${chatMembers(modal.channel).map(m=>`<div data-search-name="${esc(`${m.name} ${m.username} ${m.korean}`.toLowerCase())}">${renderChatRow(modal.channel,m)}</div>`).join('')}</div>`);
   } else if(type==='chat-info') {
     const m=member(modal.member);
-    overlay.innerHTML=sheet('聊天資訊',`<div style="text-align:center">${avatar(m.id,'large')}<h3 style="font-size:15px">${m.name} · ${m.korean}</h3><p style="font-size:11px;color:#999">@${esc(m.username)}</p></div>`);
+    overlay.innerHTML=sheet('聊天資訊',`<div style="text-align:center">${avatar(m.id,'large',false,personName(m.id),route.app==='kakao'?'kakao':'instagram')}<h3 style="font-size:15px">${m.name} · ${m.korean}</h3><p style="font-size:11px;color:#999">@${esc(m.username)}</p></div>`);
   } else if(type==='call-info'){
     const i=C.members.findIndex(m=>m.id===modal.member),m=member(modal.member);
     overlay.innerHTML=sheet('通話詳細資訊',`<div class="contact-detail" style="padding:12px">${avatar(m.id,'large',true)}<h2>${m.name}</h2><div class="contact-field">${['今天','昨天','星期四','星期三','星期二'][i]}<span>${i%2?'撥出電話':'來電'} · ${['12 分 08 秒','5 分 32 秒','28 分 14 秒','8 分 46 秒','17 分 02 秒'][i]}</span></div><button class="secondary-button" data-action="contact" data-member="${m.id}">查看聯絡人</button></div>`);
@@ -294,7 +300,7 @@ function renderStoryModal() {
 function nextStory(){if(modal?.kind!=='story')return;const stories=activeStories(modal.member);if(modal.index+1<stories.length){modal.index++;renderStoryModal();}else closeModal();}
 function toast(text,notice=null) {
   clearTimeout(toastTimer);toastAction=notice;
-  $('#toast').innerHTML=notice?`<button class="toast" data-action="toast-open">${avatar(notice.member,'small')}<div><strong>${personName(notice.member)} · ${notice.postId?'Instagram':notice.channel==='kakao'?'KakaoTalk':'Instagram'}</strong><p>${esc(dialogue(text))}</p></div></button>`:`<div class="toast toast-simple">${esc(text)}</div>`;
+  $('#toast').innerHTML=notice?`<button class="toast" data-action="toast-open">${avatar(notice.member,'small',false,personName(notice.member),notice.channel==='kakao'?'kakao':'instagram')}<div><strong>${personName(notice.member)} · ${notice.postId?'Instagram':notice.channel==='kakao'?'KakaoTalk':'Instagram'}</strong><p>${esc(dialogue(text))}</p></div></button>`:`<div class="toast toast-simple">${esc(text)}</div>`;
   toastTimer=setTimeout(()=>{$('#toast').innerHTML='';toastAction=null;},notice?5200:3000);
 }
 function showCompose(type='post',selected=[]) {openModal({kind:'compose',type,images:selected.slice(0,1).map(p=>({...p})),caption:selected.length?(state.photoDetails[selected[0].id]?.description||''):''});}

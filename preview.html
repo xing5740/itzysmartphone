@@ -59,7 +59,7 @@ window.PHONE_CONFIG = {
   // 鎖定畫面與主畫面的桌布路徑。
   wallpapers: { lock: "photo/lockscreen.jpg", home: "photo/homescreen.jpg" },
 
-  // 2. 成員資料與圖片路徑。
+  // 2. 成員資料與圖片路徑（依年齡由大到小排列，作為歡迎訊息與同時間聊天的排序）。
   // id 是聊天室、劇本與照片的共用識別碼；username 是 Instagram 帳號。
   // name / displayName / korean 分別為一般顯示名稱、Instagram 名稱、韓文名稱。
   members: [
@@ -71,6 +71,7 @@ window.PHONE_CONFIG = {
   ],
   // pairedPhoto 的 side：me 是玩家上傳的照片，her 是成員接著發佈的對應照片。
   assets: {
+    kakaoAvatar: id => `photo/kkt/profile/${id}_kkt.jpg`,
     instagramAvatar: id => `photo/ins/profile/${id}.jpg`,
     phoneAvatar: id => `photo/ins/profile/${id}.jpg`, // 電話聯絡人目前共用 Instagram 頭貼，可自行換成其他路徑。
     pairedPhoto: (id, side) => `photo/ins/${id}/${side}.jpg`
@@ -89,6 +90,7 @@ window.PHONE_CONFIG = {
 
   // 4. 開場訊息：每位成員的陣列依序放入聊天室，只在建立新存檔時套用。
   // KKT 歡迎訊息的回覆選項設在下方 dialogues → 成員 → nodes.welcome。
+  // 聊天台詞中的句號會自動拆成多則訊息，不顯示句號；問號、驚嘆號及 emoji 保留。
   // Instagram 目前沒有開場訊息，私訊由照片劇情觸發。
   initialMessages: {
     kakao: {
@@ -225,16 +227,16 @@ window.PHONE_CONFIG = {
   // 順序：本人私訊 → 本人發貼文 → 本人在玩家貼文留言 → 其他成員留言 → 本人再次私訊。
   // 分享限動也可觸發私訊與對應貼文，但不產生公開留言；成員的對應照片會發成貼文。
   photoEvents: {
-    dmDelay: 30000,       // 玩家分享後，等待第一則私訊：30 秒。
+    dmDelay: 8000,        // 玩家分享後，等待第一則私訊：8 秒。
     postDelay: 30000,     // 第一則私訊出現後，等待成員發貼文：30 秒。
-    followUpDelay: 30000, // 最後一則預定留言出現後，等待本人再次追問：30 秒。
+    followUpDelay: 8000,  // 最後一則預定成員留言出現後，等待本人再次追問：8 秒。
     // question 是第一則私訊，caption 是成員貼文說明，followUp 是本人再次追問的私訊。
     scripts: {
-      yeji: { followUp:"{{nickname}}，我的貼文你看到了嗎？你還沒跟我說，怎麼突然想發那張照片 🖤", question:"{{nickname}}，怎麼突然把這張放上來了？那天的照片你還留著喔 🤍", caption:"那就放一張，同一天的。☁️" },
-      lia: { followUp:"我也把那天的照片放上去了。{{nickname}}，所以是突然想起那天了嗎？", question:"{{nickname}}，你上傳了那天的照片？為什麼突然想到這張 ☺️", caption:"a little memory with you 🤍" },
-      ryujin: { followUp:"看到我剛發的了吧？所以，怎麼突然挑了那張？", question:"{{nickname}}，這張你居然還留著。怎麼突然發了？", caption:"same day, different view." },
-      chaeryeong: { followUp:"我也發了那天的照片。{{nickname}}，你是不是也有點想再一起出去了？", question:"{{nickname}}，是我們那天拍的……你怎麼選了這張？", caption:"想把那天再留久一點。🌿" },
-      yuna: { followUp:"{{nickname}}，看到我發的照片了嗎！所以你今天怎麼突然想放那張呀？", question:"{{nickname}}！這張！你怎麼突然發上來了 🥺", caption:"my favorite kind of day 🎀" }
+      yeji: { followUp:"{{nickname}}，我的貼文你看到了嗎？你還沒跟我說，怎麼突然想發那張照片 🖤", question:"{{nickname}}，怎麼突然把這張放上來了？", caption:"美好的夜晚🖤" },
+      lia: { followUp:"我也把那天的照片放上去了。{{nickname}}，所以是突然想起那天了嗎？", question:"{{nickname}}，你上傳了那天的照片？為什麼突然想到這張 ☺️", caption:"🤎" },
+      ryujin: { followUp:"看到我剛發的了吧？所以，怎麼突然挑了那張？", question:"{{nickname}}，這張你居然還留著。怎麼突然發了？", caption:"" },
+      chaeryeong: { followUp:"我也發了那天的照片。{{nickname}}，你是不是也有點想再一起出去了？", question:"{{nickname}}，是我們那天拍的……你怎麼選了這張？", caption:"想把那天再留久一點" },
+      yuna: { followUp:"{{nickname}}，看到我發的照片了嗎！所以你今天怎麼突然想放那張呀？", question:"{{nickname}}！這張！你怎麼突然發上來了 🥺", caption:"❤️🖤" }
     }
   },
 
@@ -318,7 +320,7 @@ window.PHONE_CONFIG = {
     // 頭貼底色與留言結尾的 emoji。
     colors:["#e8cdd4","#cddce8","#d9d4eb","#d6e3cc","#f0d8bf","#d0e4df","#e8d0db","#d7dbe5"],
     emojis:[""," 🤍"," ❤️"," ✨"," 🥹"," 😍"," 💖"," 🌷"],
-    // 每則留言隨機組合台詞與 emoji；{{member}} 會代入成員名稱。
+    // 每句台詞可隨機加上 emoji；同篇貼文只使用一次，{{member}} 會代入成員名稱。
     compliments:[
       "好好看","這張真的漂亮","救命 好美","這張我先存了",
       "怎麼這麼好看啦","這個光好漂亮","好喜歡這張","看了好幾次才滑走",
@@ -344,7 +346,11 @@ window.PHONE_CONFIG = {
       "너무 예뻐","so pretty","love this photo","this one is so cute",
       "pretty as always","這張也太可愛了吧","{{member}} 這張好漂亮","{{member}} 笑起來真的好好看",
       "{{member}} 今天也好可愛","{{member}} 這張我存了","{{member}} 拜託多發一點","看到 {{member}} 就忍不住按讚",
-      "這種感覺很適合 {{member}}","{{member}} 這個表情太可愛","喜歡 {{member}} 這樣自然的樣子","{{member}} 的照片我真的看不膩"
+      "這種感覺很適合 {{member}}","{{member}} 這個表情太可愛","喜歡 {{member}} 這樣自然的樣子","{{member}} 的照片我真的看不膩",
+      "捨不得滑走的一張", "首頁突然變漂亮了", "這個瞬間抓得太好了", "照片好有溫度",
+      "這張光影好喜歡", "今天的收藏又加一張", "怎麼連隨手拍都這麼美", "每次看到都忍不住笑",
+      "這個眼神我可以看一天", "好像電影停格的畫面", "這張有讓我心動", "好喜歡這次的色調",
+      "這張真的值得放大看", "看完照片心情變好了", "這個表情真的好靈"
     ],
     // 玩家配對照片：稱讚拍攝與照片中的成員；任意裝置照片只使用一般攝影稱讚。
     playerCompliments:[
@@ -392,6 +398,15 @@ function photoLibrary(state, config) {
 function personalize(state,text) {
   return String(text??"").replaceAll("{{nickname}}",state.profile.nickname||state.profile.name).replaceAll("{{name}}",state.profile.name);
 }
+// 句號代表下一則訊息；保留問號、驚嘆號、刪節號與帳號／網址／小數中的點。
+function splitChatText(text){
+  return String(text??"").split(/[。．]+|(?<!\.)\.(?![.A-Za-z0-9_/])/u).map(part=>part.trim()).filter(Boolean);
+}
+function splitChatMessage(message){
+  if(message.kind==="post")return [message];
+  return splitChatText(message.text).map((text,index)=>({...message,id:index?uid():message.id,text}));
+}
+const chatNoticeText=text=>splitChatText(text).at(-1)||"";
 function completeOnboarding(state, username, nickname, now=Date.now(),config=null) {
   const handle=String(username).trim().replace(/^@/,""),name=String(nickname).trim();
   if(!/^[A-Za-z0-9_.]{1,30}$/.test(handle))throw new Error("Instagram ID 請使用 1–30 個英文字母、數字、底線或句點。");
@@ -423,14 +438,22 @@ function upgradeState(state, config) {
   if(state.profile.bio==="서울의 작은 일상 ☁️\n和喜歡的人，收集一些日常。")state.profile.bio="";
   state.stories=state.stories.filter(story=>!story.demo||story.author==="me");
   upgradePhotoSequence(state,config);
-  for(const post of state.posts){initializePostAudience(state,config,post,Date.now());if(post.author==="me")queuePlayerFanComments(state,config,post,Date.now(),Math.random);}
+  // 已有存檔的待發私訊也套用較短等待；成員發文和留言排程保持原樣。
+  for(const job of state.jobs){
+    const delay=job.type==="photo-dm"?config.photoEvents.dmDelay:job.type==="photo-follow-up"?config.photoEvents.followUpDelay:null;
+    if(delay!==null)job.dueAt=Math.min(job.dueAt,Date.now()+delay);
+  }
+  for(const post of state.posts){initializePostAudience(state,config,post,Date.now());repairAutomaticComments(state,config,post);if(post.author==="me")queuePlayerFanComments(state,config,post,Date.now(),Math.random);}
+  for(const channel of ["kakao","instagram"])for(const m of config.members){
+    state.chats[channel][m.id]=state.chats[channel][m.id].flatMap(splitChatMessage);
+  }
   scheduleRandomDialogue(state,config,Date.now());
   return state;
 }
 function createState(config, now = Date.now()) {
   const chats = { kakao: {}, instagram: {} };
   for (const channel of Object.keys(chats)) for (const member of config.members) {
-    chats[channel][member.id] = (config.initialMessages[channel]?.[member.id] || []).map((text, i) => ({ id:uid(),sender:member.id,text,time:now - (5-i)*60000,read:false,kind:"text" }));
+    chats[channel][member.id] = (config.initialMessages[channel]?.[member.id] || []).flatMap((text, i) => splitChatMessage({ id:uid(),sender:member.id,text,time:now - (5-i)*60000,read:false,kind:"text" }));
   }
   return {
     version:1, profile:{...config.player,nickname:config.player.nickname||""}, onboardingComplete:false,setupStartedAt:now,photoDetails:createPhotoDetails(config),photoDescriptionVersion:1,chats,posts:[],
@@ -441,8 +464,9 @@ function createState(config, now = Date.now()) {
 function addMessage(state, channel, member, text, sender=member, now=Date.now(), extra={}) {
   if (!state.chats[channel]?.[member]) throw new Error("無效的聊天室");
   const message = {id:uid(),sender,text,time:now,read:sender==="me",kind:"text",...extra};
-  state.chats[channel][member].push(message);
-  return message;
+  const messages=splitChatMessage(message);
+  state.chats[channel][member].push(...messages);
+  return messages.at(-1)||null;
 }
 function queueKeywordReplies(state, config, channel, member, text, now=Date.now()) {
   for (const rule of config.keywordRules[channel] || []) {
@@ -593,15 +617,54 @@ function commentContext(state,config,post,memberId) {
   const text=normalize(description||fallback);
   return config.postComments.contexts?.find(rule=>rule.keywords.some(word=>text.includes(normalize(word)))&&!(rule.exclude||[]).some(word=>text.includes(normalize(word))))||null;
 }
+// 同一篇貼文的自動留言不可只換標點或 emoji 重複出現。
+function commentKey(text){return String(text).normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]/gu,"");}
+function chooseComment(state,options,used,random=Math.random){
+  const values=[...new Set(options.filter(t=>typeof t==="string"&&t.trim()).map(t=>personalize(state,t)))].filter(t=>!used.has(commentKey(t)));
+  if(!values.length)return null;
+  const text=values[Math.floor(random()*values.length)];used.add(commentKey(text));return text;
+}
+function memberCommentOptions(state,config,post,id){
+  const settings=config.postComments;
+  const owners=[...new Set(post.images.filter(p=>p.side==="me").map(p=>p.member))];
+  const owner=owners.includes(id),context=settings?commentContext(state,config,post,owner?id:owners[0]):null;
+  return [...(context?.[owner?"memberReplies":"otherReplies"]||settings?.[owner?"memberReplies":"otherReplies"]?.[id]||[]),
+    ...(owner?["這張我很喜歡 ❤️","這張我先存起來了","謝謝你留下這個瞬間"]:["這張真好看！","照片看起來好舒服","這個畫面我喜歡"])];
+}
+function automaticCommentOptions(state,config,post,id){
+  if(config.members.some(m=>m.id===id))return memberCommentOptions(state,config,post,id);
+  const pictured=config.members.find(m=>post.author===m.id||post.images.some(image=>image.member===m.id));
+  const audience=config.memberAudience;
+  const lines=post.author!=="me"?audience?.compliments:pictured?audience?.playerCompliments:audience?.playerPhotoCompliments;
+  return (lines||[]).map(text=>text.replaceAll("{{member}}",pictured?.name||""));
+}
+function repairAutomaticComments(state,config,post){
+  const used=new Set();
+  // 玩家寫的留言與回覆保留原文，只替自動產生的根留言避開重複。
+  for(const comment of post.comments.filter(c=>c.author==="me"||c.parentId))used.add(commentKey(comment.text));
+  for(const comment of post.comments.filter(c=>c.author!=="me"&&!c.parentId)){
+    if(used.has(commentKey(comment.text))){
+      const replacement=chooseComment(state,automaticCommentOptions(state,config,post,comment.author),used);
+      if(replacement)comment.text=replacement;
+    }
+    used.add(commentKey(comment.text));
+  }
+}
+function addMemberPostLike(post,id){
+  post.memberLikes??=[];
+  if(post.memberLikes.includes(id))return false;
+  post.memberLikes.push(id);post.likes++;return true;
+}
 function queuePostComments(state,config,post,now,random) {
   const settings=config.postComments;
   if(!settings)return;
   const owners=[...new Set(post.images.filter(p=>p.side==="me"&&config.members.some(m=>m.id===p.member)).map(p=>p.member))];
   if(!owners.length)return;
-  const choose=(texts,fallback)=>{const values=(texts||[]).filter(t=>typeof t==="string"&&t.trim());return values.length?values[Math.floor(random()*values.length)]:fallback;};
+  const used=new Set([...post.comments.map(c=>c.text),...state.jobs.filter(j=>["post-comment","fan-comment"].includes(j.type)&&j.postId===post.id).map(j=>j.text)].map(text=>commentKey(personalize(state,text))));
+  const choose=(texts,fallback)=>chooseComment(state,texts||[],used,random)||chooseComment(state,[fallback],used,random);
   const afterPosts=owners.filter(id=>state.events[id]?.userShareId===post.id&&state.events[id].phase!=="done");
   const anchor=now+(afterPosts.length?config.photoEvents.dmDelay+config.photoEvents.postDelay:0);
-  const queue=(member,text,dueAt)=>state.jobs.push({id:uid(),type:"post-comment",member,postId:post.id,text,dueAt:anchor+dueAt-now,...(afterPosts.length?{afterPosts,delayAfterPosts:dueAt-now}:{})});
+  const queue=(member,text,dueAt)=>text&&state.jobs.push({id:uid(),type:"post-comment",member,postId:post.id,text,dueAt:anchor+dueAt-now,...(afterPosts.length?{afterPosts,delayAfterPosts:dueAt-now}:{})});
   const contexts=owners.map(id=>commentContext(state,config,post,id));
   const sharedContext=contexts.every(c=>c?.id===contexts[0]?.id)?contexts[0]:null;
   owners.forEach((id,i)=>queue(id,choose(contexts[i]?.memberReplies||settings.memberReplies?.[id],"這張我很喜歡 ❤️"),now+(settings.memberDelay??15000)+i*(settings.spacing??3000)));
@@ -699,11 +762,11 @@ function seedFans(state,settings,random) {
   }
   state.fanUsernameVersion=2;
 }
-function fanCommentPool(settings,lines,member,count,random) {
-  const bare=shuffled([...new Set(lines.map(text=>text.replaceAll("{{member}}",member)))],random);
-  const decorated=shuffled(bare.flatMap(text=>settings.emojis.filter(Boolean).map(emoji=>text+emoji)),random);
-  const chance=settings.emojiChance??0.22;
-  return shuffled([...bare,...decorated.slice(0,Math.max(count-bare.length,Math.ceil(bare.length*chance/Math.max(0.01,1-chance))))],random);
+function fanCommentPool(settings,lines,member,count,random,excluded=[]) {
+  const used=new Set(excluded.map(commentKey)),bare=[];
+  for(const line of lines){const text=line.replaceAll("{{member}}",member),key=commentKey(text);if(!used.has(key)){used.add(key);bare.push(text);}}
+  const emojis=settings.emojis.filter(Boolean);
+  return shuffled(bare,random).map(text=>random()<(settings.emojiChance??0.22)&&emojis.length?text+emojis[Math.floor(random()*emojis.length)]:text);
 }
 function queuePlayerFanComments(state,config,post,now,random) {
   const settings=config.memberAudience;
@@ -712,7 +775,8 @@ function queuePlayerFanComments(state,config,post,now,random) {
   post.playerFanCommentsQueued=true;if(!count)return;
   seedFans(state,settings,random);
   const member=config.members.find(m=>post.images.some(image=>image.member===m.id));
-  const texts=fanCommentPool(settings,member?settings.playerCompliments:settings.playerPhotoCompliments,member?.name||"",count,random);
+  const excluded=[...post.comments.map(c=>c.text),...state.jobs.filter(j=>j.postId===post.id&&["post-comment","fan-comment"].includes(j.type)).map(j=>personalize(state,j.text))];
+  const texts=fanCommentPool(settings,member?settings.playerCompliments:settings.playerPhotoCompliments,member?.name||"",count,random,excluded);
   const members=state.jobs.filter(j=>j.type==="post-comment"&&j.postId===post.id);
   const afterPosts=config.members.filter(m=>state.events[m.id]?.userShareId===post.id&&["queued","asked"].includes(state.events[m.id].phase)).map(m=>m.id);
   const anchor=now+(afterPosts.length?config.photoEvents.dmDelay+config.photoEvents.postDelay:0);
@@ -724,13 +788,14 @@ function queuePlayerFanComments(state,config,post,now,random) {
   }
 }
 function initializePostAudience(state,config,post,now=Date.now(),random=Math.random) {
+  post.memberLikes??=[];
   const settings=config.memberAudience;if(!settings)return;
   const m=config.members.find(m=>m.id===post.author),ownLike=post.liked?1:0;
   if(!post.engagement){
-    const base=m?Math.max(post.likes-ownLike,randomInteger(settings.initialLikes,random)):Math.max(0,post.likes-ownLike);
+    const base=m?Math.max(post.likes-ownLike-post.memberLikes.length,randomInteger(settings.initialLikes,random)):Math.max(0,post.likes-ownLike-post.memberLikes.length);
     const playerRate=Array.isArray(settings.playerLikesPerMinute)?randomInteger(settings.playerLikesPerMinute,random):settings.playerLikesPerMinute;
     post.engagement={baseLikes:base,organicLikes:base,likesPerMinute:m?randomInteger(settings.likesPerMinute,random):playerRate,startedAt:post.time,maxLikes:m?null:Math.max(base,settings.playerMaxLikes),audienceVersion:2};
-    post.likes=base+ownLike;
+    post.likes=base+ownLike+post.memberLikes.length;
   }
   if(!m&&post.engagement.audienceVersion!==2){
     const e=post.engagement;e.baseLikes=e.organicLikes;e.startedAt=now;
@@ -739,21 +804,21 @@ function initializePostAudience(state,config,post,now=Date.now(),random=Math.ran
   }
   if(!m)return;
   if(post.fanCommentsSeeded){
-    if(post.fanCommentStyle!==2){
+    if(post.fanCommentStyle!==3){
       const comments=post.comments.filter(c=>state.fans?.[c.author]&&!c.parentId);
-      const texts=fanCommentPool(settings,settings.compliments,m.name,comments.length,random);
-      comments.forEach((comment,index)=>comment.text=texts[index]);post.fanCommentStyle=2;
+      const texts=fanCommentPool(settings,settings.compliments,m.name,comments.length,random,post.comments.filter(c=>!comments.includes(c)).map(c=>c.text));
+      comments.forEach((comment,index)=>{if(texts[index])comment.text=texts[index];});post.fanCommentStyle=3;
     }
     return;
   }
   seedFans(state,settings,random);
   const existing=post.comments.filter(c=>state.fans[c.author]).length;
   const count=Math.max(0,randomInteger(settings.commentCount,random)-existing);
-  const texts=fanCommentPool(settings,settings.compliments,m.name,count,random);
-  const accounts=shuffled(Object.values(state.fans).filter(fan=>!post.comments.some(c=>c.author===fan.id)),random).slice(0,count);
+  const texts=fanCommentPool(settings,settings.compliments,m.name,count,random,post.comments.map(c=>c.text));
+  const accounts=shuffled(Object.values(state.fans).filter(fan=>!post.comments.some(c=>c.author===fan.id)),random).slice(0,Math.min(count,texts.length));
   accounts.forEach((fan,i)=>post.comments.push({id:uid(),author:fan.id,text:texts[i],time:post.time+Math.floor(Math.min(Math.max(0,now-post.time),600000)*i/Math.max(1,accounts.length)),parentId:null,replyTo:null,likedBy:[]}));
   post.fanCommentsSeeded=true;
-  post.fanCommentStyle=2;
+  post.fanCommentStyle=3;
 }
 function advancePostLikes(state,config,now=Date.now()) {
   let changed=false;
@@ -822,7 +887,7 @@ function runDueJobs(state, config, now=Date.now()) {
       const session=state.dialogueSessions.kakao[m.id];
       if(session&&!session.random&&config.dialogues[m.id].nodes[session.nodeId]?.initial)session.finished=true;
       scheduleRandomDialogue(state,config,now);
-      notices.push({channel:"kakao",member:m.id,text:message.text});
+      notices.push({channel:"kakao",member:m.id,text:message?.text||""});
     }else if(job.type==="comment-like"){
       const post=state.posts.find(p=>p.id===job.postId),comment=post?.comments.find(c=>c.id===job.commentId);
       const target=post?.comments.find(c=>c.id===comment?.replyTo);
@@ -834,7 +899,13 @@ function runDueJobs(state, config, now=Date.now()) {
     } else if(["post-comment","fan-comment"].includes(job.type)){
       const post=state.posts.find(p=>p.id===job.postId);
       if(!post||post.author!=="me"||post.comments.some(c=>c.id===job.id))continue;
-      const text=personalize(state,job.text);
+      const used=new Set(post.comments.map(c=>commentKey(c.text)));
+      let text=personalize(state,job.text);
+      if(used.has(commentKey(text))){
+        const options=automaticCommentOptions(state,config,post,m.id);
+        text=chooseComment(state,options,used);if(!text)continue;
+      }
+      if(job.type==="post-comment")addMemberPostLike(post,m.id);
       post.comments.push({id:job.id,author:m.id,text,time:now,parentId:null,replyTo:null,likedBy:[]});
       if(job.type==="post-comment")for(const followUp of state.jobs.filter(j=>j.type==="photo-follow-up"&&state.events[j.member]?.userShareId===post.id))followUp.dueAt=Math.max(followUp.dueAt,now+config.photoEvents.followUpDelay);
       notices.push({kind:"comment",postId:post.id,commentId:job.id,member:m.id,text:`在你的貼文留言：${text}`,quiet:job.type==="fan-comment"});
@@ -845,18 +916,18 @@ function runDueJobs(state, config, now=Date.now()) {
       session.pending=null;
       if(!node){session.nodeId=null;session.finished=true;if(job.channel==="kakao")finishRandomDialogue(state,config,m.id,now);notices.push({channel:job.channel,member:m.id,text:""});continue;}
       session.nodeId=job.nodeId;session.finished=!(node.choices?.length);
-      if(node.message){addMessage(state,job.channel,m.id,node.message,m.id,now);notices.push({channel:job.channel,member:m.id,text:node.message});}
+      if(node.message){addMessage(state,job.channel,m.id,node.message,m.id,now);notices.push({channel:job.channel,member:m.id,text:chatNoticeText(node.message)});}
       else notices.push({channel:job.channel,member:m.id,text:""});
       if(job.channel==="kakao")finishRandomDialogue(state,config,m.id,now);
     } else if (job.type==="incoming") {
       if (!state.chats[job.channel]?.[job.member] || !job.text) continue;
       addMessage(state,job.channel,m.id,job.text,m.id,now);
-      notices.push({channel:job.channel,member:m.id,text:job.text});
+      notices.push({channel:job.channel,member:m.id,text:chatNoticeText(job.text)});
     } else if (job.type==="photo-dm" && state.events[m.id]?.phase==="queued") {
       addMessage(state,"instagram",m.id,script.question,m.id,now);
       state.events[m.id].phase="asked";
       state.jobs.push({id:uid(),type:"photo-post",member:m.id,dueAt:now+config.photoEvents.postDelay});
-      notices.push({channel:"instagram",member:m.id,text:script.question});
+      notices.push({channel:"instagram",member:m.id,text:chatNoticeText(script.question)});
     } else if (job.type==="photo-post" && state.events[m.id]?.phase==="asked") {
       const post={id:uid(),author:m.id,images:[{src:config.assets.pairedPhoto(m.id,"her"),member:m.id,side:"her"}],caption:script.caption,time:now,likes:0,liked:false,comments:[],slide:0};
       initializePostAudience(state,config,post,now);
@@ -876,7 +947,7 @@ function runDueJobs(state, config, now=Date.now()) {
       const userExists=event.userShareType==="story" ? state.stories.some(s=>s.id===event.userShareId) : state.posts.some(p=>p.id===event.userShareId);
       if (userExists && state.posts.some(p=>p.id===event.counterpartId)) {
         addMessage(state,"instagram",m.id,script.followUp,m.id,now);
-        notices.push({channel:"instagram",member:m.id,text:script.followUp});
+        notices.push({channel:"instagram",member:m.id,text:chatNoticeText(script.followUp)});
       }
       event.phase="done";
     }
@@ -897,6 +968,7 @@ function validateSave(value, config) {
   }
   if(value.posts.some(p=>!p || typeof p.id!=="string" || !authors.includes(p.author) || !Number.isFinite(p.time) || !Number.isFinite(p.likes) || !Array.isArray(p.images) || !p.images.length || p.images.length>10 || !Array.isArray(p.comments) || typeof p.caption!=="string" || p.images.some(i=>!i || typeof i.src!=="string") || p.comments.some(c=>!c || !authors.includes(c.author) || typeof c.text!=="string" || !Number.isFinite(c.time)))) throw new Error("存檔的貼文資料不完整");
   if(value.posts.some(p=>p.engagement!==undefined&&(!p.engagement||["baseLikes","organicLikes","likesPerMinute","startedAt"].some(key=>!Number.isFinite(p.engagement[key])||(key!=="startedAt"&&p.engagement[key]<0))||(p.engagement.maxLikes!==null&&(!Number.isFinite(p.engagement.maxLikes)||p.engagement.maxLikes<0)))))throw new Error("存檔的貼文讚數資料不完整");
+  if(value.posts.some(p=>p.memberLikes!==undefined&&(!Array.isArray(p.memberLikes)||p.memberLikes.some(id=>!members.includes(id)||id===p.author)||new Set(p.memberLikes).size!==p.memberLikes.length)))throw new Error("存檔的成員按讚資料不完整");
   if(value.posts.some(p=>p.fanLikes!==undefined&&(!Array.isArray(p.fanLikes)||p.fanLikes.some(id=>!fans?.[id])||new Set(p.fanLikes).size!==p.fanLikes.length)))throw new Error("存檔的粉絲按讚資料不完整");
   if(value.welcomeDone&&(typeof value.welcomeDone!=="object"||Array.isArray(value.welcomeDone)||Object.entries(value.welcomeDone).some(([id,done])=>!members.includes(id)||typeof done!=="boolean")))throw new Error("存檔的歡迎對話資料不完整");
   if(value.welcomePending&&(typeof value.welcomePending!=="object"||Array.isArray(value.welcomePending)||Object.entries(value.welcomePending).some(([member,id])=>!members.includes(member)||typeof id!=="string"||!value.jobs.some(j=>j.id===id&&j.type==="welcome-reply"&&j.member===member))))throw new Error("存檔的歡迎回應排程不完整");
@@ -1040,10 +1112,10 @@ const longDate=time=>new Intl.DateTimeFormat('zh-TW',{month:'long',day:'numeric'
 const age=time=>{const mins=Math.max(0,Math.floor((Date.now()-time)/60000));return mins<1?'剛剛':mins<60?`${mins} 分鐘前`:mins<1440?`${Math.floor(mins/60)} 小時前`:`${Math.floor(mins/1440)} 天前`;};
 const safeSrc=src=>typeof src==='string' && (/^(assets|photo|ins)\/[a-zA-Z0-9_/.\-]+$/.test(src)&&!src.includes('..') || /^data:image\/(jpeg|png|webp|gif);base64,/.test(src))?src:'assets/moment-yeji.svg';
 function image(src,fallback,alt,classes='',alternates=[]) {return `<img src="${esc(safeSrc(src))}" alt="${esc(alt)}" class="${classes}" data-fallback="${esc(fallback)}" data-alternates="${esc(JSON.stringify(alternates))}" draggable="false">`;}
-function avatar(id,classes='',phone=false,label=personName(id)) {
+function avatar(id,classes='',phone=false,label=personName(id),channel='instagram') {
   const fan=state.fans?.[id];
   if(fan)return `<span class="avatar fan-avatar ${classes}" role="img" aria-label="${esc(fan.username)}" style="background:${esc(fan.color)}">${esc(fan.username[0].toUpperCase())}</span>`;
-  const src=id==='me'?state.profile.avatar:(phone?C.assets.phoneAvatar(id):C.assets.instagramAvatar(id));
+  const src=id==='me'?state.profile.avatar:(phone?C.assets.phoneAvatar(id):channel==='kakao'?C.assets.kakaoAvatar(id):C.assets.instagramAvatar(id));
   const alternatives=phone?[`${src}.jpeg`,`${src}.jpg`,`${src}.png`]:[];
   return image(src||'photo/ins/profile/me.jpeg',`assets/avatar-${id==='me'?'me':id}.svg`,label,`avatar ${classes}`,alternatives);
 }
@@ -1157,26 +1229,27 @@ function kakaoNav(){return `<nav class="bottom-nav" aria-label="KakaoTalk 導覽
 function renderKakao() {
   if(route.page==='chat')return renderChat('kakao',route.member);
   const friends=route.tab==='friends';
-  return `<header class="app-topbar"><h2 class="app-title">${friends?'好友':'聊天'}</h2><button class="top-button" data-action="search" data-channel="kakao" aria-label="搜尋好友">${icon('search')}</button><button class="top-button" data-action="settings" aria-label="設定">${icon('more')}</button></header><div class="scroll">${friends?`<button class="list-row self-row" data-action="settings">${avatar('me','kakao-avatar')}<div class="list-row-copy"><strong>${esc(state.profile.name)}</strong></div></button><div class="section-label"><span>好友 ${C.members.length}</span><span>⌃</span></div>`:''}${C.members.map(m=>renderChatRow('kakao',m,friends)).join('')}</div>${kakaoNav()}`;
+  return `<header class="app-topbar"><h2 class="app-title">${friends?'好友':'聊天'}</h2><button class="top-button" data-action="search" data-channel="kakao" aria-label="搜尋好友">${icon('search')}</button><button class="top-button" data-action="settings" aria-label="設定">${icon('more')}</button></header><div class="scroll">${friends?`<button class="list-row self-row" data-action="settings">${avatar('me','kakao-avatar')}<div class="list-row-copy"><strong>${esc(state.profile.name)}</strong></div></button><div class="section-label"><span>好友 ${C.members.length}</span><span>⌃</span></div>`:''}${(friends?C.members:chatMembers('kakao')).map(m=>renderChatRow('kakao',m,friends)).join('')}</div>${kakaoNav()}`;
 }
 function chatMembers(channel) {
+  // 開場訊息時間相同時，沿用成員年齡順序；有收發訊息後依最後訊息時間排列。
   return [...C.members].sort((a,b)=>(state.chats[channel][b.id].at(-1)?.time??0)-(state.chats[channel][a.id].at(-1)?.time??0));
 }
 function renderChatRow(channel,m,friends=false) {
   const messages=state.chats[channel][m.id],latest=messages.at(-1),unread=unreadCount(state,channel,m.id);
-  return `<button class="list-row" data-action="open-chat" data-channel="${channel}" data-member="${m.id}">${avatar(m.id,channel==='kakao'?'kakao-avatar':'')}<div class="list-row-copy"><strong>${channel==='instagram'?esc(m.username):m.name}</strong><p>${friends?m.korean:esc(latest?(latest.kind==='post'?'傳送了一則貼文':latest.sender==='me'?latest.text:dialogue(latest.text)):(channel==='instagram'?`${m.displayName} · 傳送訊息`:'尚無訊息'))}</p></div>${!friends?`<div class="list-row-meta"><span>${latest?shortTime(latest.time):''}</span>${unread?`<span class="unread-pill">${unread}</span>`:''}</div>`:'<span class="friend-status">♡</span>'}</button>`;
+  return `<button class="list-row" data-action="open-chat" data-channel="${channel}" data-member="${m.id}">${avatar(m.id,channel==='kakao'?'kakao-avatar':'',false,personName(m.id),channel)}<div class="list-row-copy"><strong>${channel==='instagram'?esc(m.username):m.name}</strong><p>${friends?m.korean:esc(latest?(latest.kind==='post'?'傳送了一則貼文':latest.sender==='me'?latest.text:dialogue(latest.text)):(channel==='instagram'?`${m.displayName} · 傳送訊息`:'尚無訊息'))}</p></div>${!friends?`<div class="list-row-meta"><span>${latest?shortTime(latest.time):''}</span>${unread?`<span class="unread-pill">${unread}</span>`:''}</div>`:'<span class="friend-status">♡</span>'}</button>`;
 }
 function renderDialogueChoices(channel,id) {
   const welcome=renderWelcomeChoice(channel,id);if(welcome)return welcome;
   const session=state.dialogueSessions[channel]?.[id];
   const choices=dialogueChoices(state,C,channel,id);
   if(!choices.length||C.dialogues[id]?.nodes[session?.nodeId]?.initial)return '';
-  return `<div class="dialogue-choices" role="group" aria-label="選擇回覆">${choices.map(c=>`<button data-action="dialogue-choice" data-channel="${channel}" data-member="${id}" data-node="${esc(session.nodeId)}" data-choice="${esc(c.id)}">${esc(dialogue(c.text))}</button>`).join('')}</div>`;
+  return `<div class="dialogue-choices" role="group" aria-label="選擇回覆">${choices.map(c=>`<button data-action="dialogue-choice" data-channel="${channel}" data-member="${id}" data-node="${esc(session.nodeId)}" data-choice="${esc(c.id)}">${esc(splitChatText(dialogue(c.text)).join(' '))}</button>`).join('')}</div>`;
 }
 function renderWelcomeChoice(channel,id) {
   const script=C.dialogues[id],node=script?.nodes[script.start];
   if(channel!=='kakao'||!C.dialogueChannels.includes(channel)||!node?.initial||state.welcomeDone?.[id]||state.welcomePending?.[id])return '';
-  return `<div class="dialogue-choices welcome-choices" role="group" aria-label="回覆歡迎訊息">${node.choices.map(choice=>`<button data-action="dialogue-choice" data-channel="kakao" data-member="${id}" data-node="${script.start}" data-choice="${choice.id}">${esc(dialogue(choice.text))}</button>`).join('')}</div>`;
+  return `<div class="dialogue-choices welcome-choices" role="group" aria-label="回覆歡迎訊息">${node.choices.map(choice=>`<button data-action="dialogue-choice" data-channel="kakao" data-member="${id}" data-node="${script.start}" data-choice="${choice.id}">${esc(splitChatText(dialogue(choice.text)).join(' '))}</button>`).join('')}</div>`;
 }
 function renderChat(channel,id) {
   const m=member(id),messages=state.chats[channel][id];
@@ -1189,9 +1262,9 @@ function renderMessage(message,channel,id) {
   let body=esc(mine?message.text:dialogue(message.text));
   if(message.kind==='post') {
     const post=state.posts.find(p=>p.id===message.postId);
-    body=post?`<button class="dm-shared-post" data-action="view-post" data-id="${post.id}">${photoImage(post.images[0])}<strong>${esc(username(post.author))}</strong><p>${esc(post.caption).slice(0,90)}</p></button>`:'這則貼文已不存在。';
+    body=post?`<button class="dm-shared-post" data-action="view-post" data-id="${post.id}">${photoImage(post.images[0])}<strong>${esc(username(post.author))}</strong><p>${esc(post.caption).slice(0,90)}</p></button>`:'這則貼文已不存在';
   }
-  return `<div class="message-row ${mine?'mine':''}">${!mine?avatar(id,`small ${channel==='kakao'?'kakao-avatar':''}`):''}<div class="message-content">${!mine&&channel==='kakao'?`<div class="message-author">${personName(id)}</div>`:''}<div class="bubble-with-time"><div class="bubble ${message.kind==='post'?'dm-shared-post':''}">${body}</div><span class="message-time">${mine&&channel==='kakao'?'<span class="read">1</span>':''}${shortTime(message.time)}</span></div></div></div>`;
+  return `<div class="message-row ${mine?'mine':''}">${!mine?avatar(id,`small ${channel==='kakao'?'kakao-avatar':''}`,false,personName(id),channel):''}<div class="message-content">${!mine&&channel==='kakao'?`<div class="message-author">${personName(id)}</div>`:''}<div class="bubble-with-time"><div class="bubble ${message.kind==='post'?'dm-shared-post':''}">${body}</div><span class="message-time">${mine&&channel==='kakao'?'<span class="read">1</span>':''}${shortTime(message.time)}</span></div></div></div>`;
 }
 function instagramNav() {return `<nav class="bottom-nav" aria-label="Instagram 導覽"><button data-action="ig-tab" data-tab="feed" class="${!route.page||route.page==='feed'?'active':''}" aria-label="Instagram 首頁">${icon('home','',!route.page||route.page==='feed')}</button><button data-action="compose" aria-label="建立貼文">${icon('plus')}</button><button data-action="ig-tab" data-tab="profile" class="${route.page==='profile'?'active':''}" aria-label="我的個人檔案">${avatar('me','tiny')}</button></nav>`;}
 function renderInstagram() {
@@ -1209,9 +1282,14 @@ function renderStoryTray() {
   const own=activeStories('me');
   return `<div class="story-avatar"><div class="story-avatar-photo"><button class="story-open" data-action="${own.length?'story':'compose-story'}" data-member="me" aria-label="${own.length?'觀看你的限時動態':'發佈限時動態'}"><span class="story-ring ${!own.length?'empty':own.every(s=>s.seen)?'seen':''}">${avatar('me')}</span></button><button class="story-add" data-action="compose-story" aria-label="新增限時動態">${icon('plus')}</button></div><span>你的限時動態</span></div>${C.members.map(m=>{const stories=activeStories(m.id);return `<button class="story-avatar" data-action="story" data-member="${m.id}" aria-label="觀看 ${m.name} 的限時動態"><span class="story-ring ${!stories.length?'empty':stories.every(s=>s.seen)?'seen':''}">${avatar(m.id)}</span><span>${m.name}</span></button>`;}).join('')}`;
 }
+function renderPostLikes(post){
+  if(!post.likes)return '';
+  const likers=(post.memberLikes||[]).filter(id=>member(id));
+  return `<div class="post-likes">${likers.length?`<span class="post-member-likes">${likers.map(id=>esc(username(id))).join('、')} 說讚</span> · `:''}${post.likes.toLocaleString()} 個讚</div>`;
+}
 function renderPost(post) {
   const count=post.images.length,slide=Math.max(0,Math.min(post.slide||0,count-1));
-  return `<article class="post" data-post="${post.id}"><header class="post-header">${avatar(post.author)}<div class="post-username">${esc(username(post.author))}<small>서울, 대한민국</small></div><button class="top-button" data-action="post-options" data-id="${post.id}" aria-label="貼文選項">${icon('more')}</button></header><div class="post-image-wrap" data-swipe-post="${post.id}">${photoImage(post.images[slide],'post-image')}${count>1?`<span class="slide-count">${slide+1}/${count}</span>${slide>0?`<button class="slide-arrow prev" data-action="slide" data-id="${post.id}" data-dir="-1" aria-label="上一張">${icon('back')}</button>`:''}${slide<count-1?`<button class="slide-arrow next" data-action="slide" data-id="${post.id}" data-dir="1" aria-label="下一張">${icon('chevron')}</button>`:''}`:''}</div><div class="post-actions"><button data-action="like" data-id="${post.id}" class="${post.liked?'liked':''}" aria-label="${post.liked?'取消按讚':'按讚'}">${icon('heart','',post.liked)}</button><button data-action="comments" data-id="${post.id}" aria-label="留言">${icon('chat')}</button><button data-action="share-post" data-id="${post.id}" aria-label="傳送貼文到聊天室">${icon('send')}</button>${count>1?`<span class="slide-dots">${post.images.map((_,i)=>`<i class="${i===slide?'active':''}"></i>`).join('')}</span>`:''}<button data-action="bookmark" data-id="${post.id}" aria-label="${state.bookmarked.includes(post.id)?'取消珍藏':'珍藏貼文'}">${icon('bookmark','',state.bookmarked.includes(post.id))}</button></div><div class="post-details">${post.likes?`<div class="post-likes">${post.likes.toLocaleString()} 個讚</div>`:''}<div class="post-caption"><strong>${esc(username(post.author))}</strong>${esc(post.caption).replaceAll('\n','<br>')}</div><button class="comment-preview" data-action="comments" data-id="${post.id}">${post.comments.length?`查看全部 ${post.comments.length} 則留言`:'新增留言…'}</button><div class="post-date">${age(post.time)}</div></div></article>`;
+  return `<article class="post" data-post="${post.id}"><header class="post-header">${avatar(post.author)}<div class="post-username">${esc(username(post.author))}<small>서울, 대한민국</small></div><button class="top-button" data-action="post-options" data-id="${post.id}" aria-label="貼文選項">${icon('more')}</button></header><div class="post-image-wrap" data-swipe-post="${post.id}">${photoImage(post.images[slide],'post-image')}${count>1?`<span class="slide-count">${slide+1}/${count}</span>${slide>0?`<button class="slide-arrow prev" data-action="slide" data-id="${post.id}" data-dir="-1" aria-label="上一張">${icon('back')}</button>`:''}${slide<count-1?`<button class="slide-arrow next" data-action="slide" data-id="${post.id}" data-dir="1" aria-label="下一張">${icon('chevron')}</button>`:''}`:''}</div><div class="post-actions"><button data-action="like" data-id="${post.id}" class="${post.liked?'liked':''}" aria-label="${post.liked?'取消按讚':'按讚'}">${icon('heart','',post.liked)}</button><button data-action="comments" data-id="${post.id}" aria-label="留言">${icon('chat')}</button><button data-action="share-post" data-id="${post.id}" aria-label="傳送貼文到聊天室">${icon('send')}</button>${count>1?`<span class="slide-dots">${post.images.map((_,i)=>`<i class="${i===slide?'active':''}"></i>`).join('')}</span>`:''}<button data-action="bookmark" data-id="${post.id}" aria-label="${state.bookmarked.includes(post.id)?'取消珍藏':'珍藏貼文'}">${icon('bookmark','',state.bookmarked.includes(post.id))}</button></div><div class="post-details">${renderPostLikes(post)}<div class="post-caption"><strong>${esc(username(post.author))}</strong>${esc(post.caption).replaceAll('\n','<br>')}</div><button class="comment-preview" data-action="comments" data-id="${post.id}">${post.comments.length?`查看全部 ${post.comments.length} 則留言`:'新增留言…'}</button><div class="post-date">${age(post.time)}</div></div></article>`;
 }
 function renderProfile() {
   const posts=state.posts.filter(p=>p.author==='me');
@@ -1241,9 +1319,9 @@ function renderPhone() {
 function renderSMS() {
   if(route.page==='chat'){
     const thread=C.sms.find(x=>x.id===route.thread);
-    return `${topbar(thread.name,'','sms-back')}<div class="scroll chat-log"><div class="chat-date">${thread.time}</div>${thread.messages.map(text=>`<div class="message-row"><div class="message-content"><div class="bubble">${esc(text)}</div></div></div>`).join('')}</div><div class="sms-readonly">系統通知簡訊 · 無法回覆</div>`;
+    return `${topbar(thread.name,'','sms-back')}<div class="scroll chat-log"><div class="chat-date">${thread.time}</div>${thread.messages.flatMap(splitChatText).map(text=>`<div class="message-row"><div class="message-content"><div class="bubble">${esc(text)}</div></div></div>`).join('')}</div><div class="sms-readonly">系統通知簡訊 · 無法回覆</div>`;
   }
-  return `<h2 class="sms-title">訊息</h2><div class="scroll">${C.sms.map(t=>`<button class="list-row sms-row" data-action="sms-thread" data-id="${t.id}"><div class="sms-icon">${icon('user')}</div><div class="list-row-copy"><strong>${esc(t.name)}</strong><p>${esc(t.messages[0])}</p></div><div class="list-row-meta"><span>${t.time}</span>${icon('chevron')}</div></button>`).join('')}</div>`;
+  return `<h2 class="sms-title">訊息</h2><div class="scroll">${C.sms.map(t=>`<button class="list-row sms-row" data-action="sms-thread" data-id="${t.id}"><div class="sms-icon">${icon('user')}</div><div class="list-row-copy"><strong>${esc(t.name)}</strong><p>${esc(splitChatText(t.messages[0])[0]||'')}</p></div><div class="list-row-meta"><span>${t.time}</span>${icon('chevron')}</div></button>`).join('')}</div>`;
 }
 
 function sheet(title,body,footer='',className='',backAction='close-modal') {return `<section class="sheet ${className}" role="dialog" aria-modal="true" aria-label="${esc(title)}"><span class="sheet-handle"></span><header class="sheet-header"><button data-action="${backAction}" aria-label="${backAction==='close-modal'?'關閉':'返回'}">${icon(backAction==='close-modal'?'close':'back')}</button><h2>${esc(title)}</h2><span style="width:20px"></span></header><div class="sheet-scroll">${body}</div>${footer}</section>`;}
@@ -1291,10 +1369,10 @@ function renderModal() {
     const w=C.weather;
     overlay.innerHTML=sheet('首爾天氣',`<div class="weather-detail"><h3>首爾 서울</h3>${icon('cloud')}<div class="weather-temp">${w.temperature}°</div><p>${w.condition} · 最高 ${w.high}° 最低 ${w.low}°<br>${w.note}</p></div><p class="settings-note">固定天氣快照：${w.checkedAt}<br>此為製作當天保存的預報，不會自動更新。</p><a class="link-source" href="${esc(w.source)}" target="_blank" rel="noreferrer">查看天氣資料來源 ↗</a>`);
   } else if(type==='search') {
-    overlay.innerHTML=sheet(modal.channel==='kakao'?'搜尋好友':'搜尋訊息',`<div class="search-box" style="margin:0 0 8px">${icon('search')}<input id="chat-search" placeholder="輸入好友名稱或帳號" aria-label="搜尋好友"></div><div id="chat-search-results">${(modal.channel==='instagram'?chatMembers('instagram'):C.members).map(m=>`<div data-search-name="${esc(`${m.name} ${m.username} ${m.korean}`.toLowerCase())}">${renderChatRow(modal.channel,m)}</div>`).join('')}</div>`);
+    overlay.innerHTML=sheet(modal.channel==='kakao'?'搜尋好友':'搜尋訊息',`<div class="search-box" style="margin:0 0 8px">${icon('search')}<input id="chat-search" placeholder="輸入好友名稱或帳號" aria-label="搜尋好友"></div><div id="chat-search-results">${chatMembers(modal.channel).map(m=>`<div data-search-name="${esc(`${m.name} ${m.username} ${m.korean}`.toLowerCase())}">${renderChatRow(modal.channel,m)}</div>`).join('')}</div>`);
   } else if(type==='chat-info') {
     const m=member(modal.member);
-    overlay.innerHTML=sheet('聊天資訊',`<div style="text-align:center">${avatar(m.id,'large')}<h3 style="font-size:15px">${m.name} · ${m.korean}</h3><p style="font-size:11px;color:#999">@${esc(m.username)}</p></div>`);
+    overlay.innerHTML=sheet('聊天資訊',`<div style="text-align:center">${avatar(m.id,'large',false,personName(m.id),route.app==='kakao'?'kakao':'instagram')}<h3 style="font-size:15px">${m.name} · ${m.korean}</h3><p style="font-size:11px;color:#999">@${esc(m.username)}</p></div>`);
   } else if(type==='call-info'){
     const i=C.members.findIndex(m=>m.id===modal.member),m=member(modal.member);
     overlay.innerHTML=sheet('通話詳細資訊',`<div class="contact-detail" style="padding:12px">${avatar(m.id,'large',true)}<h2>${m.name}</h2><div class="contact-field">${['今天','昨天','星期四','星期三','星期二'][i]}<span>${i%2?'撥出電話':'來電'} · ${['12 分 08 秒','5 分 32 秒','28 分 14 秒','8 分 46 秒','17 分 02 秒'][i]}</span></div><button class="secondary-button" data-action="contact" data-member="${m.id}">查看聯絡人</button></div>`);
@@ -1320,7 +1398,7 @@ function renderStoryModal() {
 function nextStory(){if(modal?.kind!=='story')return;const stories=activeStories(modal.member);if(modal.index+1<stories.length){modal.index++;renderStoryModal();}else closeModal();}
 function toast(text,notice=null) {
   clearTimeout(toastTimer);toastAction=notice;
-  $('#toast').innerHTML=notice?`<button class="toast" data-action="toast-open">${avatar(notice.member,'small')}<div><strong>${personName(notice.member)} · ${notice.postId?'Instagram':notice.channel==='kakao'?'KakaoTalk':'Instagram'}</strong><p>${esc(dialogue(text))}</p></div></button>`:`<div class="toast toast-simple">${esc(text)}</div>`;
+  $('#toast').innerHTML=notice?`<button class="toast" data-action="toast-open">${avatar(notice.member,'small',false,personName(notice.member),notice.channel==='kakao'?'kakao':'instagram')}<div><strong>${personName(notice.member)} · ${notice.postId?'Instagram':notice.channel==='kakao'?'KakaoTalk':'Instagram'}</strong><p>${esc(dialogue(text))}</p></div></button>`:`<div class="toast toast-simple">${esc(text)}</div>`;
   toastTimer=setTimeout(()=>{$('#toast').innerHTML='';toastAction=null;},notice?5200:3000);
 }
 function showCompose(type='post',selected=[]) {openModal({kind:'compose',type,images:selected.slice(0,1).map(p=>({...p})),caption:selected.length?(state.photoDetails[selected[0].id]?.description||''):''});}

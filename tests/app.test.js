@@ -8,7 +8,7 @@ import {splitChatText} from '../js/core.js';
 
 const read=path=>readFileSync(new URL(`../${path}`,import.meta.url),'utf8');
 const decode=s=>s.replaceAll('&quot;','"').replaceAll('&lt;','<').replaceAll('&gt;','>').replaceAll('&#39;',"'").replaceAll('&amp;','&');
-async function appFixture({onboard=true,stored=null}={}) {
+async function appFixture({onboard=true,stored=null,weatherFetch,clock=Date}={}) {
   const elements=new Map(),listeners={};
   let document;
   class Element {
@@ -27,10 +27,10 @@ async function appFixture({onboard=true,stored=null}={}) {
   for(const id of ['app','overlay','screen','status-bar','status-time','toast','home-button','image-upload','signal','wifi'])elements.set(id,new Element(id));
   document={activeElement:null,querySelector:s=>elements.get(s.slice(1))||null,getElementById:id=>elements.get(id)||null,addEventListener:(type,handler)=>(listeners[type]??=[]).push(handler),createElement:()=>new Element()};
   const saved=new Map(stored?[['itzy-phone-save-v1',JSON.stringify(stored)]]:[]);const intervals=[];
-  const context=vm.createContext({window:{},document,console,crypto:webcrypto,structuredClone,Date,Intl,Math,JSON,Map,Set,Blob,URL,HTMLImageElement:class{},setInterval:handler=>(intervals.push(handler),intervals.length),clearInterval(){},setTimeout(){return 1;},clearTimeout(){},requestAnimationFrame:fn=>fn(),localStorage:{getItem:key=>saved.get(key)||null,setItem:(key,value)=>saved.set(key,value)}});
+  const context=vm.createContext({window:{addEventListener(){}},document,console,crypto:webcrypto,structuredClone,Date:clock,Intl,Math,JSON,Map,Set,Blob,URL,AbortController,fetch:weatherFetch,HTMLImageElement:class{},setInterval:handler=>(intervals.push(handler),intervals.length),clearInterval(){},setTimeout(){return 1;},clearTimeout(){},requestAnimationFrame:fn=>fn(),localStorage:{getItem:key=>saved.get(key)||null,setItem:(key,value)=>saved.set(key,value)}});
   let source=read('js/config.js')+'\n';
-  for(const name of ['core','storage','icons','app'])source+=read(`js/${name}.js`).replace(/^import .+;\n/gm,'').replace(/^export /gm,'')+'\n';
-  source+='globalThis.fixture={get state(){return state},get route(){return route},get modal(){return modal},get photos(){return photos},runDueJobs,processJobs,refresh,renderModal,createState,updatePostEngagement,shortTime,longDate,updateClock,C};';
+  for(const name of ['core','storage','icons','weather','app'])source+=read(`js/${name}.js`).replace(/^import .+;\n/gm,'').replace(/^export /gm,'')+'\n';
+  source+='globalThis.fixture={get state(){return state},get route(){return route},get modal(){return modal},get photos(){return photos},runDueJobs,processJobs,refresh,renderModal,createState,updatePostEngagement,shortTime,longDate,localDateStamp,updateClock,weatherClient,C};';
   vm.runInContext(source,context);
   await new Promise(resolve=>setImmediate(resolve));
   function click(action,data={}){const target={dataset:{action,...data},disabled:false,closest:selector=>selector==='[data-action]'?target:null};return Promise.all((listeners.click||[]).map(handler=>handler({target})));}
@@ -391,4 +391,27 @@ test('photo DM parts arrive 1.5 seconds apart without losing drafts and posts sh
   assert.equal(a.elements.get('chat-input').value,'還沒打完的回覆');assert.match(a.root.innerHTML,/怎麼突然發了？/);
   const post=a.fixture.state.jobs.find(j=>j.type==='photo-post');a.fixture.processJobs(post.dueAt);a.click('ig-tab',{tab:'feed'});
   assert.equal((a.root.innerHTML.match(/class="post-header"/g)||[]).length,2);assert.doesNotMatch(a.root.innerHTML,/서울, 대한민국/);
+});
+
+test('live Seoul weather renders without a saved snapshot while screen dates and clock use the player timezone',async()=>{
+  const previous=process.env.TZ,now=Date.parse('2026-10-29T15:05:00Z');
+  class Clock extends Date{static now(){return now;}}
+  const payload={timezone:'Asia/Seoul',current:{time:'2026-10-30T00:00',temperature_2m:8.4,weather_code:0,is_day:0},daily:{time:['2026-10-30'],temperature_2m_max:[18],temperature_2m_min:[5]},hourly:{time:Array.from({length:5},(_,i)=>`2026-10-30T0${i}:00`),temperature_2m:[8,7,6,6,5],weather_code:[0,0,1,2,3]}};
+  try{
+    process.env.TZ='Pacific/Honolulu';
+    const a=await appFixture({clock:Clock,weatherFetch:async()=>({ok:true,json:async()=>payload})});
+    assert.match(a.root.innerHTML,/晴朗/);assert.equal(a.elements.get('lock-date').textContent,a.fixture.longDate(now));
+    assert.match(a.elements.get('lock-date').textContent,/10月29日/);assert.equal(a.elements.get('status-time').textContent,'05:05');
+    a.click('unlock');assert.match(a.root.innerHTML,/2026\.10\.29/);assert.match(a.root.innerHTML,/8°/);assert.match(a.root.innerHTML,/最高 18° 最低 5°/);
+    assert.equal(a.fixture.weatherClient.data.date,'2026-10-30');
+    a.fixture.updateClock();assert.equal(a.elements.get('weather-date').textContent,'2026.10.29');
+    a.click('weather');assert.match(a.overlay.innerHTML,/Open-Meteo/);assert.match(a.overlay.innerHTML,/2026\.10\.29 05:05/);assert.doesNotMatch(a.overlay.innerHTML,/固定天氣|快照|不會自動更新/);
+  }finally{if(previous===undefined)delete process.env.TZ;else process.env.TZ=previous;}
+});
+
+test('weather failures show placeholders and leave chat drafts and gameplay available',async()=>{
+  const a=await appFixture({weatherFetch:async()=>{throw new Error('offline');}});a.click('unlock');
+  assert.match(a.root.innerHTML,/暫時無法取得天氣/);assert.match(a.root.innerHTML,/--°/);assert.doesNotMatch(a.root.innerHTML,/2026\.10\.24/);
+  a.click('open-chat',{channel:'kakao',member:'yeji'});a.input('chat-input','未完成的訊息');
+  await a.fixture.weatherClient.refresh({force:true});assert.equal(a.elements.get('chat-input').value,'未完成的訊息');
 });

@@ -40,16 +40,9 @@ window.PHONE_CONFIG = {
     pairedPhoto: (id, side) => `photo/ins/${id}/${side}.jpg`
   },
 
-  // 3. 首爾天氣：固定保存的預報快照，不會每天更新。
-  // date / checkedAt / source 用於標示資料日期與來源；手機時鐘另依瀏覽器時間顯示。
-  weather: {
-    date: "2026-10-24", city: "首爾", temperature: 19, condition: "多雲", high: 19, low: 12,
-    note: "傍晚漸涼，出門記得帶件外套。",
-    hours: [ {time:"15時",temp:19}, {time:"16時",temp:18}, {time:"17時",temp:18}, {time:"18時",temp:17}, {time:"19時",temp:16} ],
-    source: "https://www.timeanddate.com/weather/south-korea/seoul/ext",
-    sourceLabel: "Time and Date / CustomWeather；小時資料：建立時天氣查詢",
-    checkedAt: "2026-10-24（首爾時間）"
-  },
+  // 3. 首爾即時天氣：固定使用首爾座標取得預報，不要求玩家提供定位。
+  // 每 30 分鐘更新；失敗後隔 5 分鐘重試。畫面日期與手機時鐘使用玩家裝置的本地時間。
+  weather: {city:"首爾",latitude:37.5665,longitude:126.978,refreshMs:1800000,retryMs:300000},
 
   // 4. 開場訊息：每位成員的陣列依序放入聊天室，只在建立新存檔時套用。
   // KKT 歡迎訊息的回覆選項設在下方 dialogues → 成員 → nodes.welcome。

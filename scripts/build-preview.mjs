@@ -5,7 +5,7 @@ let html=await readFile(new URL('index.html',directory),'utf8');
 const css=await readFile(new URL('css/style.css',directory),'utf8');
 const config=await readFile(new URL('js/config.js',directory),'utf8');
 let bundled='';
-for(const filename of ['core.js','storage.js','icons.js','app.js']) {
+for(const filename of ['core.js','storage.js','icons.js','weather.js','app.js']) {
   const source=await readFile(new URL(`js/${filename}`,directory),'utf8');
   bundled+=source.replace(/^import .+;\n/gm,'').replace(/^export /gm,'')+'\n';
 }

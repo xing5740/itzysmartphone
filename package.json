@@ -4,5 +4,5 @@
   "private": true,
   "type": "module",
   "description": "台灣中文 iPhone 同人互動遊戲，支援 GitHub Pages",
-  "scripts": { "dev": "python3 -m http.server 4173 --bind 127.0.0.1", "preview:build": "node scripts/build-preview.mjs", "test": "node --test tests/*.test.js", "check": "node --check js/app.js && node --check js/core.js && node --check js/config.js && node --check js/storage.js" }
+  "scripts": { "dev": "python3 -m http.server 4173 --bind 127.0.0.1", "preview:build": "node scripts/build-preview.mjs", "test": "node --test tests/*.test.js", "check": "node --check js/app.js && node --check js/core.js && node --check js/config.js && node --check js/storage.js && node --check js/weather.js" }
 }

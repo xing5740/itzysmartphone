@@ -1,3 +1,4 @@
+import {WEATHER_SOURCE,seoulDay,createWeatherClient} from './weather.js';
 import {uid,splitChatText,createState,addMessage,queueKeywordReplies,queueEmojiReplies,publish,runDueJobs,unreadCount,validateSave,photoLibrary,personalize,completeOnboarding,startDialogue,dialogueChoices,chooseDialogue,addComment,toggleCommentLike,advancePostLikes,scheduleRandomDialogue} from './core.js';
 import {openStorage,saveState,resetStorage} from './storage.js';
 import {icon} from './icons.js';
@@ -13,6 +14,7 @@ const instagramName=id=>member(id)?.displayName||personName(id);
 const shortInstagramId=id=>{const value=username(id);return value.length>15?`${value.slice(0,15)}...`:value;};
 const shortTime=time=>new Intl.DateTimeFormat('zh-TW',{hour:'2-digit',minute:'2-digit',hour12:false}).format(time);
 const longDate=time=>new Intl.DateTimeFormat('zh-TW',{month:'long',day:'numeric',weekday:'long'}).format(time);
+const localDateStamp=time=>{const date=new Date(time);return `${date.getFullYear()}.${String(date.getMonth()+1).padStart(2,'0')}.${String(date.getDate()).padStart(2,'0')}`;};
 const age=time=>{const mins=Math.max(0,Math.floor((Date.now()-time)/60000));return mins<1?'剛剛':mins<60?`${mins} 分鐘前`:mins<1440?`${Math.floor(mins/60)} 小時前`:`${Math.floor(mins/1440)} 天前`;};
 const safeSrc=src=>typeof src==='string' && (/^(assets|photo|ins)\/[a-zA-Z0-9_/.\-]+$/.test(src)&&!src.includes('..') || /^data:image\/(jpeg|png|webp|gif);base64,/.test(src))?src:'assets/moment-yeji.svg';
 function image(src,fallback,alt,classes='',alternates=[]) {return `<img src="${esc(safeSrc(src))}" alt="${esc(alt)}" class="${classes}" data-fallback="${esc(fallback)}" data-alternates="${esc(JSON.stringify(alternates))}" draggable="false">`;}
@@ -32,6 +34,14 @@ let modal=null, storyTimer, toastTimer, clockTimer, pointerStart=null;
 let toastAction=null, previousRoute={app:'home'};
 const drafts={};
 let storageWarningShown=false, saveBroken=false, inFlightUpload=false, resetting=false;
+const weatherClient=createWeatherClient(C.weather,{onUpdate:()=>{
+  if(state&&['home','lock'].includes(route.app))refresh();
+  if(modal?.kind==='weather')renderModal();
+}});
+function weatherView(){
+  return weatherClient.data||{date:seoulDay(),temperature:'--',high:'--',low:'--',condition:['idle','loading'].includes(weatherClient.status)?'正在取得天氣':'暫時無法取得天氣',icon:'cloud',hours:Array.from({length:5},()=>({time:'—',temp:'--',condition:'',icon:'cloud'}))};
+}
+
 
 document.addEventListener('error',event=>{
   const img=event.target;
@@ -103,12 +113,13 @@ function renderSetup() {
   return `<section class="setup-screen"><div class="setup-heading">${icon('user')}<h1>設定你的手機</h1></div><form id="setup-form"><label class="field-label" for="setup-username">Instagram ID</label><div class="username-field"><span>@</span><input id="setup-username" value="${esc(state.profile.username)}" maxlength="31" autocomplete="username" autocapitalize="none" spellcheck="false" required aria-describedby="setup-error"></div><label class="field-label" for="setup-nickname">成員對你的稱呼</label><input class="text-field" id="setup-nickname" value="${esc(state.profile.nickname)}" placeholder="輸入稱呼" maxlength="40" autocomplete="nickname" required><p class="form-error" id="setup-error" role="alert"></p><button class="primary-button">開始</button></form><p class="setup-disclaimer">照片素材皆來自 ITZY 官方和成員帳號<br>部分對話與互動使用 AI 生成<br>使用 Cloudflare Web Analytics 統計網站流量</p></section>`;
 }
 function renderLock() {
+  const w=weatherView();
   const notifications=['kakao','instagram'].map(channel=>({channel,count:unreadCount(state,channel)})).filter(x=>x.count>0);
   const notices=notifications.map(({channel,count})=>{
     const kakao=channel==='kakao',name=kakao?'KakaoTalk':'Instagram';
     return `<button class="lock-notice" data-action="${kakao?'kakao-tab':'ig-tab'}" data-tab="${kakao?'chats':'dm'}" aria-label="${name} ${count} 則通知"><span class="notice-app ${channel}">${icon(kakao?'chat':'instagram','',kakao)}</span><div><strong>${name}</strong><p>${count} 則通知</p></div></button>`;
   }).join('');
-  return `<section class="lock-screen" id="lock-swipe" aria-label="鎖定畫面，往上滑或按 Enter 解鎖">${wallpaper('lock')}<button class="lock-open" data-action="unlock" aria-label="點一下解鎖"></button><div class="lock-icon">${icon('unlock')}</div><div class="lock-date" id="lock-date">${longDate(Date.now())}</div><div class="lock-time" id="lock-time">${shortTime(Date.now())}</div><div class="lock-subtitle">${icon('cloud')} 首爾 · ${C.weather.temperature}° · ${C.weather.condition}</div>${notices?`<div class="lock-notifications">${notices}</div>`:''}</section>`;
+  return `<section class="lock-screen" id="lock-swipe" aria-label="鎖定畫面，往上滑或按 Enter 解鎖">${wallpaper('lock')}<button class="lock-open" data-action="unlock" aria-label="點一下解鎖"></button><div class="lock-icon">${icon('unlock')}</div><div class="lock-date" id="lock-date">${longDate(Date.now())}</div><div class="lock-time" id="lock-time">${shortTime(Date.now())}</div><div class="lock-subtitle">${icon(w.icon)} 首爾 · ${w.temperature}° · ${w.condition}</div>${notices?`<div class="lock-notifications">${notices}</div>`:''}</section>`;
 }
 function appIcon(name) {
   if(name==='kakao')return '<span class="app-icon icon-kakao"><span class="kakao-mark">TALK</span></span>';
@@ -123,8 +134,8 @@ function tile(app,label,disabled=false) {
   return `<button class="app-tile" data-action="${disabled?'unavailable':'app'}" data-app="${app}" ${disabled?'disabled aria-disabled="true" title="暫未開放"':''} aria-label="${label}${disabled?'，暫未開放':''}"><span style="position:relative">${appIcon(app)}${unread?`<span class="app-badge">${unread>99?'99+':unread}</span>`:''}</span><span>${label}</span></button>`;
 }
 function renderHome() {
-  const w=C.weather;
-  return `<section class="home-screen">${wallpaper('home')}<div class="weather-widget" role="button" tabindex="0" data-action="weather" aria-label="首爾天氣，查看預報來源"><div class="weather-top"><span class="weather-city">首爾 <span style="font-size:10px;opacity:.7">서울</span></span><span class="weather-date">${w.date.replaceAll('-','.')}</span></div><div class="weather-summary"><span class="weather-temp">${w.temperature}°</span><div class="weather-condition">${icon('cloud')}${w.condition} · 最高 ${w.high}° 最低 ${w.low}°</div></div><div class="weather-hours">${w.hours.map(h=>`<div class="weather-hour"><span>${h.time}</span>${icon('cloud')}<span>${h.temp}°</span></div>`).join('')}</div></div><div class="app-grid">${tile('kakao','KakaoTalk')}${tile('instagram','Instagram')}${tile('photos','照片')}${tile('settings','設定')}</div><div class="home-dock">${tile('phone','電話')}${tile('sms','訊息')}${tile('safari','Safari',true)}${tile('camera','相機',true)}</div></section>`;
+  const w=weatherView();
+  return `<section class="home-screen">${wallpaper('home')}<div class="weather-widget" role="button" tabindex="0" data-action="weather" aria-label="首爾天氣，查看預報來源"><div class="weather-top"><span class="weather-city">首爾 <span style="font-size:10px;opacity:.7">서울</span></span><span class="weather-date" id="weather-date">${localDateStamp(Date.now())}</span></div><div class="weather-summary"><span class="weather-temp">${w.temperature}°</span><div class="weather-condition">${icon(w.icon)}${esc(w.condition)} · 最高 ${w.high}° 最低 ${w.low}°</div></div><div class="weather-hours">${w.hours.map(h=>`<div class="weather-hour"><span>${h.time}</span>${icon(h.icon)}<span>${h.temp}°</span></div>`).join('')}</div></div><div class="app-grid">${tile('kakao','KakaoTalk')}${tile('instagram','Instagram')}${tile('photos','照片')}${tile('settings','設定')}</div><div class="home-dock">${tile('phone','電話')}${tile('sms','訊息')}${tile('safari','Safari',true)}${tile('camera','相機',true)}</div></section>`;
 }
 function topbar(title,buttons='',backAction='home') {
   return `<header class="app-topbar"><button class="top-button header-back" data-action="${backAction}" aria-label="返回">${icon('back')}</button><h2 class="app-title" style="font-size:16px;text-align:center">${esc(title)}</h2>${buttons||'<span style="width:24px"></span>'}</header>`;
@@ -270,8 +281,9 @@ function renderModal() {
   } else if(type==='story') renderStoryModal();
   else if(type==='settings')renderSettings();
   else if(type==='weather') {
-    const w=C.weather;
-    overlay.innerHTML=sheet('首爾天氣',`<div class="weather-detail"><h3>首爾 서울</h3>${icon('cloud')}<div class="weather-temp">${w.temperature}°</div><p>${w.condition} · 最高 ${w.high}° 最低 ${w.low}°<br>${w.note}</p></div><p class="settings-note">固定天氣快照：${w.checkedAt}<br>此為製作當天保存的預報，不會自動更新。</p><a class="link-source" href="${esc(w.source)}" target="_blank" rel="noreferrer">查看天氣資料來源 ↗</a>`);
+    const w=weatherView();
+    const updated=weatherClient.updatedAt&&weatherClient.data?`更新：${localDateStamp(weatherClient.updatedAt)} ${shortTime(weatherClient.updatedAt)}`:'等待取得最新天氣';
+    overlay.innerHTML=sheet('首爾天氣',`<div class="weather-detail"><h3>首爾 서울</h3>${icon(w.icon)}<div class="weather-temp">${w.temperature}°</div><p>${esc(w.condition)} · 最高 ${w.high}° 最低 ${w.low}°</p></div><p class="settings-note">${updated}${weatherClient.status==='error'?'<br>更新失敗，請稍後再試':''}</p><a class="link-source" href="${WEATHER_SOURCE}" target="_blank" rel="noreferrer">天氣資料：Open-Meteo（CC BY 4.0）↗</a>`);
   } else if(type==='search') {
     overlay.innerHTML=sheet(modal.channel==='kakao'?'搜尋好友':'搜尋訊息',`<div class="search-box" style="margin:0 0 8px">${icon('search')}<input id="chat-search" placeholder="輸入好友名稱或帳號" aria-label="搜尋好友"></div><div id="chat-search-results">${chatMembers(modal.channel).map(m=>`<div data-search-name="${esc(`${m.name} ${m.username} ${m.korean}`.toLowerCase())}">${renderChatRow(modal.channel,m)}</div>`).join('')}</div>`);
   } else if(type==='chat-info') {
@@ -312,15 +324,17 @@ function sendSharedPost(id,recipient) {
   addMessage(state,'instagram',recipient,'傳送了一則貼文','me',Date.now(),{kind:'post',postId:id});
   commit(false);go({app:'instagram',page:'chat',member:recipient});toast(`已將貼文傳送給 ${personName(recipient)}`);
 }
-function updateClock(){const now=Date.now();$('#status-time').textContent=shortTime(now);const time=$('#lock-time');if(time)time.textContent=shortTime(now);const date=$('#lock-date');if(date)date.textContent=longDate(now);}
+function updateClock(){const now=Date.now();$('#status-time').textContent=shortTime(now);const time=$('#lock-time');if(time)time.textContent=shortTime(now);const date=$('#lock-date');if(date)date.textContent=longDate(now);const weatherDate=$('#weather-date');if(weatherDate)weatherDate.textContent=localDateStamp(now);}
 function updatePostEngagement(now=Date.now()) {
   if(!state||saveBroken||resetting||!advancePostLikes(state,C,now))return;
   persist();
   if(route.app==='instagram'&&(!route.page||['feed','post'].includes(route.page)))refresh();
 }
 document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible'&&state){updateClock();updatePostEngagement();processJobs();}
+  if(document.visibilityState==='visible'&&state){updateClock();updatePostEngagement();processJobs();weatherClient.refresh();}
 });
+
+window.addEventListener('online',()=>weatherClient.refresh({force:true}));
 
 async function restartGame(button) {
   if(resetting)return;
@@ -532,7 +546,9 @@ async function boot() {
   advancePostLikes(state,C);scheduleRandomDialogue(state,C);
   route={app:state.onboardingComplete?'lock':'setup'};refresh();persist();
   if(saveBroken)toast('原存檔無法讀取，可在設定中重新開始。');
+  weatherClient.refresh();
   clockTimer=setInterval(updateClock,1000);
+  setInterval(()=>{if(document.visibilityState!=='hidden')weatherClient.refresh();},60000);
   setInterval(updatePostEngagement,C.memberAudience?.refreshMs||5000);
   setInterval(processJobs,400);
 }
